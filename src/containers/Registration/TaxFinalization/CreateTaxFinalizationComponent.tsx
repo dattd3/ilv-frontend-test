@@ -103,10 +103,10 @@ const CreateTaxFinalizationComponent: FC<ICreateSocialContributeInfoProps> = ({
     ];
 
     const optionFields: any = [
-      
+      'typeRequest'
     ];
 
-    if(data.typeRequest == TaxAuthorizationOptions.EXPOSE_TAX) {
+    if(data.typeRequest?.value == TaxAuthorizationOptions.EXPOSE_TAX) {
         requiredFields.push('email', 'address', 'idNumber', 'dateIssue', 'placeIssue');
     }
     //check người thẩm định
@@ -134,8 +134,8 @@ const CreateTaxFinalizationComponent: FC<ICreateSocialContributeInfoProps> = ({
     }
     if (
         !_errors["idNumber"] &&
-        data.typeRequest == TaxAuthorizationOptions.EXPOSE_TAX &&
-        (data['idNumber']?.length != 10 && data['idNumber']?.length != 13)
+        data.typeRequest?.value == TaxAuthorizationOptions.EXPOSE_TAX &&
+        (data['idNumber']?.length != 9 && data['idNumber']?.length != 12)
       ) {
         _errors["idNumber"] =
           "Yêu cầu độ dài 9 hoặc 12 ký tự";
@@ -271,7 +271,7 @@ const CreateTaxFinalizationComponent: FC<ICreateSocialContributeInfoProps> = ({
             {t("PlaceIssue")}
             <input
               type="text"
-              value={userprofile.pidPlaceOfIssue || ""}
+              value={userprofile.placeOfIssue || ""}
               className="form-control input mv-10 w-100"
               name="houseHoldNumber"
               autoComplete="off"

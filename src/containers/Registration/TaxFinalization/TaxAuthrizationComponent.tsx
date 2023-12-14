@@ -1,4 +1,4 @@
-import { TaxAuthorizationOptions } from "containers/Registration/TaxFinalization/TaxConstants";
+import { TaxAuthorizationOptions, getTaxAuthrizationOptions } from "containers/Registration/TaxFinalization/TaxConstants";
 import React from "react";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -24,50 +24,36 @@ const TaxAuthrizationComponent = ({
   return (
     <>
       <div className="d-flex flex-row">
-        <span className="d-flex flex-row align-items-center">
-          <input
-            type="radio"
-            id={"action_accept" + TaxAuthorizationOptions.AUTHORIZE_TAX}
-            name={"action" + TaxAuthorizationOptions.AUTHORIZE_TAX}
-            checked={data.typeRequest == TaxAuthorizationOptions.AUTHORIZE_TAX}
-            onChange={(e) => {
-              setData({
-                ...data,
-                typeRequest: TaxAuthorizationOptions.AUTHORIZE_TAX,
-              });
-            }}
-          />
-          <label
-            htmlFor={"action_accept" + TaxAuthorizationOptions.AUTHORIZE_TAX}
-            className="ml-1"
-          >
-            {t("uy_quyen_thue")}
-          </label>
-        </span>
-        <div className="mr-3" />
-        <span className="d-flex flex-row align-items-center">
-          <input
-            type="radio"
-            id={"action_accept" + TaxAuthorizationOptions.EXPOSE_TAX}
-            name={"action" + TaxAuthorizationOptions.EXPOSE_TAX}
-            checked={data.typeRequest == TaxAuthorizationOptions.EXPOSE_TAX}
-            onChange={(e) => {
-              setData({
-                ...data,
-                typeRequest: TaxAuthorizationOptions.EXPOSE_TAX,
-              });
-            }}
-          />
-          <label
-            htmlFor={"action_accept" + TaxAuthorizationOptions.EXPOSE_TAX}
-            className="ml-1"
-          >
-            {t("xuat_chung_tu_thue")}
-          </label>
-        </span>
+        {
+          getTaxAuthrizationOptions(t).map((option, index) => (
+            <React.Fragment key={index}>
+              <span className="d-flex flex-row align-items-center">
+              <input
+                type="radio"
+                id={"action_accept" + option.value}
+                name={"action" + option.value}
+                checked={data.typeRequest?.value == option.value}
+                onChange={(e) => {
+                  setData({
+                    ...data,
+                    typeRequest: option
+                  });
+                }}
+              />
+              <label
+                htmlFor={"action_accept" + option.value}
+                className="ml-1"
+              >
+                {option.label}
+              </label>
+            </span>
+            <div className="mr-3" />
+            </React.Fragment>
+          ))
+        }
       </div>
 
-      {data.typeRequest == TaxAuthorizationOptions.EXPOSE_TAX ? (
+      {data.typeRequest?.value == TaxAuthorizationOptions.EXPOSE_TAX ? (
         <>
           <div
             className="w-100 "

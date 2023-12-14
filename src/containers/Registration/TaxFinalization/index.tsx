@@ -10,9 +10,12 @@ import LoadingModal from "components/Common/LoadingModal";
 import {
   formatStringByMuleValue,
   getMuleSoftHeaderConfigurations,
-  getRequestConfigurations,
 } from "commons/Utils";
-import { TAX_TYPE_CONSTANT, STATUS, TaxAuthorizationOptions } from "./TaxConstants";
+import {
+  TAX_TYPE_CONSTANT,
+  STATUS,
+  getTaxAuthrizationOptions,
+} from "./TaxConstants";
 import { ITaxInfoModel, ITaxMemberInfo } from "./TaxModel.types";
 import CreateTaxFinalizationComponent from "./CreateTaxFinalizationComponent";
 
@@ -82,7 +85,7 @@ const SocialContributeInfo = (props: any) => {
         : ""
     ) as string;
     _data.placeIssue = convertDataExtract(profile?.place_of_issue) as string;
-    _data.typeRequest = TaxAuthorizationOptions.AUTHORIZE_TAX;
+    _data.typeRequest = getTaxAuthrizationOptions(t)[0];
 
     setOldData({
       ..._data,
@@ -140,26 +143,16 @@ const SocialContributeInfo = (props: any) => {
         dateOfIssue: profile?.date_of_issue
           ? moment(profile.date_of_issue, "DD-MM-YYYY").format("YYYY-MM-DD")
           : "",
-        pidPlaceOfIssue: profile?.place_of_issue || "",
-        cellPhoneNo: profile?.cell_phone_no || "",
-        tax_number: profile?.tax_number || "",
+        placeOfIssue: profile?.place_of_issue || "",
         employeeNo: localStorage.getItem("employeeNo"),
         fullName: localStorage.getItem("fullName"),
       };
       setUserProfile(_userInfo);
     } catch (err) {
       _userInfo = {
-        gender: "",
-        birthday: "",
-        permanentAddress: "",
-        streetName: "",
-        ethinicCode: "",
-        ethinic: "",
         idNumber: "",
         dateOfIssue: "",
-        pidPlaceOfIssue: "",
-        cellPhoneNo: "",
-        tax_number: "",
+        placeOfIssue: "",
         employeeNo: localStorage.getItem("employeeNo"),
         fullName: localStorage.getItem("fullName"),
       };
@@ -206,13 +199,7 @@ const SocialContributeInfo = (props: any) => {
   const checkDataChange = () => {
     const change = {};
     const memberChange: any[] = [];
-    const keyDropDown = [
-      "socialNumberType",
-      "province",
-      "district",
-      "ward",
-      "facilityRegisterName",
-    ];
+    const keyDropDown = ["socialNumberType"];
 
     Object.keys(data).forEach((key) => {
       if (data[key] && !oldData[key]) {
@@ -276,13 +263,15 @@ const SocialContributeInfo = (props: any) => {
     };
   };
 
-  const convertData = (value: any) => {
+  const convertData = (value: any, type = '') => {
     if (!value) return "";
     if (typeof value == "object" && value.label) {
       return {
         id: value.value,
         name: value.label,
       };
+    } else if (type == 'date' && value?.indexOf('/') != -1) {
+      return moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD');
     } else if (typeof value == "string" || typeof value == "number")
       return value;
     return "";
@@ -342,21 +331,42 @@ const SocialContributeInfo = (props: any) => {
       });
     const result = {
       familyDatas: familyData,
-    //   noteData: {
-    //     displayType: dataChange.note || STATUS.OLD,
-    //     note: convertData(data.note),
-    //     oldNote: convertData(oldData.note),
-    //   },
-    //   socialInsuranceBookData: {
-    //     displayType: dataChange.socialNumberType || STATUS.OLD,
-    //     socialInsuranceBook: convertData(data.socialNumberType),
-    //     oldSocialInsuranceBook: convertData(oldData.socialNumberType),
-    //   },
-    //   healthcarePlaceData: {
-    //     displayType: dataChange.facilityRegisterName || STATUS.OLD,
-    //     healthcarePlace: convertData(data.facilityRegisterName),
-    //     oldHealthcarePlace: convertData(oldData.facilityRegisterName),
-    //   },
+      type: data.typeRequest,
+      taxCode: {
+        displayType: dataChange.PitNo || STATUS.OLD,
+        new: convertData(data.PitNo),
+        old: convertData(oldData.PitNo),
+      },
+      numberOfDependents: {
+        displayType: dataChange.dependentNumber || STATUS.OLD,
+        new: convertData(data.dependentNumber),
+        old: convertData(oldData.dependentNumber),
+      },
+      userEmail: {
+        displayType: dataChange.email || STATUS.OLD,
+        new: convertData(data.email),
+        old: convertData(oldData.email),
+      },
+      userAddress: {
+        displayType: dataChange.email || STATUS.OLD,
+        new: convertData(data.address),
+        old: convertData(oldData.address),
+      },
+      idNumber: {
+        displayType: dataChange.idNumber || STATUS.OLD,
+        new: convertData(data.idNumber),
+        old: convertData(oldData.idNumber),
+      },
+      userDateOfIssue: {
+        displayType: dataChange.dateIssue || STATUS.OLD,
+        new: convertData(data.dateIssue, 'date'),
+        old: convertData(oldData.dateIssue, 'date'),
+      },
+      userPlaceOfIssue: {
+        displayType: dataChange.placeIssue || STATUS.OLD,
+        new: convertData(data.placeIssue),
+        old: convertData(oldData.placeIssue),
+      },
     };
     return result;
   };
@@ -375,7 +385,6 @@ const SocialContributeInfo = (props: any) => {
 
   const onSubmit = () => {
     const change = checkDataChange();
-    console.log(change);
     const userProfileInfo = prepareSubmitData(change.data, change.member);
     const employeeInfo = {
       employeeNo: localStorage.getItem("employeeNo"),
@@ -458,7 +467,7 @@ const SocialContributeInfo = (props: any) => {
     setLoading(true);
     axios({
       method: "POST",
-      url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}socialinsurance1`,
+      url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}taxsettlement`,
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",

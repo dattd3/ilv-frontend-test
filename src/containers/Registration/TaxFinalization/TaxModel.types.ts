@@ -11,7 +11,7 @@ export interface ITaxMemberInfo {
 export interface ITaxInfoModel {
     PitNo?: string;
     dependentNumber?: string;
-    typeRequest?: string; // ủy quyền or xuất chứng từ thuế
+    typeRequest?: IDropdownValue; // ủy quyền or xuất chứng từ thuế
     email?: string;
     address?: string;
     idNumber?: string;

@@ -126,7 +126,7 @@ function Authorize(props) {
             }
             const response = await axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}common/taxsettlement-status`, config)
             if (response && response.data) {
-                taxFinalizationAvaible = response.data.data?.status == 1 ? true : false;
+                taxFinalizationAvaible = response.data.data?.status == '1' ? true : false;
                 //sample for dev
                 taxFinalizationAvaible = true;
             }

@@ -4,6 +4,13 @@ export const TaxAuthorizationOptions = {
     EXPOSE_TAX: '2302'
 };
 
+export const getTaxAuthrizationOptions = (t: any) => {
+    return [
+        {value: '2301', label: t('uy_quyen_thue')},
+        {value: '2302', label: t('xuat_chung_tu_thue')} 
+    ]
+};
+
 export const TAX_TYPE_CONSTANT = {
     CREATE: "create",
 };
