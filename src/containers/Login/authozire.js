@@ -196,7 +196,8 @@ function Authorize(props) {
                             ad: user?.username,
                             master_code: user.master_code || '',
                             cost_center: user?.cost_center,
-                            insurance_number: user?.insurance_number
+                            insurance_number: user?.insurance_number,
+                            cell_phone_no: user?.cell_phone_no,
                         });
                         FirebaseUpdateToken();
                     }
@@ -245,7 +246,8 @@ function Authorize(props) {
                         ad: user?.username,
                         master_code: '',
                         cost_center: user?.cost_center,
-                        insurance_number: user?.insurance_number || ''
+                        insurance_number: user?.insurance_number || '',
+                        cell_phone_no: user?.cell_phone_no,
                     });
                 })
                 .finally(result => {

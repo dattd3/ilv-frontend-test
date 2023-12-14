@@ -36,7 +36,7 @@ const UserInfo = (props) => {
                             <div className="row-customize d-flex">
                                 <div className="col-item full-name">
                                     <label>Số điện thoại</label>
-                                    <div className="val">0979458869</div>
+                                    <div className="val">{user?.cell_phone_no}</div>
                                 </div>
                                 <div className="col-item employee-code">
                                     <label>Email</label>

@@ -7,23 +7,26 @@ import { Rating } from 'react-simple-star-rating'
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
+import { useGuardStore } from 'modules'
 import Constants from 'commons/Constants'
 import { getRequestConfigurations } from 'commons/Utils'
 import { validateFileMimeType, validateTotalFileSize } from "utils/file"
 import Editor from "components/Forms/Editor"
+import UserInfo from "../common/UserInfo"
+import FeedbackHistory from "../common/FeedbackHistory"
+import StatusModal from 'components/Common/StatusModal'
 import LoadingModal from 'components/Common/LoadingModal'
 import IconClose from 'assets/img/icon/icon_x.svg'
 import IconSend from 'assets/img/icon/Icon_send.svg'
 import IconAttachment from 'assets/img/icon/ic_upload_attachment.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
-import UserInfo from "../common/UserInfo"
-import FeedbackHistory from "../common/FeedbackHistory"
 registerLocale("vi", vi)
 
 const CreatedRequest = ({ isShow, masterData, onHide }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
-
+    const guard = useGuardStore()
+    const user = guard.getCurentUser()
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState({
@@ -39,6 +42,12 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         statusId: null,
     })
     const [files, setFiles] = useState([])
+    const [statusModal, setStatusModal] = useState({
+        isShow: false,
+        isSuccess: true,
+        content: "",
+        needReload: true
+    })
 
     const handleFileChange = (e) => {
         if (validateFileMimeType(e, e?.target?.files, t)) {
@@ -50,40 +59,128 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         }
     }
 
-    const sendRequest = () => {
-         
+    const sendRequest = async () => {
+        const statusModalTemp = { ...statusModal }
+        setIsLoading(true)
+        try {
+            let formData = new FormData()
+            formData.append('id', 0)
+            formData.append('name', data?.title || '')
+            formData.append('userId', user?.email || '')
+            formData.append('userInfo', JSON.stringify({
+                employeeCode: user?.employeeNo || '',
+                ad: user?.ad || '',
+                fullName: user?.fullName || '',
+                phoneNumber: user?.cell_phone_no || '',
+                pnlEmail: user?.plEmail || '',
+                jobTitle: user?.jobTitle || '',
+                department: user?.department || '',
+            }))
+            formData.append('contents', data?.content || '')
+            // formData.append('handlerId', null)
+            // formData.append('handlerInfo', null)
+            formData.append('companyCode', data?.companyCode || null)
+            formData.append('groupId', data?.groupId || null)
+            // formData.append('causesCsId', null)
+            // formData.append('causesVsId', null)
+            // formData.append('typeId', null)
+            formData.append('security', data?.isSecurity || false)
+            formData.append('slaId', data?.priorityId)
+            formData.append('statusId', data?.statusId)
+            // formData.append('statusNotes', '')
+            formData.append('serviceTypeId', data?.typeId)
+            // formData.append('levelId', null)
+            // formData.append('categoryId', null)
+            // formData.append('categorySubId', null)
+            // formData.append('categorySubItemId', null)
+            // formData.append('receives', null)
+            for (let key in files) {
+                formData.append('files', files[key])
+            }
+
+            const config = getRequestConfigurations()
+            config.headers['content-type'] = 'multipart/form-data'
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/update`, formData, config)
+            statusModalTemp.isShow = true
+            statusModalTemp.needReload = false
+            if (response?.data) {
+                const result = response.data?.result
+                if (result?.code == Constants.API_SUCCESS_CODE) {
+                    statusModalTemp.isSuccess = true
+                    statusModalTemp.content = "Gửi yêu cầu thành công!"
+                    statusModalTemp.needReload = true
+                } else {
+                    statusModalTemp.isSuccess = false
+                    statusModalTemp.content = result?.message
+                }
+            } else {
+                statusModalTemp.isSuccess = false
+                statusModalTemp.content = "Đã có lỗi xảy ra. Xin vui lòng thử lại!"
+            }
+            setStatusModal(statusModalTemp)
+        } catch (e) {
+            statusModalTemp.isShow = true
+            statusModalTemp.isSuccess = false
+            statusModalTemp.content = e?.response?.data?.result?.message || t("AnErrorOccurred")
+            statusModalTemp.needReload = false
+            setStatusModal(statusModalTemp)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const handleInputChange = (key, e) => {
-        let val = null
+        const obj = {}
         switch (key) {
             case 'title':
-                val = e?.target?.value || ''
+                obj[key] = e?.target?.value || ''
                 break
             case 'content':
-                val = e || ''
+                obj[key] = e || ''
                 break
             case 'typeId':
             case 'isSecurity':
-            case 'companyCode':
-            case 'groupId':
             case 'priorityId':
             case 'statusId':
-                val = e?.value || null
+                obj[key] = e?.value || null
+                break
+            case 'companyCode':
+                obj[key] = e?.value || null
+                obj.groupId = null
+                break
+            case 'groupId':
+                obj[key] = e?.value || null
+                obj.priorityId = null
+                obj.companyCode = (masterData?.companies || []).find(item => item?.code === e?.companyCode)?.code || null
                 break
             case 'receives':
-                val = e || []
+                obj[key] = e || []
                 break
         }
 
         setData((data) => ({
             ...data,
-            [key]: val,
+            ...obj
         }))
     }
 
     const handleRemoveFile = (index) => {
+        const fileClone = [...files]
+        fileClone.splice(index, 1)
+        setFiles(fileClone)
+    }
 
+    const onHideStatusModal = () => {
+        setStatusModal({
+            isShow: false,
+            isSuccess: true,
+            content: "",
+            needReload: true
+        })
+
+        if (statusModal?.needReload) {
+            window.location.reload()
+        }
     }
 
     const listRequests = [{}, {}, {}, {}, {}, {}]
@@ -145,8 +242,6 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         }),
     }
 
-    console.log('masterData => ',masterData)
-
     const serviceTypes = (masterData?.serviceTypes || []).map(item => {
         return {
             value: item?.id,
@@ -161,10 +256,22 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         }
     })
 
-    const groups = (masterData?.groups || []).map(item => {
+    const groups = data?.companyCode 
+    ? (masterData?.groups || [])
+    .filter(item => item?.companyCode == data?.companyCode)
+    .map(item => {
         return {
             value: item?.id,
             label: item?.groupName,
+            companyCode: item?.companyCode,
+        }
+    })
+    : (masterData?.groups || [])
+    .map(item => {
+        return {
+            value: item?.id,
+            label: item?.groupName,
+            companyCode: item?.companyCode,
         }
     })
 
@@ -173,7 +280,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
     .map(item => {
         return {
             value: item?.id,
-            label: item?.prioritize,
+            label: locale === Constants.LANGUAGE_VI ? item?.prioritizeVn : item?.prioritizeEn,
             groupId: item?.groupId,
         }
     })
@@ -186,15 +293,20 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
     })
 
     const securities = [
-        { value: true, label: 'Có' },
         { value: false, label: 'Không' },
+        { value: true, label: 'Có' },
     ]
-
-    console.log('TING TING => ', files)
 
     return (
         <>
             <LoadingModal show={isLoading} />
+            <StatusModal 
+                show={statusModal.isShow} 
+                isSuccess={statusModal.isSuccess} 
+                content={statusModal.content} 
+                className="evaluation-status-modal"
+                onHide={onHideStatusModal} 
+            />
             <Modal
                 show={isShow}
                 onHide={onHide}
@@ -227,7 +339,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Loại</label>
                                         <Select
-                                            value={(serviceTypes || []).find(item => item?.value == data?.typeId)}
+                                            value={(serviceTypes || []).find(item => item?.value == data?.typeId) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('typeId', e)}
                                             placeholder={t('Chọn')} 
@@ -238,7 +350,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Bảo mật</label>
                                         <Select
-                                            value={(securities || []).find(item => item?.value == data?.isSecurity)}
+                                            value={(securities || []).find(item => item?.value == data?.isSecurity) || null}
                                             isClearable={false}
                                             onChange={e => handleInputChange('isSecurity', e)}
                                             placeholder={t('Chọn')} 
@@ -249,7 +361,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Công ty</label>
                                         <Select
-                                            value={(companies || []).find(item => item?.value == data?.companyCode)}
+                                            value={(companies || []).find(item => item?.value == data?.companyCode) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('companyCode', e)}
                                             placeholder={t('Chọn')} 
@@ -260,7 +372,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Nhóm</label>
                                         <Select
-                                            value={(groups || []).find(item => item?.value == data?.groupId)}
+                                            value={(groups || []).find(item => item?.value == data?.groupId) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('groupId', e)}
                                             placeholder={t('Chọn')} 
@@ -288,7 +400,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Ưu tiên</label>
                                         <Select
-                                            value={(priorities || []).find(item => item?.value == data?.priorityId)}
+                                            value={(priorities || []).find(item => item?.value === data?.priorityId) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('priorityId', e)}
                                             placeholder={t('Chọn')} 
@@ -299,7 +411,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Trạng thái</label>
                                         <Select
-                                            value={(statuses || []).find(item => item?.value == data?.statusId)}
+                                            value={(statuses || []).find(item => item?.value == data?.statusId) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('statusId', e)}
                                             placeholder={t('Chọn')} 
@@ -311,22 +423,26 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                 {/* <FeedbackHistory /> */}
                             </div>
                         </div>
-                        <div className="attachment">
-                            <h2>Tệp đính kèm</h2>
-                            <div className="content-region shadow-customize">
-                                {
-                                    (files || []).map((file, index) => {
-                                        return (
-                                            <span className="item">
-                                                <span className="file-name">{file?.name}</span>
-                                                <span>({file?.size * 0.001}KB)</span>
-                                                <img src={IconClose} className="remove" alt="Close" onClick={() => handleRemoveFile(index)} />
-                                            </span>
-                                        )
-                                    }
-                                )}
-                            </div>
-                        </div>
+                        {
+                            files?.length > 0 && (
+                                <div className="attachment">
+                                    <h2>Tệp đính kèm</h2>
+                                    <div className="content-region shadow-customize">
+                                        {
+                                            (files || []).map((file, index) => {
+                                                return (
+                                                    <span className="item">
+                                                        <span className="file-name">{file?.name}</span>&nbsp;
+                                                        <span>({file?.size * 0.001}KB)</span>
+                                                        <img src={IconClose} className="remove" alt="Close" onClick={() => handleRemoveFile(index)} />
+                                                    </span>
+                                                )
+                                            }
+                                        )}
+                                    </div>
+                                </div>
+                            )
+                        }
                         <div className="d-flex justify-content-end button-block">
                             <label htmlFor="i_files" className="btn btn-attachment">
                                 <img src={IconAttachment} alt="Attachment" />
