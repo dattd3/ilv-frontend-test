@@ -2099,5 +2099,7 @@
   "uy_quyen_thue": "Ủy quyền QTT",
   "xuat_chung_tu_thue": "Xuất chứng từ thuế",
   "tax_document_guide": "Vui lòng tải xuống các biểu mẫu cần đính kèm",
-  "noi_nhan_chung_tu": "Địa chỉ nhận chứng từ"
+  "noi_nhan_chung_tu": "Địa chỉ nhận chứng từ",
+  "email_nhan_chung_tu": "Email",
+  "yeu_cau_do_dai": "Yêu cầu độ dài {{value1}} hoặc {{value2}} ký tự"
 }
