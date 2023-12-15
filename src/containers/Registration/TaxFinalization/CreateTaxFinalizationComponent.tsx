@@ -128,7 +128,7 @@ const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
       !_errors["PitNo"] &&
       (data['PitNo']?.length != 10 && data['PitNo']?.length != 13)
     ) {
-      _errors["PitNo"] = "Yêu cầu độ dài 10 hoặc 13 ký tự";
+      _errors["PitNo"] = t('yeu_cau_do_dai', {value1: 10, value2: 13});
     }
     if (
         !_errors["idNumber"] &&
@@ -136,7 +136,7 @@ const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
         (data['idNumber']?.length != 9 && data['idNumber']?.length != 12)
       ) {
         _errors["idNumber"] =
-          "Yêu cầu độ dài 9 hoặc 12 ký tự";
+        t('yeu_cau_do_dai', {value1: 9, value2: 12});
       }
     const memberRequirer = [
       "relation",
@@ -325,7 +325,7 @@ const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
             onClick={addMoreMember}
           >
             <Image src={IconAdd} />
-            {"Thêm"}
+            {t("Add")}
           </button>
         ) : null}
       </div>

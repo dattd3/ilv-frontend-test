@@ -2090,11 +2090,13 @@
   "gui_yeu_cau_that_bai_vui_long_thu_lai": "Sending request failed. Please try again!",
   "luu_muc_tieu_that_bai_vui_long_thu_lai": "Save target failed. Please try again!",
   "trong_so_trong_khoang_1_100": "Weights range from 1 - 100",
-  "quyet_toan_thue": "Quyết toán thuế",
-  "so_nguoi_phu_thuoc": "Số người phụ thuộc đã giảm trừ trong năm",
-  "thong_tin_nguoi_phu_thuoc": "THÔNG TIN NGƯỜI PHỤ THUỘC ĐÃ GIẢM TRỪ",
-  "uy_quyen_thue": "Ủy quyền QTT",
-  "xuat_chung_tu_thue": "Xuất chứng từ thuế",
-  "tax_document_guide": "Vui lòng tải xuống các biểu mẫu cần đính kèm",
-  "noi_nhan_chung_tu": "Địa chỉ nhận chứng từ"
+  "quyet_toan_thue": "Tax finalization",
+  "so_nguoi_phu_thuoc": "Number of registered dependents for tax deduction",
+  "thong_tin_nguoi_phu_thuoc": "Dependent information who has been registered for tax deduction",
+  "uy_quyen_thue": "Authorize the company to do tax finalization on your behalf",
+  "xuat_chung_tu_thue": "Request to issue “Certificate of Personal income tax withholding”",
+  "tax_document_guide": "Please download need forms",
+  "noi_nhan_chung_tu": "Address to receive Certificate",
+  "email_nhan_chung_tu": "Email to receive Certificate",
+  "yeu_cau_do_dai": "Required length of {{value1}} or {{value2}} characters"
 }

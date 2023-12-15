@@ -69,7 +69,7 @@ const TaxAuthrizationComponent = ({
           ></div>
           <div className="row mv-10">
             <div className="col-6">
-              {"Email"} <span className="required">(*)</span>
+              {t('email_nhan_chung_tu')} <span className="required">(*)</span>
               <input
                 type="text"
                 value={data?.email || ""}

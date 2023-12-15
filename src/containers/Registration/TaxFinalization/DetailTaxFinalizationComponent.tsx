@@ -236,7 +236,7 @@ const DetailTaxFinalizationComponent: FC<IDetailTaxFinalizationComponent> = ({
             ></div>
             <div className="row mv-10">
               <div className="col-6">
-                {"Email"}
+                {t('email_nhan_chung_tu')}
                 {renderValue(
                   change?.data?.email,
                   data?.email,
