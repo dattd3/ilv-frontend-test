@@ -5,6 +5,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import { Rating } from 'react-simple-star-rating'
 import moment from 'moment'
 import { groupUsersConfig } from ".."
+import { status, feedBackLine } from "../Constant"
 import IconEmailGreen from 'assets/img/icon/ic_mail-green.svg'
 import IconEmailBlue from 'assets/img/icon/ic_mail-blue.svg'
 import IconEmailCyan from 'assets/img/icon/ic_mail-cyan.svg'
@@ -25,6 +26,7 @@ import IconDeadlineOverdue from 'assets/img/icon/ic_deadline-overdue_grey.svg'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
+import Constants from "commons/Constants"
 registerLocale("vi", vi)
 
 const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode }) => {
@@ -53,7 +55,8 @@ const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode 
     // )
 }
 
-const TableRequests = ({ listRequests }) => {
+const TableRequests = ({ masterData, listRequests, total }) => {
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
     const { t } = useTranslation()
     const lstItems = [{}, {}, {}]
 
@@ -131,13 +134,16 @@ const TableRequests = ({ listRequests }) => {
     }
 
     const classIndexMapping = {
-        0: 'new',
-        1: 'processing',
-        2: 'paused',
-        3: 'cancelled',
-        4: 'processed',
-        5: 'closed',
+        [status.new]: 'new',
+        [status.processing]: 'processing',
+        [status.paused]: 'paused',
+        [status.cancelled]: 'cancelled',
+        [status.processed]: 'processed',
+        [status.closed]: 'closed',
+        [status.reopen]: 'reopen',
     }
+
+    console.log('fsaasasdasd => ', masterData)
  
     return (
         <table className="table">
@@ -240,6 +246,8 @@ const TableRequests = ({ listRequests }) => {
             <tbody>
             {
                 listRequests.map((child, index) => {
+                    let statusId = child?.supportStatus?.id
+
                     return (
                         <tr key={index}>
                             <td className="check">
@@ -249,62 +257,68 @@ const TableRequests = ({ listRequests }) => {
                             </td>
                             <td className="icon">
                                 <div className="val d-flex" style={{ justifyContent: 'space-evenly' }}>
-                                    <img src={index === 0 ? IconEmailGreen : index === 1 ? IconEmailBlue : IconEmailCyan} alt="Search" />
-                                    <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
-                                    <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" />
+                                    <img src={child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? IconEmailCyan : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? IconEmailBlue : IconEmailGreen} alt="Search" />
+                                    {/* <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
+                                    <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" /> */}
                                 </div>
                             </td>
                             <td className="code text-center">
-                                <a href={'#'} title={''} className="val">{1511320}</a>
+                                <a href={'#'} title={''} className="val">{child?.id}</a>
                             </td>
                             <td className="title">
-                                <div className="val">ILOVEVINGROUP_Hỗ trợ kiểm tra lỗi không nhận được request</div>
+                                <div className="val">{child?.name}</div>
                             </td>
                             <td className="created-by">
-                                <div className="val">cuongnv56</div>
+                                <div className="val">{JSON.parse(child?.userInfo)?.ad}</div>
                             </td>
                             <td className="group">
                                 <div className="val">
-                                <Select 
+                                    {child?.supportGroups?.groupName}
+                                {/* <Select 
                                     placeholder={t("Select")} 
                                     isClearable={true} 
                                     value={null} 
                                     options={[]} 
                                     onChange={handleInputChange} 
                                     styles={customStyles}
-                                />
+                                /> */}
                                 </div>
                             </td>
                             <td className="pic">
-                                <div className="val">datth3</div>
+                                <div className="val">{JSON.parse(child?.handlerInfo)?.ad}</div>
                             </td>
                             <td className="status-col text-center">
                                 <div className="val">
-                                    <span className={`status ${classIndexMapping[index]}`}>Mới</span>
+                                    <span className={`status ${classIndexMapping[statusId]}`}>{locale === Constants.LANGUAGE_VI ? child?.supportStatus?.statusVn : child?.supportStatus?.statusEn}</span>
                                 </div>
                             </td>
                             <td className="created-date text-center">
-                                <div className="val">25/11/2023</div>
+                                <div className="val">{moment(child?.createdDate).isValid() ? moment(child?.createdDate).format("DD/MM/YYYY") : ''}</div>
                             </td>
-                            <td className="deadline text-center">
+                            {/* <td className="deadline text-center">
                                 <div className="val">30/11/2023</div>
-                            </td>
+                            </td> */}
                             <td className="evaluation text-center">
                                 <div className="val">
                                     <Rating
                                         transition
+                                        readonly={Number(statusId) < status.closed}
                                     />
                                 </div>
                             </td>
                             <td className="comment">
                                 <div className="val">
-                                    <textarea 
-                                        rows={2} 
-                                        placeholder={'Nhập'} 
-                                        value={""} 
-                                        onChange={handleInputChange} 
-                                        // disabled={isDisableManagerComment} 
-                                    />
+                                    {
+                                        Number(statusId) === status.closed && (
+                                            <textarea 
+                                                rows={2} 
+                                                placeholder={'Nhập'} 
+                                                value={""} 
+                                                onChange={handleInputChange} 
+                                                // disabled={isDisableManagerComment} 
+                                            />
+                                        )
+                                    }
                                 </div>
                             </td>
                             <td className="action">

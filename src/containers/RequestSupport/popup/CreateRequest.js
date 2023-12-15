@@ -431,7 +431,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                         {
                                             (files || []).map((file, index) => {
                                                 return (
-                                                    <span className="item">
+                                                    <span className="item" key={`file-${index}`}>
                                                         <span className="file-name">{file?.name}</span>&nbsp;
                                                         <span>({file?.size * 0.001}KB)</span>
                                                         <img src={IconClose} className="remove" alt="Close" onClick={() => handleRemoveFile(index)} />

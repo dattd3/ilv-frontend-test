@@ -52,11 +52,13 @@ const RequestSupport = (props) => {
                     <Tab eventKey={tabConfig.createdReceiving} title={t("Đã tạo/Đang nhận thông tin")}>
                         <CreatedReceiving
                             masterData={masterData}
+                            needLoadData={tabActivated === tabConfig.createdReceiving}
                         />
                     </Tab>
                     <Tab eventKey={tabConfig.processing} title={t("Đang xử lý")}>
                         <Processing
                             masterData={masterData}
+                            needLoadData={tabActivated === tabConfig.processing}
                         />
                     </Tab>
                 </Tabs>

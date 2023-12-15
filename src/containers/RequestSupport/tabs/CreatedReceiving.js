@@ -17,10 +17,35 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
-const CreatedReceiving = ({ masterData }) => {
+const CreatedReceiving = ({ masterData, needLoadData }) => {
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
+    const [requestData, setRequestData] = useState({
+        listRequest: [],
+        total: 0,
+    })
     const [isShowCreateRequestModal, setIsShowCreateRequestModal] = useState(false)
+
+    useEffect(() => {
+        const fetchListRequest = async () => {
+            try {
+                setIsLoading(true)
+                const payload = {
+                    pageIndex: 1, 
+                    pageSize: 10,
+                }
+                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/user/list`, payload, getRequestConfigurations())
+                setRequestData({
+                    listRequest: response?.data?.data?.datas || [],
+                    total: response?.data?.data?.totalRecord || 0,
+                })
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        needLoadData && fetchListRequest()
+    }, [needLoadData])
 
     const handleInputChange = () => {
 
@@ -29,8 +54,6 @@ const CreatedReceiving = ({ masterData }) => {
     const onHideCreatedRequestModal = () => {
         setIsShowCreateRequestModal(false)
     }
-
-    const listRequests = [{}, {}, {}, {}, {}, {}]
 
     const classIndexMapping = {
         0: 'new',
@@ -89,6 +112,8 @@ const CreatedReceiving = ({ masterData }) => {
         }),
     }
 
+    console.log('kakakakka ', requestData)
+
     return (
         <>
             <LoadingModal show={isLoading} />
@@ -123,10 +148,12 @@ const CreatedReceiving = ({ masterData }) => {
                 <div className="tab-content"> 
                     <div className="request-list">
                         {
-                            listRequests?.length > 0 
+                            requestData?.listRequest?.length > 0 
                             ? (
                                 <TableRequests 
-                                    listRequests={listRequests}
+                                    masterData={masterData}
+                                    listRequests={requestData?.listRequest}
+                                    total={requestData?.total}
                                 />
                             )
                             : (<div className="data-not-found">{t("NoDataFound")}</div>)
