@@ -151,11 +151,11 @@ const HealthInsurance = (props) => {
                             </div>
                             <div className="row">
                                 <div className="col-md-12">
-                                    <p className="label">{t("PAndL")}</p>
+                                    <p className="label">{t("LegalCompany")}</p>
                                     <div className="value">{formatStringByMuleValue(healthInsuranceDetail?.legal_company)}</div>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
                         </>
                     )
                 }
