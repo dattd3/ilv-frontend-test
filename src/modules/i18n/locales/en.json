@@ -1999,7 +1999,8 @@
   "CardNumber": "Card number",
   "FullNameOfInsured": "Full name of the insured",
   "InsurancePackage": "Insurance package",
-  "InsuranceUnit": "Insurance unit",
-  "InsuranceRelations": "Insurance relations",
-  "HealthInsurance": "Health insurance"
+  "InsuranceUnit": "Insurance company",
+  "InsuranceRelations": "Insurance for",
+  "HealthInsurance": "Health insurance",
+  "LegalCompany": "Company"
 }
