@@ -241,7 +241,8 @@ const Constants = {
     DIEUCHUYEN: 6,
     BONHIEM: 7,
     THANHTOAN_NOIBO: 8,
-    BAOHIEM: 9
+    BAOHIEM: 9,
+    DANHGIA_TUYENDUNG: 10,
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
@@ -253,7 +254,8 @@ const Constants = {
     6: ["V077", "V070"], //DIEUCHUYEN
     7: ["V077", "V070"], //BONHIEM,
     8: [], //THANHTOAN_NOIBO
-    9: ["V061"],//BAOHIEM
+    9: ["V061", "V070", "V071", "V079"],//BAOHIEM
+    10:["V040", "V079", "V041", "V077", "V070", "V099"],//DANHGIA_TUYENDUNG
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
@@ -265,6 +267,7 @@ const Constants = {
     7: ["V040", "V070", "V077"], //BONHIEM
     8: ["V040", "V070", "V077", "V030"], //THANH TOAN NOI BO
     9: ["V077", "V070", "V061", "V079"],//BAOHIEM
+    10:["V040", "V079", "V041", "V077", "V070", "V099"],//DANHGIA_TUYENDUNG
   },
   CURRENCY: {
     VND: 'VNĐ',

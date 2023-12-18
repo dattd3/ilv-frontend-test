@@ -82,6 +82,7 @@ class InsuranceSocial extends React.Component {
                                         <th scope="col" className="request-type text-center">{t('TypeOfRequest')}</th>
                                         <th scope="col" className="request-type text-center">{t('claim_submission_date')}</th>
                                         <th scope="col" className="status1 pl-8">{t('EvaluationStatus')}</th>
+                                        <th scope="col" className="status">{t('ReasonHRReject')}</th>
                                         <th scope="col" className="request-type text-center">{t('price')}</th>
                                         <th scope="col" className="tool text-center">{t("action")}</th>
                                     </tr>
@@ -96,6 +97,7 @@ class InsuranceSocial extends React.Component {
                                                     <td className="request-type text-center">{child.claimTypeName || ''}</td>
                                                     <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
                                                     <td className="status1 text-left">{child.statusName || ''}</td>
+                                                    <td className="status text-left" title={child.hrReason}>{child.hrReason}</td>
                                                     <td className="request-type text-center">{formatNumberSpecialCase(child.amountMoney) || ''}</td>
                                                     <td className="tool">
                                                         <a href={`/insurance-manager/export/${child.idDisplay}`}><img alt="Sửa" src={Download} className="icon-download" /></a>
