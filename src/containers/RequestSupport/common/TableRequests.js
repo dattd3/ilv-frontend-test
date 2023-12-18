@@ -55,7 +55,7 @@ const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode 
     // )
 }
 
-const TableRequests = ({ masterData, listRequests, total }) => {
+const TableRequests = ({ masterData, listRequests, total, updateToParent }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
     const { t } = useTranslation()
     const lstItems = [{}, {}, {}]
@@ -66,8 +66,9 @@ const TableRequests = ({ masterData, listRequests, total }) => {
 
     }
 
-    const handleCheckboxChange = (e, index) => {
+    const handleCheckboxChange = (e, id) => {
         const value = e?.target?.checked || false
+        updateToParent(id, value)
         // const evaluationDataTemp = {...evaluationData}
         // if (index !== null) {
         //     evaluationDataTemp.data[index].isSelected = value
@@ -142,8 +143,6 @@ const TableRequests = ({ masterData, listRequests, total }) => {
         [status.closed]: 'closed',
         [status.reopen]: 'reopen',
     }
-
-    console.log('fsaasasdasd => ', masterData)
  
     return (
         <table className="table">
@@ -151,7 +150,7 @@ const TableRequests = ({ masterData, listRequests, total }) => {
                 <tr>
                     <th className="check">
                         <div className="val">
-                            <input type="checkbox" className="cursor-pointer" checked={true} onChange={e => handleCheckboxChange(e, null)} />
+                            <input type="checkbox" className="cursor-pointer" checked={(listRequests || []).every(item => item?.isChecked)} onChange={e => handleCheckboxChange(e, null)} />
                         </div>
                     </th>
                     <th className="icon">
@@ -252,7 +251,7 @@ const TableRequests = ({ masterData, listRequests, total }) => {
                         <tr key={index}>
                             <td className="check">
                                 <div className="val">
-                                    <input type="checkbox" className="cursor-pointer" checked={true} onChange={e => handleCheckboxChange(e, index)} />
+                                    <input type="checkbox" className="cursor-pointer" checked={child?.isChecked || false} onChange={e => handleCheckboxChange(e, child?.id)} />
                                 </div>
                             </td>
                             <td className="icon">
@@ -295,12 +294,13 @@ const TableRequests = ({ masterData, listRequests, total }) => {
                             <td className="created-date text-center">
                                 <div className="val">{moment(child?.createdDate).isValid() ? moment(child?.createdDate).format("DD/MM/YYYY") : ''}</div>
                             </td>
-                            {/* <td className="deadline text-center">
+                            <td className="deadline text-center">
                                 <div className="val">30/11/2023</div>
-                            </td> */}
+                            </td>
                             <td className="evaluation text-center">
                                 <div className="val">
                                     <Rating
+                                        initialValue={child?.evaluate || 0}
                                         transition
                                         readonly={Number(statusId) < status.closed}
                                     />
@@ -313,7 +313,7 @@ const TableRequests = ({ masterData, listRequests, total }) => {
                                             <textarea 
                                                 rows={2} 
                                                 placeholder={'Nhập'} 
-                                                value={""} 
+                                                value={child?.comments || ''} 
                                                 onChange={handleInputChange} 
                                                 // disabled={isDisableManagerComment} 
                                             />

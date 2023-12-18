@@ -18,6 +18,11 @@ import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
 const CreatedReceiving = ({ masterData, needLoadData }) => {
+    const quickFilterOptions = [
+        { value: 0, label: 'Tất cả' },
+        { value: 1, label: 'Yêu cầu tồn của tôi' },
+        { value: 2, label: 'Yêu cầu tồn tôi đang nhận thông tin' },
+    ]
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
     const [requestData, setRequestData] = useState({
@@ -25,34 +30,80 @@ const CreatedReceiving = ({ masterData, needLoadData }) => {
         total: 0,
     })
     const [isShowCreateRequestModal, setIsShowCreateRequestModal] = useState(false)
+    const [quickFilter, setQuickFilter] = useState(null)
 
     useEffect(() => {
-        const fetchListRequest = async () => {
-            try {
-                setIsLoading(true)
-                const payload = {
-                    pageIndex: 1, 
-                    pageSize: 10,
-                }
-                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/user/list`, payload, getRequestConfigurations())
-                setRequestData({
-                    listRequest: response?.data?.data?.datas || [],
-                    total: response?.data?.data?.totalRecord || 0,
-                })
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
         needLoadData && fetchListRequest()
     }, [needLoadData])
 
-    const handleInputChange = () => {
+    const fetchListRequest = async () => {
+        try {
+            setIsLoading(true)
+            const payload = {
+                pageIndex: 1, 
+                pageSize: 10,
+            }
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/user/list`, payload, getRequestConfigurations())
+            setRequestData({
+                listRequest: response?.data?.data?.datas || [],
+                total: response?.data?.data?.totalRecord || 0,
+            })
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
+    const handleInputChange = (e) => {
+        setQuickFilter(e)
+        fetchListRequest()
     }
 
     const onHideCreatedRequestModal = () => {
         setIsShowCreateRequestModal(false)
+    }
+
+    const updateListRequests = (id, val) => {
+        const listRequestToSave = id === null 
+        ? (requestData?.listRequest || []).map(item => {
+            return {
+                ...item,
+                isChecked: val,
+            }
+        })
+        : (requestData?.listRequest || []).map(item => {
+            return {
+                ...item,
+                isChecked: item?.id === id ? val : (item?.isChecked || false),
+            }
+        })
+
+        setRequestData({
+            ...requestData,
+            listRequest: listRequestToSave
+        })
+
+
+        // if (id === null) {
+        //     setRequestData({
+        //         ...requestData,
+        //         listRequest: (requestData?.listRequest || []).map(item => {
+        //             return {
+        //                 ...item,
+        //                 isChecked: val,
+        //             }
+        //         })
+        //     })
+        // } else {
+        //     setRequestData({
+        //         ...requestData,
+        //         listRequest: (requestData?.listRequest || []).map(item => {
+        //             return {
+        //                 ...item,
+        //                 isChecked: item?.id === id ? val : (item?.isChecked || false),
+        //             }
+        //         })
+        //     })
+        // }
     }
 
     const classIndexMapping = {
@@ -131,11 +182,11 @@ const CreatedReceiving = ({ masterData, needLoadData }) => {
                             <div className="filter position-relative">
                                 <img src={IconFilter} alt="Filter" className="icon-prefix-select" />
                                 <Select
-                                    value={null}
-                                    isClearable={false}
+                                    value={quickFilter}
+                                    isClearable={true}
                                     onChange={handleInputChange}
                                     placeholder={t('Lọc nhanh')} 
-                                    options={[]}
+                                    options={quickFilterOptions}
                                     classNamePrefix="filter-select"
                                 />
                             </div>
@@ -154,6 +205,7 @@ const CreatedReceiving = ({ masterData, needLoadData }) => {
                                     masterData={masterData}
                                     listRequests={requestData?.listRequest}
                                     total={requestData?.total}
+                                    updateToParent={updateListRequests}
                                 />
                             )
                             : (<div className="data-not-found">{t("NoDataFound")}</div>)
