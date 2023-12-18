@@ -208,6 +208,7 @@ const DetailInsuranceSocial = (props) => {
 
     const prepareDetailData = (data) => {
         const infoDetail = data.benefitClaim;
+        const requestInfo = JSON.parse(data.requestInfo || '{}');
         setUserInfo({
             socialId: infoDetail.insuranceNumber || '',
             healthId: '',
@@ -227,6 +228,8 @@ const DetailInsuranceSocial = (props) => {
             setData({
                 ...data,
                 convalesData: {
+                    hrComment: requestInfo.hrComment,
+                    updatedKeys: JSON.parse(requestInfo.updatedKeys || '[]'),
                     declareForm: convertFormalDropdrowValue(infoDetail.formTypeInfo),
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
                     dateLastResolved: infoDetail.solvedFirstDate ? moment(infoDetail.solvedFirstDate).format('DD/MM/YYYY') : '',
@@ -260,6 +263,8 @@ const DetailInsuranceSocial = (props) => {
             setData({
                 ...data,
                 maternityData: {
+                    hrComment: requestInfo.hrComment,
+                    updatedKeys: JSON.parse(infoDetail.updatedKeys || '[]'),
                     declareForm: convertFormalDropdrowValue(infoDetail.formTypeInfo),
                     maternityRegime: convertFormalDropdrowValue(infoDetail.maternityRegimeInfo),
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
@@ -314,6 +319,8 @@ const DetailInsuranceSocial = (props) => {
             setData({
                 ...data,
                 sickData: {
+                    hrComment: requestInfo.hrComment,
+                    updatedKeys: JSON.parse(requestInfo.updatedKeys || '[]'),
                     declareForm: convertFormalDropdrowValue(infoDetail.formTypeInfo),
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
                     dateLastResolved: infoDetail.solvedFirstDate ? moment(infoDetail.solvedFirstDate).format('DD/MM/YYYY') : '',

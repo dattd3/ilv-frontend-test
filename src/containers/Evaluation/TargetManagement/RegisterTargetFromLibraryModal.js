@@ -68,6 +68,7 @@ const pageSizeDefault = 10
 const currentLocale = localStorage.getItem("locale")
 
 const RegistrationStep = ({ stepActive, totalItemAdded = 0, isDisableNextStep, handleChangeStep }) => {
+    const { t } = useTranslation()
     const isActiveSelectTargetStep = stepActive === stepConfig.selectTarget
     const isActiveDoneStep = stepActive === stepConfig.done
 
@@ -78,7 +79,7 @@ const RegistrationStep = ({ stepActive, totalItemAdded = 0, isDisableNextStep, h
                 <div className={`info ${isActiveSelectTargetStep ? 'active' : ''}`}>
                     <button className="item" onClick={() => handleChangeStep(stepConfig.selectTarget)}>
                         <span className="no"><span>1</span></span>
-                        <span className="name">Lựa chọn mục tiêu</span>
+                        <span className="name">{t("lua_chon_muc_tieu")}</span>
                         <img src={isActiveSelectTargetStep ? IconArrowRightWhite : IconArrowRightGray} alt="Next" className="next" />
                     </button>
                 </div>
@@ -88,7 +89,7 @@ const RegistrationStep = ({ stepActive, totalItemAdded = 0, isDisableNextStep, h
                 <div className={`info ${isActiveDoneStep ? 'active' : ''}`}>
                     <button className="item" onClick={() => handleChangeStep(stepConfig.done)} disabled={isDisableNextStep}>
                         <span className="no"><span>2</span></span>
-                        <span className="name">Hoàn thành thông tin</span>
+                        <span className="name">{t("hoan_thanh_thong_tin")}</span>
                         <img src={isActiveDoneStep ? IconArrowRightWhite : IconArrowRightGray} alt="Next" className="next" />
                     </button>
                 </div>
@@ -112,7 +113,7 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
         <div className="select-target-tab-content">
             <div className="search-region">
                 <div className="row-form">
-                    <label>Chọn kỳ đánh giá<span className="required">(*)</span></label>
+                    <label>{t("chon_ky_danh_gia")}<span className="required">(*)</span></label>
                     <Select
                         isClearable={true}
                         onChange={period => handleInputChange('period', period?.value || null)}
@@ -124,14 +125,14 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
                 </div>
                 <div className="row-form">
                     <form onSubmit={submitFilterOnParent}>
-                        <label>Tìm kiếm mục tiêu</label>
+                        <label>{t("tim_kiem_muc_tieu")}</label>
                         <div className="region-input">
                             <div className="block-input-text">
                                 <span><img src={IconSearch} alt="Icon search" /></span>
-                                <input type='text' placeholder="Nhập từ khóa" value={filter?.keyword || ''} onChange={e => handleInputChange('keyword', e?.target?.value || '')} />
+                                <input type='text' placeholder={t("EnterKeywords")} value={filter?.keyword || ''} onChange={e => handleInputChange('keyword', e?.target?.value || '')} />
                             </div>
                             <div className="block-button">
-                                <button type="submit">Tìm kiếm</button>
+                                <button type="submit">{t("Search")}</button>
                             </div>
                         </div>
                     </form>
@@ -141,16 +142,16 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
             <div className="select-target-tab-content">
                 <div className="region-result">
                     <div className="header-region">
-                        <span className="font-weight-bold title">Thư viện mục tiêu</span>
-                        <span className="select-all" title="Chọn tất cả" onClick={() => handleSelectTarget(listTargetInfo?.listTarget || [])}>Chọn tất cả</span>
+                        <span className="font-weight-bold title">{t("thu_vien_muc_tieu")}</span>
+                        <span className="select-all" title={t("EvaluationSelectAll")} onClick={() => handleSelectTarget(listTargetInfo?.listTarget || [])}>{t("EvaluationSelectAll")}</span>
                     </div>
                     <div className="result-block">
                         <table>
                             <thead>
                                 <tr>
-                                    <th className="target-col">Tên mục tiêu</th>
-                                    <th className="measure-col">Cách đo lường</th>
-                                    <th className="action-col text-center">Thao tác</th>
+                                    <th className="target-col">{t("ten_muc_tieu")}</th>
+                                    <th className="measure-col">{t("EvaluationDetailPartLevelOfPerformance")}</th>
+                                    <th className="action-col text-center">{t("action")}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -183,7 +184,7 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
                         </table>
                         <div className="paging-region">
                             <div className="show-block">
-                                <label>Hiển thị</label>
+                                <label>{t("EvaluationShow")}</label>
                                 <select onChange={e => {
                                     const size = parseInt(e.target.value)
                                     changePageSize(size)
@@ -233,7 +234,7 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
                             <div className="row-first">
                                 <div className="title">
                                     <img src={item?.isExpand ? IconCollapse : IconExpand} alt='Collapse' />
-                                    <span className="font-weight-bold">Mục tiêu {i + 1}</span>
+                                    <span className="font-weight-bold">{t("EvaluationDetailPartTarget")} {i + 1}</span>
                                     {
                                         !item?.isExpand &&
                                         <>
@@ -245,20 +246,20 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
                                     }
 
                                 </div>
-                                <span role='button' className="btn-remove" title='Xóa' onClick={(e) => handleRemoveItem(e, item)}>
+                                <span role='button' className="btn-remove" title={t("Remove")} onClick={(e) => handleRemoveItem(e, item)}>
                                     <img src={IconRemoveRed} alt='Remove' />
-                                    Xóa
+                                    {t("Remove")}
                                 </span>
                             </div>
-                            { isShowApproverMessage && <div className="row-second">* Mục tiêu đã được QLTT chỉnh sửa</div> }
+                            { isShowApproverMessage && <div className="row-second">* {t("muc_tieu_da_duoc_qltt_chinh_sua")}</div> }
                         </Button>
                         <Collapse in={item?.isExpand}>
                             <div id={`item-${i}`} className="item-content">
                                 <div className="content">
                                     <div className="wrap-target-info">
                                         <div className="row-customize header-row">
-                                            <div className="col-first font-weight-bold">Tên mục tiêu</div>
-                                            <div className="col-second font-weight-bold">Cách đo lường</div>
+                                            <div className="col-first font-weight-bold">{t("ten_muc_tieu")}</div>
+                                            <div className="col-second font-weight-bold">{t("EvaluationDetailPartLevelOfPerformance")}</div>
                                         </div>
                                         <div className="row-customize content-row">
                                             <div className="col-first">{item?.targetName || ''}</div>
@@ -274,17 +275,17 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
                                         </div>
                                     </div>
                                     <div className="row-content">
-                                        <label>Trọng số<span className="required">(*)</span></label>
+                                        <label>{t("trong_so")}<span className="required">(*)</span></label>
                                         <div className="input-block input-border input-text-customize">
                                             <span className="unit">%</span>
-                                            <input type="text" value={item?.weight || ''} placeholder="Nhập" onChange={e => handleInputChange('weight', e?.target?.value || '', i)} />   
+                                            <input type="text" value={item?.weight || ''} placeholder={t("EvaluationInput")} onChange={e => handleInputChange('weight', e?.target?.value || '', i)} />   
                                         </div>
                                         { error[`error_${i}_weight`] && <div className="error-item">{ error[`error_${i}_weight`] }</div> }
                                     </div>
                                     <div className="row-content">
-                                        <label>Mục tiêu cần đạt</label>
+                                        <label>{t("muc_tieu_can_dat_duoc")}</label>
                                         <div className="input-block">
-                                            <textarea rows={3} value={item?.target || ''} className="input-border" placeholder="Nhập" onChange={e => handleInputChange('target', e?.target?.value || '', i)} disabled={item?.fillByHr || false} />
+                                            <textarea rows={3} value={item?.target || ''} className="input-border" placeholder={t("EvaluationInput")} onChange={e => handleInputChange('target', e?.target?.value || '', i)} disabled={item?.fillByHr || false} />
                                         </div>
                                     </div>
                                 </div>
@@ -300,7 +301,7 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
         <div className="done-tab-content">
             <div className="search-region">
                 <div className="row-form">
-                    <label>Chọn kỳ đánh giá<span className="required">(*)</span></label>
+                    <label>{t("chon_ky_danh_gia")}<span className="required">(*)</span></label>
                     <Select
                         isClearable={true}
                         onChange={period => handleInputChange('period', period?.value || null)}
@@ -314,11 +315,11 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
             <div className="collapse-expand-block">
                 <button className="btn-collapse" onClick={() => handleViewListTargetSelected(false)}>
                     <img src={IconCollapseBlue} alt='Collapse' />
-                    <span>Thu gọn</span>
+                    <span>{t("Collapse")}</span>
                 </button>
                 <button className="btn-expand" onClick={() => handleViewListTargetSelected(true)}>
                     <img src={IconExpandGreen} alt='Expand' />
-                    <span>Mở rộng</span>
+                    <span>{t("Expand")}</span>
                 </button>
             </div>
             <div className="list-target">
@@ -329,6 +330,7 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
 }
 
 const ActionButton = ({ stepActive, totalWeight, isDisableNextStep, isDisableSaveRequest, isDisableSendRequest, error, onHideRegisterTargetModal, handleChangeStep, handleSubmitRequest }) => {
+    const { t } = useTranslation()
     const totalWeightToShow = Number(totalWeight).toFixed(2)
     const totalWeightClass = totalWeightToShow == 100 ? 'full-weight' : ''
     const isSendRequest = true
@@ -345,7 +347,7 @@ const ActionButton = ({ stepActive, totalWeight, isDisableNextStep, isDisableSav
                     {
                         stepActive === stepConfig.done &&
                         <span className={`wrap-total-weight ${totalWeightClass}`}>
-                            <span className="font-weight-bold label">*Tổng trọng số:</span>
+                            <span className="font-weight-bold label">*{t("tong_trong_so")}:</span>
                             <span>{totalWeightToShow}%</span>
                         </span>
                     }
@@ -353,33 +355,33 @@ const ActionButton = ({ stepActive, totalWeight, isDisableNextStep, isDisableSav
                 <div className="button-block">
                     <button className="btn-cancel" onClick={() => onHideRegisterTargetModal(true)}>
                         <img src={IconCancel} alt='Cancel' />
-                        <span>Hủy</span>
+                        <span>{t("Cancel2")}</span>
                     </button>
 
                     <button className="btn-save" onClick={() => handleSubmitRequest(stepActive)} disabled={isDisableSaveRequest}>
                         <img src={IconSave} alt='Save' />
-                        <span>Lưu</span>
+                        <span>{t("Save")}</span>
                     </button>
 
                     {
                         stepActive !== stepConfig.selectTarget &&
                         <button className="btn-previous" onClick={() => handleChangeStep(stepConfig.selectTarget)}>
                             <img src={IconPrevious} alt='Previous' />
-                            <span>Quay lại</span>
+                            <span>{t("ComeBack")}</span>
                         </button>
                     }
                     {
                         stepActive !== stepConfig.done &&
                         <button className="btn-next" onClick={() => handleChangeStep(stepConfig.done)} disabled={isDisableNextStep}>
                             <img src={IconNext} alt='Next' />
-                            <span>Tiếp theo</span>
+                            <span>{t("Next")}</span>
                         </button>
                     }
                     {
                         stepActive === stepConfig.done &&
                         <button className="btn-send" onClick={() => handleSubmitRequest(stepActive, isSendRequest)} disabled={isDisableSendRequest}>
                             <img src={IconSend} alt='Send' />
-                            <span>Gửi yêu cầu</span>
+                            <span>{t("Send")}</span>
                         </button>
                     }
 
@@ -471,7 +473,7 @@ const ApprovalManager = ({ t, approverInfo, approvers, setApprovers, setApprover
     
     return (
         <div className="approval-manager-block">
-            <div className="font-weight-bold title">CBQL phê duyệt</div>
+            <div className="font-weight-bold title">{t("cbql_phe_duyet")}</div>
             <div className="info">
                 <div className="row">
                     <div className="col">
@@ -617,7 +619,7 @@ function RegisterTargetFromLibraryModal(props) {
                     } else {
                         SetError({
                             ...error,
-                            errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                            errorMissingApproverInfo: `* ${t("chua_co_thong_tin_cbql_phe_duyet")}`
                         })
                     }
                 } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) { // Khi sửa yêu cầu đăng ký mục tiêu từ thư viện ở trạng thái Nháp hoặc Từ chối
@@ -630,7 +632,7 @@ function RegisterTargetFromLibraryModal(props) {
                         if (!approverInfoData) {
                             SetError({
                                 ...error,
-                                errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                                errorMissingApproverInfo: `* ${t("chua_co_thong_tin_cbql_phe_duyet")}`
                             })
                         }
                     }
@@ -872,7 +874,7 @@ function RegisterTargetFromLibraryModal(props) {
     const processValidateData = (i = 0, weightInput = 0) => {
         const errorInfo = (targetSelected || []).reduce((res, current, index) => {
             let weight = index === i ? Number(weightInput || 0) : Number(current?.weight || 0)
-            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? '* Trọng số trong khoảng 1 - 100' : ''
+            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? `* ${t("trong_so_trong_khoang_1_100")}` : ''
             res.totalWeight += weight
 
             return res
@@ -886,14 +888,14 @@ function RegisterTargetFromLibraryModal(props) {
 
         SetError({
             ...errorInfo?.item,
-            ...(isItemsValid && !isTotalWeightValid && { totalWeight: '* Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!' }),
+            ...(isItemsValid && !isTotalWeightValid && { totalWeight: `* ${t("yeu_cau_tong_trong_so_100")}` }),
         })
     }
 
     const isDataValid = () => {
         const errorInfo = (targetSelected || []).reduce((res, current, index) => {
             let weight = Number(current?.weight || 0)
-            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? '* Trọng số trong khoảng 1 - 100' : ''
+            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? `* ${t("trong_so_trong_khoang_1_100")}` : ''
             res.totalWeight += weight
 
             return res
@@ -908,7 +910,7 @@ function RegisterTargetFromLibraryModal(props) {
         SetError({
             ...error,
             ...errorInfo?.item,
-            ...(isItemsValid && !isTotalWeightValid && { totalWeight: '* Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!' }),
+            ...(isItemsValid && !isTotalWeightValid && { totalWeight: `* ${t("yeu_cau_tong_trong_so_100")}` }),
         })
 
         if (isItemsValid && isTotalWeightValid) {
@@ -952,14 +954,14 @@ function RegisterTargetFromLibraryModal(props) {
                         ...statusModal,
                         isShow: true,
                         isSuccess: true,
-                        content: "Lưu mục tiêu thành công!",
+                        content: t("luu_muc_tieu_thanh_cong"),
                     })
                 }
 
                 if (isSendRequest) {
                     setModalManagement({
                         type: MODAL_TYPES.SUCCESS,
-                        data: "Yêu cầu của bạn đã được gửi đi!",
+                        data: t("RequestSent"),
                     })
                 }
             }
@@ -968,7 +970,7 @@ function RegisterTargetFromLibraryModal(props) {
                 ...statusModal,
                 isShow: true,
                 isSuccess: false,
-                content: isSendRequest ? "Gửi yêu cầu thất bại. Xin vui lòng thử lại!" : "Lưu mục tiêu thất bại. Xin vui lòng thử lại!",
+                content: isSendRequest ? t("gui_yeu_cau_that_bai_vui_long_thu_lai") : t("luu_muc_tieu_that_bai_vui_long_thu_lai"),
             })
         } finally {
             SetIsLoading(false)
