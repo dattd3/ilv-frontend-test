@@ -101,10 +101,10 @@ class InternalWelfareComponent extends React.Component {
                     }
                     {dataWelfare.length !== 0 &&
                         <div className="notice">
-                            <div className='font-weight-bold'>* {t("WelfareNoteTitle")}</div>
+                            {/* <div className='font-weight-bold'>* {t("WelfareNoteTitle")}</div>
                             <div>- {t("WelfareNoteContent1")}</div>
                             <div>- {t("WelfareNoteContent2")}</div>
-                            <div>- {t("WelfareNoteContent3")}</div>
+                            <div>- {t("WelfareNoteContent3")}</div> */}
                         </div>
                     }
                 </div>
