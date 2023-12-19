@@ -189,7 +189,7 @@ class TaskList extends React.Component {
             [Constants.STATUS_WORK_DAY_LOCKED_APPROVAL]: { label: t("PaidDayLocked"), className: 'request-status work-day_locked' },
         }
 
-        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL].includes(request) && statusName) {
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL, Constants.TAX_FINALIZATION].includes(request) && statusName) {
             let statusLabel = t(statusName);
             let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
             statusOriginal = tmp?.length > 0 ? tmp[tmp.length - 1] : statusOriginal;
