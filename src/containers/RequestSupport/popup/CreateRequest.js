@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Modal } from "react-bootstrap"
 import Select from 'react-select'
 import DatePicker, { registerLocale } from 'react-datepicker'

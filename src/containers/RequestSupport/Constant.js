@@ -1,3 +1,7 @@
+import IconMailGreen from 'assets/img/icon/ic_mail-green.svg'
+import IconMailBlue from 'assets/img/icon/ic_mail-blue.svg'
+import IconMailCyan from 'assets/img/icon/ic_mail-cyan.svg'
+
 const status = {
     new: 1,
     processing: 2,
@@ -14,4 +18,15 @@ const feedBackLine = {
     sameGroup: 2,
 }
 
-export { status, feedBackLine }
+const tabConfig = {
+    createdReceiving: 'created-receiving',
+    processing: 'processing',
+}
+
+const groupUsersConfig = {
+    sameGroup: { label: 'Người cùng nhóm', icon: IconMailGreen },
+    receiveInformationTogether: { label: 'Người cùng nhận thông tin', icon: IconMailBlue },
+    requester: { label: 'Người yêu cầu', icon: IconMailCyan },
+}
+
+export { status, feedBackLine, tabConfig, groupUsersConfig }

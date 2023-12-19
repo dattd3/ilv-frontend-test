@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import Select from 'react-select'
-import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
-import moment from 'moment'
-import _ from 'lodash'
-import Constants from 'commons/Constants'
 import { getRequestConfigurations } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
 import Note from "../common/Note"
@@ -13,11 +9,8 @@ import CreatedRequest from "../popup/CreateRequest"
 import TableRequests from "../common/TableRequests"
 import IconAddNew from 'assets/img/ic-add-green.svg'
 import IconFilter from "assets/img/icon/icon-filter.svg"
-import 'react-datepicker/dist/react-datepicker.css'
-import vi from 'date-fns/locale/vi'
-registerLocale("vi", vi)
 
-const CreatedReceiving = ({ masterData, needLoadData }) => {
+const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
     const quickFilterOptions = [
         { value: 0, label: 'Tất cả' },
         { value: 1, label: 'Yêu cầu tồn của tôi' },
@@ -81,29 +74,6 @@ const CreatedReceiving = ({ masterData, needLoadData }) => {
             ...requestData,
             listRequest: listRequestToSave
         })
-
-
-        // if (id === null) {
-        //     setRequestData({
-        //         ...requestData,
-        //         listRequest: (requestData?.listRequest || []).map(item => {
-        //             return {
-        //                 ...item,
-        //                 isChecked: val,
-        //             }
-        //         })
-        //     })
-        // } else {
-        //     setRequestData({
-        //         ...requestData,
-        //         listRequest: (requestData?.listRequest || []).map(item => {
-        //             return {
-        //                 ...item,
-        //                 isChecked: item?.id === id ? val : (item?.isChecked || false),
-        //             }
-        //         })
-        //     })
-        // }
     }
 
     const classIndexMapping = {
@@ -163,8 +133,6 @@ const CreatedReceiving = ({ masterData, needLoadData }) => {
         }),
     }
 
-    console.log('kakakakka ', requestData)
-
     return (
         <>
             <LoadingModal show={isLoading} />
@@ -203,6 +171,7 @@ const CreatedReceiving = ({ masterData, needLoadData }) => {
                             ? (
                                 <TableRequests 
                                     masterData={masterData}
+                                    tab={tab}
                                     listRequests={requestData?.listRequest}
                                     total={requestData?.total}
                                     updateToParent={updateListRequests}

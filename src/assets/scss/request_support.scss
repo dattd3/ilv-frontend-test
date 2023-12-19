@@ -151,6 +151,10 @@
                             border: 1px solid #DEE2E6;
                             font-size: 13px;
                             height: 30px;
+                            &[type=checkbox] {
+                                width: unset;
+                                height: unset;
+                            }
                         }
                     }
                     .row-filter {
@@ -163,16 +167,16 @@
                             margin-right: 10px;
                             position: relative;
                             margin-bottom: 0;
-                            .input-img {
-                                position: absolute;
-                                top: 6px;
-                                right: 10px;
-                                img {
-                                    height: 13px;
-                                }
-                            }
+                            // .input-img {
+                            //     position: absolute;
+                            //     top: 6px;
+                            //     right: 10px;
+                            //     img {
+                            //         height: 13px;
+                            //     }
+                            // }
                             input {
-                                width: 120px;
+                                width: 90px;
                                 outline: none;
                             }
                         }
@@ -198,7 +202,7 @@
                     // border-top: 1px solid #DDDDDD;
                 }
                 .check {
-                    width: 20px;
+                    width: 25px;
                 }
                 .icon {
                     width: 90px;
@@ -220,7 +224,7 @@
                     width: 255px;
                 }
                 .created-by {
-                    width: 90px;
+                    width: 100px;
                 }
                 .group {
                     width: 160px;
@@ -266,10 +270,13 @@
                     }
                 }
                 .created-date {
-                    width: 90px;
+                    width: 100px;
                 }
                 .deadline {
                     width: 105px;
+                }
+                .space {
+                    width: 90px;
                 }
                 .action {
                     width: 100px;

@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
-import { groupUsersConfig } from ".."
+import { groupUsersConfig } from "../Constant"
 
 const Note = (props) => {
     const { t } = useTranslation()
