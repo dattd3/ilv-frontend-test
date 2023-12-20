@@ -11,6 +11,7 @@ import SocialContributeInfo from './WelfareComponents/SocialContributeInfo'
 import SocialSupportInfo from './WelfareComponents/SocialSupportInfo'
 import HealthInsurance from './WelfareComponents/HealthInsurance'
 import Constants from 'commons/Constants'
+import { checkIsExactPnL } from 'commons/commonFunctions'
 
 const tabConfig = {
     CreateInsuranceSocial: 'CreateInsuranceSocial',
@@ -39,7 +40,7 @@ class InsuranceRegime extends React.Component {
         const { t } = this.props;
         const { tab } = this.state
 
-        if(tab == tabConfig.CreateInsuranceSocial) {
+        if (tab == tabConfig.CreateInsuranceSocial) {
           return <CreateInsuranceSocial/>
         }
 
@@ -48,23 +49,35 @@ class InsuranceRegime extends React.Component {
                 {
                     ![Constants.pnlVCode.VinHome].includes(currentCompanyCode)
                     ? (
-                        <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
+                        <Tabs defaultActiveKey={tab} onSelect={(key) => this.updateTabLink(key)}>
                             {/* <Tab eventKey="Health" title={t('heath_insurance')}>
                                 <Health title={t('welfare_regime_internal')}/>
                             </Tab> */}
-                            <Tab eventKey={tabConfig.Social} title={t('social_insurance')}>
-                                <InsuranceSocial title={t('Vinwonder/Safari')}/>
-                            </Tab>
-                            <Tab eventKey={tabConfig.SocialContribute} title={t('social_contribute_info')}>
-                                <SocialContributeInfo title={t('Vinwonder/Safari')}/>
-                            </Tab>
-                            <Tab eventKey={tabConfig.SocialSupport} title={t('social_support_info')}>
-                                <SocialSupportInfo title={t('Vinwonder/Safari')}/>
-                            </Tab>
+                            {
+                                checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES) && (
+                                    <Tab eventKey="Social" title={t('social_insurance')}>
+                                        <InsuranceSocial title={t('Vinwonder/Safari')}/>
+                                    </Tab>
+                                )
+                            }
+                            {
+                                checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
+                                    <Tab eventKey="SocialContribute" title={t('social_contribute_info')}>
+                                        <SocialContributeInfo title={t('Vinwonder/Safari')}/>
+                                    </Tab>
+                                )
+                            }
+                            {
+                                checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
+                                    <Tab eventKey="SocialSupport" title={t('social_support_info')}>
+                                        <SocialSupportInfo title={t('Vinwonder/Safari')}/>
+                                    </Tab>
+                                )
+                            }
                         </Tabs>
                     )
                     : (
-                        <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
+                        <Tabs defaultActiveKey={tab} onSelect={(key) => this.updateTabLink(key)}>
                             <Tab eventKey={tabConfig.HealthInsurance} title={t('HealthInsurance')}>
                                 <HealthInsurance
                                     needLoad={tab === tabConfig.HealthInsurance}

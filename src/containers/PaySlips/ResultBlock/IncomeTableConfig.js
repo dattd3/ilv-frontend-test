@@ -3,7 +3,7 @@ export const IncomeTablesConfig = t => {
         Vinpearl: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.3)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -101,7 +101,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -123,7 +123,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -186,7 +186,7 @@ export const IncomeTablesConfig = t => {
             },
             {
                 index: 'III',
-                label: `${t("ActualReceivable")} = Sum (III.1 : III.3)`,
+                label: `${t("ActualReceivable")}`,
                 field: 'net_salary_amount',
                 level2: [
                     {
@@ -210,7 +210,7 @@ export const IncomeTablesConfig = t => {
         Vinsoftware: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.3)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -294,7 +294,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -316,7 +316,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -347,7 +347,7 @@ export const IncomeTablesConfig = t => {
                     },
 
                     {
-                        label: `${t("Pit")} = Sum(II.3.3)`,
+                        label: `${t("Pit")}`,
                         field: 'personal_income_tax_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -395,7 +395,7 @@ export const IncomeTablesConfig = t => {
         VinFast: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.2)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -490,7 +490,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -513,7 +513,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -544,7 +544,7 @@ export const IncomeTablesConfig = t => {
                     },
 
                     {
-                        label: `${t("Pit")} = Sum(II.3.3)`,
+                        label: `${t("Pit")}`,
                         field: 'personal_income_tax_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -577,7 +577,7 @@ export const IncomeTablesConfig = t => {
             },
             {
                 index: 'III',
-                label: `${t("ActualReceivable")} = Sum (III.1 : III.3)`,
+                label: `${t("ActualReceivable")}`,
                 field: 'net_salary_amount',
                 level2: [
                     {
@@ -600,7 +600,7 @@ export const IncomeTablesConfig = t => {
         Vinmec: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.2)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -739,7 +739,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -763,7 +763,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -794,7 +794,7 @@ export const IncomeTablesConfig = t => {
                     },
 
                     {
-                        label: `${t("Pit")} = Sum(II.3.3)`,
+                        label: `${t("Pit")}`,
                         field: 'personal_income_tax_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -827,7 +827,7 @@ export const IncomeTablesConfig = t => {
             },
             {
                 index: 'III',
-                label: `${t("ActualReceivable")} = Sum (III.1 : III.3)`,
+                label: `${t("ActualReceivable")}`,
                 field: 'net_salary_amount',
                 level2: [
                     {
@@ -851,7 +851,7 @@ export const IncomeTablesConfig = t => {
         VinSmart: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.3)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -935,7 +935,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -956,7 +956,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -987,7 +987,7 @@ export const IncomeTablesConfig = t => {
                     },
 
                     {
-                        label: `${t("Pit")} = Sum(II.3.3)`,
+                        label: `${t("Pit")}`,
                         field: 'personal_income_tax_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -1035,7 +1035,7 @@ export const IncomeTablesConfig = t => {
         VinHome: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.3)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -1131,7 +1131,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -1151,7 +1151,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -1182,7 +1182,7 @@ export const IncomeTablesConfig = t => {
                     },
 
                     {
-                        label: `${t("Pit")} = Sum(II.3.3)`,
+                        label: `${t("Pit")}`,
                         field: 'personal_income_tax_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -1244,7 +1244,7 @@ export const IncomeTablesConfig = t => {
         VinSchool: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.3)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -1331,7 +1331,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -1352,7 +1352,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -1383,7 +1383,7 @@ export const IncomeTablesConfig = t => {
                     },
 
                     {
-                        label: `${t("Pit")} = Sum(II.3.3)`,
+                        label: `${t("Pit")}`,
                         field: 'personal_income_tax_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -1432,7 +1432,7 @@ export const IncomeTablesConfig = t => {
         VinBigData: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.3)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -1577,7 +1577,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -1601,7 +1601,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -1632,7 +1632,7 @@ export const IncomeTablesConfig = t => {
                     },
 
                     {
-                        label: `${t("Pit")} = Sum(II.3.3)`,
+                        label: `${t("Pit")}`,
                         field: 'personal_income_tax_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -1705,7 +1705,7 @@ export const IncomeTablesConfig = t => {
         VinGroup: [
             {
                 index: 'I',
-                label: `${t("Allowance")} = Sum (I.1 : I.3)`,
+                label: `${t("Allowance")}`,
                 field: 'income_accrued_amount',
                 level2: [
                     {
@@ -1850,7 +1850,7 @@ export const IncomeTablesConfig = t => {
 
             {
                 index: 'II',
-                label: `${t("Deduction")} = Sum (II.1: II.3)`,
+                label: `${t("Deduction")}`,
                 field: 'income_reduction_incurred_amount',
                 level2: [
                     {
@@ -1874,7 +1874,7 @@ export const IncomeTablesConfig = t => {
                         ]
                     },
                     {
-                        label: `${t("DeductionOnInsuranceAndTradeUnion")} = Sum (II.2.2 : II.2.3)`,
+                        label: `${t("DeductionOnInsuranceAndTradeUnion")}`,
                         field: 'insurance_union_payment_amount',
                         isSkipSumLabel: true,
                         level3: [
@@ -1905,7 +1905,7 @@ export const IncomeTablesConfig = t => {
                     },
 
                     {
-                        label: `${t("Pit")} = Sum(II.3.3)`,
+                        label: `${t("Pit")}`,
                         field: 'personal_income_tax_amount',
                         isSkipSumLabel: true,
                         level3: [

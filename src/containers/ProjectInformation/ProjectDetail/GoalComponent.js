@@ -8,7 +8,7 @@ function GoalComponent(props) {
 
     return (
         <div className="goal">
-            <h2 className="title-block">II. Mục tiêu</h2>
+            <h2 className="title-block">II. {t("EvaluationDetailPartTarget")}</h2>
             <hr className="line-seperate"></hr>
             <div className="goal-table-wrapper">
                 {
@@ -18,7 +18,7 @@ function GoalComponent(props) {
                         <thead>
                             <tr>
                                 <th rowSpan={2} className='c-no'><div className='no'>#</div></th>
-                                <th rowSpan={2} className='c-goal-title'><div className='goal-title'>Mục tiêu</div></th>
+                                <th rowSpan={2} className='c-goal-title'><div className='goal-title'>{t("EvaluationDetailPartTarget")}</div></th>
                                 <th rowSpan={2} className='c-unit'><div className='unit'>Đơn vị</div></th>
                                 <th rowSpan={2} className='c-detail'><div className='detail'>Giải thích chi tiết</div></th>
                                 <th rowSpan={2} className='c-priority'><div className='priority text-center'>Ưu tiên</div></th>

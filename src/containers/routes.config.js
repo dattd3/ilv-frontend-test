@@ -884,6 +884,30 @@ const ROUTES = [
           },
           component: lazy(() => import("./Welfare/WelfareComponents/SocialSupportInfoDetail")),
         },
+        {
+          key: "my-voucher",
+          routeProps: {
+            exact: true,
+            path: map.MyVoucher,
+          },
+          component: lazy(() => import("./MyVoucher/")),
+        },
+        {
+          key: "my-voucher-notice-detail",
+          routeProps: {
+            exact: true,
+            path: map.MyVoucherNoticeDetail,
+          },
+          component: lazy(() => import("./MyVoucher/NoticeDetail")),
+        },
+        {
+          key: "recruitment",
+          routeProps: {
+            exact: true,
+            path: map.Recruitment,
+          },
+          component: lazy(() => import("./Recruitment/")),
+        },
       ],
     },
   },
