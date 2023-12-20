@@ -1083,7 +1083,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                 : isForeignHolidayLeave ? (
                                                                     <div className='col-md-4'>
                                                                         <label>{t('HolidayFundForExpat')}</label>
-                                                                        <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.HOLI_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.HOLI_LEA_EXPAT || 0)}` }</div>
+                                                                        <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.EXPAT_HOL || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.EXPAT_HOL || 0)}` }</div>
                                                                     </div>
                                                                 )
                                                                 : isForeignSickLeaveForVinUni ? (
@@ -1213,7 +1213,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                             req[0]?.absenceType?.value === FOREIGN_HOLIDAY_EXPAT_LEAVE && (
                                                 <>
                                                     <p className="title">{t("HolidayFundForExpat")}</p>
-                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.HOLI_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.HOLI_LEA_EXPAT || 0)}`} disabled />
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.EXPAT_HOL || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.EXPAT_HOL || 0)}`} disabled />
                                                 </>
                                             )
                                         }
