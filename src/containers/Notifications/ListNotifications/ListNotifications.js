@@ -71,10 +71,12 @@ function ListNotifications(props) {
                 notifications && notifications.length > 0 ?
                 notifications.map((item, i) => {
                     const timePost = getTimePost(item.createdDate);
+                    const url = item?.type == Constants.notificationType.VOUCHER_NEW_PROGRAM ? `/my-voucher/notices/${item?.subRequestId}` : `/notifications/${item.id}`
+
                     return <div key={i} className="item">
                         <span className="ic-notification"><img alt="Icon notification" src={NotificationIcon} /></span>
                         <div className="content">
-                        <a href={`/notifications/${item.id}`} title={item.title} className={!item.isRead ? 'title' : 'title readed'}>{item.title}</a>
+                        <a href={url} title={item.title} className={!item.isRead ? 'title' : 'title readed'}>{item.title}</a>
                         <p className="description">{item.description != null ? item.description : ''}</p>
                         <div className="time-attachment-detail-block">
                             <div className="time-attachment-block">
@@ -90,7 +92,7 @@ function ListNotifications(props) {
                             : null
                             }
                             </div>
-                            <a href={`/notifications/${item.id}`} title="Xem chi tiết" className="detail-link">{t("Details")}</a>
+                            <a href={url} title="Xem chi tiết" className="detail-link">{t("Details")}</a>
                         </div>
                         </div>
                     </div>
