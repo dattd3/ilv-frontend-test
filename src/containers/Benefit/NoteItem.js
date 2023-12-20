@@ -19,13 +19,14 @@ export default function NoteItem(props) {
   
   } else if (title.includes("VINSCHOOL")) {
     return (
-          <div className="" style={style}>
-              * Các khái niệm này từ đây được hiểu như sau: 
-              <br/>
-              - Người thân là vợ/chồng, cha mẹ đẻ, cha mẹ vợ/chồng, con hợp pháp của CBNV
-              <br/> 
-              - Không áp dụng chương trình VinID cho các hạng mục chi phí đã được miễn/giảm theo Chế độ ưu đãi dịch vụ nội bộ.              
-          </div>
+      <></>
+          // <div className="" style={style}>
+          //     * Các khái niệm này từ đây được hiểu như sau: 
+          //     <br/>
+          //     - Người thân là vợ/chồng, cha mẹ đẻ, cha mẹ vợ/chồng, con hợp pháp của CBNV
+          //     <br/> 
+          //     - Không áp dụng chương trình VinID cho các hạng mục chi phí đã được miễn/giảm theo Chế độ ưu đãi dịch vụ nội bộ.              
+          // </div>
         );
 
   } else {
