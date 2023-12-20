@@ -131,6 +131,7 @@ function TaxMemberInfo({
                   }
                   dateFormat="dd/MM/yyyy"
                   placeholderText={t("Select")}
+                  popperPlacement="bottom-end"
                   locale={t("locale")}
                   className="form-control input"
                   disabled={!isCreateMode}
