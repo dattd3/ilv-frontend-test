@@ -1256,7 +1256,7 @@ export const IncomeTablesConfig = t => {
                                 field: 'base_salary_and_quality_of_work_bonus',
                                 level4: [
                                     { label: t("BaseSalary"), field: 'base_salary' },
-                                    { label: t("BehaviorAndAttitudeBonus"), field: 'quality_of_work_bonus' }, //
+                                    { label: t("BehaviorAndAttitudeBonus"), field: 'quality_of_work_bonus' },
                                     { label: t("VinmecAllowanceForExceedingTeachingPeriods"), field: 'exceeding_required_number_of_period_bonus' },
                                 ]
                             },
