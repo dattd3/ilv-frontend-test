@@ -17,7 +17,7 @@ import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequest
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, 
-    VIN_UNI_SICK_LEAVE, VIN_SCHOOL_SICK_LEAVE } from "../../Task/Constants"
+    VIN_UNI_SICK_LEAVE, VIN_SCHOOL_SICK_LEAVE, FOREIGN_EXPAT_LEAVE, FOREIGN_HOLIDAY_EXPAT_LEAVE} from "../../Task/Constants"
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
 import LoadingModal from 'components/Common/LoadingModal'
@@ -951,6 +951,13 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (currentCompanyCode !== Constants.pnlVCode.VinSchool) {
             absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== VIN_SCHOOL_SICK_LEAVE)
         }
+        
+        
+        if([Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES].includes(currentCompanyCode)) {
+            absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== FOREIGN_EXPAT_LEAVE);
+        } else {
+            absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== FOREIGN_HOLIDAY_EXPAT_LEAVE);
+        }
 
         const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
         const {
@@ -1031,13 +1038,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 (registeredInformation || []).map((ri, riIndex) => {
                                     let  totalTimeRegistered = ri?.isAllDay ? `${ri?.days || 0} ${t('DayUnit')}` : `${ri?.hours || 0} ${t('HourUnit')}`
                                     let isForeignSickLeave = ri?.absenceType?.value === FOREIGN_SICK_LEAVE
+                                    let isForeignHolidayLeave = ri?.absenceType?.value === FOREIGN_HOLIDAY_EXPAT_LEAVE
                                     let isForeignSickLeaveForVinUni = ri?.absenceType?.value === VIN_UNI_SICK_LEAVE
                                     let isForeignSickLeaveForVSC = ri?.absenceType?.value === VIN_SCHOOL_SICK_LEAVE
 
                                     return (
                                         <div className='item' key={`old-request-info-${riIndex}`}>
                                             {
-                                                (isForeignSickLeave || isForeignSickLeaveForVinUni || isForeignSickLeaveForVSC) ? (
+                                                (isForeignSickLeave || isForeignSickLeaveForVinUni || isForeignSickLeaveForVSC || isForeignHolidayLeave) ? (
                                                     <>
                                                         <div className='row'>
                                                             <div className='col-md-4'>
@@ -1070,6 +1078,12 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                     <div className='col-md-4'>
                                                                         <label>{t('SickLeaveFundForExpat')}</label>
                                                                         <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}` }</div>
+                                                                    </div>
+                                                                )
+                                                                : isForeignHolidayLeave ? (
+                                                                    <div className='col-md-4'>
+                                                                        <label>{t('HolidayFundForExpat')}</label>
+                                                                        <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.HOLI_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.HOLI_LEA_EXPAT || 0)}` }</div>
                                                                     </div>
                                                                 )
                                                                 : isForeignSickLeaveForVinUni ? (
@@ -1169,7 +1183,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <div>
                                                     <p className="title">{t('LeaveCategory')}</p>
                                                     <div>
-                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceRequestTypesPrepare.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== MATERNITY_LEAVE_KEY && absenceType.value !== 'IN03' && absenceType.value !== MARRIAGE_FUNERAL_LEAVE_KEY))} />
+                                                        <Select name="absenceType" value={req[0].absenceType} onChange={absenceType => this.handleSelectChange('absenceType', absenceType, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={absenceRequestTypesPrepare.filter(absenceType => (req[0].isAllDay) || (absenceType.value !== 'IN01' && absenceType.value !== MATERNITY_LEAVE_KEY && absenceType.value !== 'IN03' && absenceType.value !== MARRIAGE_FUNERAL_LEAVE_KEY && absenceType.value != FOREIGN_HOLIDAY_EXPAT_LEAVE))} />
                                                     </div>
                                                     {req[0].errors.absenceType ? this.error('absenceType', req[0].groupId) : null}
 
@@ -1192,6 +1206,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <>
                                                     <p className="title">{t("SickLeaveFundForExpat")}</p>
                                                     <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`} disabled />
+                                                </>
+                                            )
+                                        }
+                                        {
+                                            req[0]?.absenceType?.value === FOREIGN_HOLIDAY_EXPAT_LEAVE && (
+                                                <>
+                                                    <p className="title">{t("HolidayFundForExpat")}</p>
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.HOLI_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.HOLI_LEA_EXPAT || 0)}`} disabled />
                                                 </>
                                             )
                                         }

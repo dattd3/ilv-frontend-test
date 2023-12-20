@@ -2092,5 +2092,7 @@
   "luu_muc_tieu_thanh_cong": "Lưu mục tiêu thành công!",
   "gui_yeu_cau_that_bai_vui_long_thu_lai": "Gửi yêu cầu thất bại. Xin vui lòng thử lại!",
   "luu_muc_tieu_that_bai_vui_long_thu_lai": "Lưu mục tiêu thất bại. Xin vui lòng thử lại!",
-  "trong_so_trong_khoang_1_100": "Trọng số trong khoảng 1 - 100"
+  "trong_so_trong_khoang_1_100": "Trọng số trong khoảng 1 - 100",
+  "LeaveForHolidayExpats": "nghỉ lễ người nước ngoài (có quỹ)",
+  "HolidayFundForExpat": "Quỹ nghỉ lễ"
 }
