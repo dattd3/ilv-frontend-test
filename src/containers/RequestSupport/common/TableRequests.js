@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import Select from 'react-select'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import ReactTooltip from 'react-tooltip'
 import { Rating } from 'react-simple-star-rating'
 import moment from 'moment'
 import { groupUsersConfig } from ".."
@@ -55,7 +56,7 @@ const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode 
     // )
 }
 
-const TableRequests = ({ masterData, tab, listRequests, total, updateToParent }) => {
+const TableRequests = ({ masterData, tab, listRequests, total, updateToParent, cancelRequest }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
     const { t } = useTranslation()
     const [filter, setFilter] = useState({
@@ -324,10 +325,55 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateToParent })
                                 )
                             }
                             <td className="icon">
-                                <div className="val d-flex" style={{ justifyContent: 'space-evenly' }}>
-                                    <img src={child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? IconEmailCyan : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? IconEmailBlue : IconEmailGreen} alt="Search" />
-                                    {/* <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
-                                    <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" /> */}
+                                <div className="val d-flex" style={{ justifyContent: 'space-between' }}>
+                                    <span 
+                                        data-tip data-for={`tooltip-${index}-ic1`} 
+                                        className="highlight cursor-pointer" 
+                                    >
+                                        <ReactTooltip 
+                                            id={`tooltip-${index}-ic1`} 
+                                            scrollHide 
+                                            effect="solid" 
+                                            place="right" 
+                                            type='dark'>
+                                            {child?.requestHistory?.[0]?.contents}
+                                        </ReactTooltip>
+                                        <img src={child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? IconEmailCyan : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? IconEmailBlue : IconEmailGreen} alt="Search" />
+                                    </span>
+                                    {
+                                        tab === tabConfig.processing && (
+                                            <>
+                                                <span 
+                                                    data-tip data-for={`tooltip-${index}-ic2`} 
+                                                    className="highlight cursor-pointer" 
+                                                >
+                                                    <ReactTooltip 
+                                                        id={`tooltip-${index}-ic2`} 
+                                                        scrollHide 
+                                                        effect="solid" 
+                                                        place="right" 
+                                                        type='dark'>
+                                                        {child?.requestHistory?.[0]?.contents}
+                                                    </ReactTooltip>
+                                                    <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
+                                                </span>
+                                                <span 
+                                                    data-tip data-for={`tooltip-${index}-ic3`} 
+                                                    className="highlight cursor-pointer" 
+                                                >
+                                                    <ReactTooltip 
+                                                        id={`tooltip-${index}-ic3`} 
+                                                        scrollHide 
+                                                        effect="solid" 
+                                                        place="right" 
+                                                        type='dark'>
+                                                        {child?.requestHistory?.[0]?.contents}
+                                                    </ReactTooltip>
+                                                    <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" />
+                                                </span>
+                                            </>
+                                        )
+                                    }
                                 </div>
                             </td>
                             <td className="code text-center">
@@ -439,9 +485,19 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateToParent })
                                 tab === tabConfig.createdReceiving && (
                                     <td className="action">
                                         <div className="val text-center d-flex">
-                                            <span title={t("Remove")} className="cursor-pointer" onClick={null}><img alt={t("Remove")} src={IconRemove} className="ic-remove" /></span>
-                                            <span title={t("Update")} className="cursor-pointer" onClick={null}><img alt={t("Update")} src={IconSave} className="ic-save" /></span>
-                                            <span title={t("Cancel2")} className="cursor-pointer" onClick={null}><img alt={t("Cancel2")} src={IconCancel} className="ic-cancel" /></span>
+                                            {
+                                                [status.new, status.processing].includes(Number(child?.supportStatus?.id || 0)) && (
+                                                    <span title={t("Remove")} className="cursor-pointer" onClick={() => cancelRequest(child?.id)}><img alt={t("Remove")} src={IconRemove} className="ic-remove" /></span>
+                                                )
+                                            }
+                                            {
+                                                [status.closed].includes(Number(child?.supportStatus?.id || 0)) && (
+                                                    <>
+                                                        <span title={t("Update")} className="cursor-pointer" onClick={null}><img alt={t("Update")} src={IconSave} className="ic-save" /></span>
+                                                        <span title={t("Cancel2")} className="cursor-pointer" onClick={null}><img alt={t("Cancel2")} src={IconCancel} className="ic-cancel" /></span>
+                                                    </>
+                                                )
+                                            }
                                         </div>
                                     </td>
                                 )

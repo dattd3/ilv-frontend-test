@@ -2,6 +2,8 @@ import { Fragment, useEffect, useState } from "react"
 import { Modal } from "react-bootstrap"
 import { useTranslation } from "react-i18next"
 import IconClose from "assets/img/icon/icon_x.svg"
+import IconOk from "assets/img/icon/Icon_Check_White.svg"
+import IconCancel from "assets/img/icon/Icon_Cancel.svg"
 
 export default function CancelModal({ dataModal }) {
   const [inputData, setInputData] = useState({})
@@ -15,7 +17,7 @@ export default function CancelModal({ dataModal }) {
 
   return (
     <Modal
-      className="guide-line-ticket-modal"
+      className="cancel-modal"
       show={dataModal?.isShow}
       onHide={dataModal?.onHide}
     >
@@ -25,37 +27,46 @@ export default function CancelModal({ dataModal }) {
           <span className="close" onClick={dataModal?.onHide}><img src={IconClose} alt="Close" /></span>
         </div>
         <div className='content'>
-          {
-            (dataModal?.fields || []).map((item, index) => {
-              return (
-                <div className="row-items" key={`row-${index}`}>
-                  <label>{item?.labelText}</label>
-                  {
-                    item?.inputType === 'text'
-                    ? (
-                      <input 
-                        type={item?.inputType} 
-                        placeholder={item?.placeholderText}
-                        name={item?.inputName}
-                        value={inputData[item?.inputName] || ''}
-                        onChange={e => handleInputChange(item?.inputName, item?.inputType, e)}
-                      />
-                    )
-                    : (
-                      <textarea 
-                        rows={3} 
-                        placeholder={item?.placeholderText} 
-                        value={inputData[item?.inputName] || ''} 
-                        onChange={e => handleInputChange(item?.inputName, item?.inputType, e)} 
-                      />
-                    )
-                  }
-                </div>
+          <div className="row-items">
+            <label>{dataModal?.field?.labelText}</label>
+            {
+              dataModal?.field?.inputType === 'text'
+              ? (
+                <input 
+                  type={dataModal?.field?.inputType} 
+                  className="input"
+                  placeholder={dataModal?.field?.placeholderText}
+                  value={inputData[dataModal?.field?.inputName] || ''}
+                  onChange={e => handleInputChange(dataModal?.field?.inputName, dataModal?.field?.inputType, e)}
+                />
               )
-            })
-          }
+              : (
+                <textarea 
+                  rows={3} 
+                  className="input"
+                  placeholder={dataModal?.field?.placeholderText} 
+                  value={inputData[dataModal?.field?.inputName] || ''} 
+                  onChange={e => handleInputChange(dataModal?.field?.inputName, dataModal?.field?.inputType, e)} 
+                />
+              )
+            }
+          </div>
+          <div className="d-flex justify-content-end button-block">
+            <button type="button" className="btn cancel" onClick={dataModal?.onHide}>
+              <img src={IconCancel} alt="Cancel" />
+              Hủy
+            </button>
+            <button 
+              type="button" 
+              className="btn ok" 
+              onClick={() => dataModal?.buttonOk?.submitButtonOk({id: dataModal?.id, [dataModal?.field?.inputName]: inputData[dataModal?.field?.inputName]})}
+            >
+              <img src={IconOk} alt="Close" />
+              {dataModal?.buttonOk?.label}
+            </button>
+          </div>
         </div>
       </Modal.Body>
     </Modal>
-  );
+  )
 }
