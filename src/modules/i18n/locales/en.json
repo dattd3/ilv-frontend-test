@@ -2099,5 +2099,7 @@
   "tax_document_guide": "Please download need forms",
   "noi_nhan_chung_tu": "Address to receive Certificate",
   "email_nhan_chung_tu": "Email to receive Certificate",
-  "yeu_cau_do_dai": "Required length of {{value1}} or {{value2}} characters"
+  "yeu_cau_do_dai": "Required length of {{value1}} or {{value2}} characters",
+  "LeaveForHolidayExpats": "Holiday leave for expat",
+  "HolidayFundForExpat": "Holiday Leave fund"
 }

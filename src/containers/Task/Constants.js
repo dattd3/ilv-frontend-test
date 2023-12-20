@@ -6,16 +6,19 @@ const ADVANCE_COMPENSATORY_LEAVE_KEY = "PQ03"
 const ADVANCE_ABSENCE_LEAVE_KEY = "PQ04"
 const MATERNITY_LEAVE_KEY = "IN02"
 const MARRIAGE_FUNERAL_LEAVE_KEY = "PN03"
+const FOREIGN_EXPAT_LEAVE = "PN01"
 const MOTHER_LEAVE_KEY = 'PN02'
 const FOREIGN_SICK_LEAVE = 'PQ06'
 const VIN_UNI_SICK_LEAVE = 'PQ07'
 const VIN_SCHOOL_SICK_LEAVE = 'PQ08'
+const FOREIGN_HOLIDAY_EXPAT_LEAVE = 'PQ09'
 
 const absenceRequestTypes = [
   { value: 'IN01', label: 'SickLeave' },
   { value: MATERNITY_LEAVE_KEY, label: 'MaternityLeave' },
   { value: 'IN03', label: 'RecoveryLeave' },
-  { value: 'PN01', label: 'LeaveForExpats' },
+  { value: FOREIGN_EXPAT_LEAVE, label: 'LeaveForExpats' },
+  {value: FOREIGN_HOLIDAY_EXPAT_LEAVE, label: 'LeaveForHolidayExpats'},
   { value: MOTHER_LEAVE_KEY, label: "LeaveForMother" },
   { value: MARRIAGE_FUNERAL_LEAVE_KEY, label: 'LeaveForMarriageFuneral' },
   // { value: 'PN04', label: 'LeaveForWorkAccidentOccupationalDisease' },
@@ -62,4 +65,5 @@ const REQUEST_CATEGORIES = {
 }
 
 export { absenceRequestTypes, PN03List, requestTypes, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, 
-  FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, REQUEST_CATEGORIES, VIN_UNI_SICK_LEAVE, VIN_SCHOOL_SICK_LEAVE }
+  FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, REQUEST_CATEGORIES, VIN_UNI_SICK_LEAVE, VIN_SCHOOL_SICK_LEAVE, 
+  FOREIGN_EXPAT_LEAVE, FOREIGN_HOLIDAY_EXPAT_LEAVE }
