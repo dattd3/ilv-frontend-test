@@ -133,20 +133,10 @@ class PersonalComponent extends React.Component {
             // Edit profile
         } else {
             if (this.state.countryId) {
-                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${this.state.countryId}`, config)
-                    .then(res => {
-                        if (res && res.data && res.data.data) {
-                            const data = res.data.data;
-                            this.setState({
-                                birthProvinces: data
-                            })
-                        }
-                    }).catch(error => {
-
-                    })
+                this.getBirthProvinces(this.state.countryId, this.state.countryId === 'VN');
             } else if (!this.state.countryId) {
                 const birthCountryId = this.props.userDetail.birth_country_id;
-                this.getBirthProvinces(birthCountryId);
+                this.getBirthProvinces(birthCountryId, birthCountryId === 'VN');
                 this.setState({ birthCountryNotUpdate: birthCountryId });
             }
         }
@@ -198,7 +188,7 @@ class PersonalComponent extends React.Component {
         const label = e != null ? e.label : ''
 
         if (name == "BirthCountry") {
-            this.getBirthProvinces(val);
+            this.getBirthProvinces(val, val === 'VN');
         }
 
         const userDetail = {...this.state.userDetail}
@@ -225,7 +215,12 @@ class PersonalComponent extends React.Component {
         this.setState({ userDetail })
     }
 
-    getBirthProvinces = (country_id) => {
+    getBirthProvinces = (country_id, isVietNam = false) => {
+        if (!isVietNam) {
+            this.setState({ birthProvinces: [] })
+            return
+        }
+
         const config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${country_id}`, config)
