@@ -1256,14 +1256,16 @@ export const IncomeTablesConfig = t => {
                                 field: 'base_salary_and_quality_of_work_bonus',
                                 level4: [
                                     { label: t("BaseSalary"), field: 'base_salary' },
-                                    { label: t("BehaviorAndAttitudeBonus"), field: 'quality_of_work_bonus' },
+                                    { label: t("BehaviorAndAttitudeBonus"), field: 'quality_of_work_bonus' }, //
+                                    { label: t("VinmecAllowanceForExceedingTeachingPeriods"), field: 'exceeding_required_number_of_period_bonus' },
                                 ]
                             },
                             {
                                 label: t("AllowanceIfAny"),
                                 field: 'allowance_amount',
                                 level4: [
-                                    { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' }
+                                    { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
+                                    { label: t("PositionAllowance"), field: 'key_leader_bonus' },
                                 ]
                             },
                             {
@@ -1321,7 +1323,9 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
-                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' },
+                                    { label: t("VinmecUnionSupport"), field: 'union_support' },
+                                    { label: t("VinmecPerformanceBonus"), field: 'performance_bonus' },
                                 ]
                             }
                         ]
