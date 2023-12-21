@@ -953,7 +953,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
         
         
-        if([Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES].includes(currentCompanyCode)) {
+        if([Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES].includes(currentCompanyCode)) {
             absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== FOREIGN_EXPAT_LEAVE);
         } else {
             absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== FOREIGN_HOLIDAY_EXPAT_LEAVE);
