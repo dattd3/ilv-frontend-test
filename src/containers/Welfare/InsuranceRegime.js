@@ -41,51 +41,46 @@ class InsuranceRegime extends React.Component {
         const { tab } = this.state
 
         if (tab == tabConfig.CreateInsuranceSocial) {
-          return <CreateInsuranceSocial/>
+            return <CreateInsuranceSocial/>
         }
 
         return (
             <div className="registration-section personal-info justify-content-between internal-welfare">
-                {
-                    ![Constants.pnlVCode.VinHome].includes(currentCompanyCode)
-                    ? (
-                        <Tabs defaultActiveKey={tab} onSelect={(key) => this.updateTabLink(key)}>
-                            {/* <Tab eventKey="Health" title={t('heath_insurance')}>
-                                <Health title={t('welfare_regime_internal')}/>
-                            </Tab> */}
-                            {
-                                checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES) && (
-                                    <Tab eventKey="Social" title={t('social_insurance')}>
-                                        <InsuranceSocial title={t('Vinwonder/Safari')}/>
-                                    </Tab>
-                                )
-                            }
-                            {
-                                checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
-                                    <Tab eventKey="SocialContribute" title={t('social_contribute_info')}>
-                                        <SocialContributeInfo title={t('Vinwonder/Safari')}/>
-                                    </Tab>
-                                )
-                            }
-                            {
-                                checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
-                                    <Tab eventKey="SocialSupport" title={t('social_support_info')}>
-                                        <SocialSupportInfo title={t('Vinwonder/Safari')}/>
-                                    </Tab>
-                                )
-                            }
-                        </Tabs>
-                    )
-                    : (
-                        <Tabs defaultActiveKey={tab} onSelect={(key) => this.updateTabLink(key)}>
+                <Tabs defaultActiveKey={tab} onSelect={(key) => this.updateTabLink(key)}>
+                    {/* <Tab eventKey="Health" title={t('heath_insurance')}>
+                        <Health title={t('welfare_regime_internal')}/>
+                    </Tab> */}
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES) && (
+                            <Tab eventKey={tabConfig.Social} title={t('social_insurance')}>
+                                <InsuranceSocial title={t('Vinwonder/Safari')}/>
+                            </Tab>
+                        )
+                    }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
+                            <Tab eventKey={tabConfig.SocialContribute} title={t('social_contribute_info')}>
+                                <SocialContributeInfo title={t('Vinwonder/Safari')}/>
+                            </Tab>
+                        )
+                    }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
+                            <Tab eventKey={tabConfig.SocialSupport} title={t('social_support_info')}>
+                                <SocialSupportInfo title={t('Vinwonder/Safari')}/>
+                            </Tab>
+                        )
+                    }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinHome) && (
                             <Tab eventKey={tabConfig.HealthInsurance} title={t('HealthInsurance')}>
                                 <HealthInsurance
                                     needLoad={tab === tabConfig.HealthInsurance}
                                 />
                             </Tab>
-                        </Tabs>
-                    )
-                }
+                        )
+                    }
+                </Tabs>
             </div>
         )
     }
