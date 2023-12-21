@@ -1266,7 +1266,6 @@ export const IncomeTablesConfig = t => {
                                 level4: [
                                     { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
                                     { label: t("PositionAllowance"), field: 'key_leader_bonus' },
-                                    { label: t("BonusForNapTimeWatching"), field: 'nap_time_watching_bonus' },
                                 ]
                             },
                             {
@@ -1326,6 +1325,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
                                     { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' },
                                     { label: t("VinmecUnionSupport"), field: 'union_support' },
+                                    { label: t("BonusForNapTimeWatching"), field: 'nap_time_watching_bonus' },
                                 ]
                             }
                         ]
