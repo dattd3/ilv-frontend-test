@@ -420,7 +420,8 @@ class PersonalComponent extends React.Component {
                         <div className="col-6">
                             <Select name="BirthCountry" placeholder={t("SelectCountryOfBirth")} key="birthCountry"
                                 isClearable={true}
-                                options={countries} value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : userDetailState?.birth_country_id))}
+                                options={countries} 
+                                value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : userDetailState?.birth_country_id))}
                                 onChange={e => this.handleSelectInputs(e, 'BirthCountry', userDetail.birth_country_name || "")} />
                         </div>
                     </div>
@@ -433,8 +434,15 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.birth_province || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="BirthProvince" placeholder={t("SelectPlaceOfBirth")} key="birthProvince" options={birthProvinces} isClearable={true}
-                                value={birthProvinces.filter(p => p.value == userDetailState?.birth_province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
+                            <Select 
+                                name="BirthProvince" 
+                                placeholder={t("SelectPlaceOfBirth")} 
+                                key="birthProvince" 
+                                options={birthProvinces} 
+                                isClearable={true}
+                                value={birthProvinces.filter(p => p.value == userDetailState?.birth_province_id)} 
+                                onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)}
+                                isDisabled={userDetailState?.birth_country_id && userDetailState?.birth_country_id !== 'VN'} />
                             {
                                 validationMessagesFromParent?.birthProvince && <p className="text-danger error-message">{validationMessagesFromParent?.birthProvince}</p>
                             }
