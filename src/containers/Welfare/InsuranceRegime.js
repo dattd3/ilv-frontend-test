@@ -24,77 +24,70 @@ const tabConfig = {
 const currentCompanyCode = localStorage.getItem('companyCode')
 
 class InsuranceRegime extends React.Component {
-  constructor(props) {
-    super();
-    this.state = {
-      tab:
-        new URLSearchParams(props?.history?.location?.search).get("tab") ||
-        [Constants.pnlVCode.VinHome].includes(currentCompanyCode)
-          ? tabConfig.HealthInsurance
-          : tabConfig.Social,
-    };
-  }
-
-  updateTabLink = (key) => {
-    this.props.history.push("?tab=" + key);
-    this.setState({ tab: key });
-  };
-
-  render() {
-    const { t } = this.props;
-    const { tab } = this.state;
-
-    if (tab == tabConfig.CreateInsuranceSocial) {
-      return <CreateInsuranceSocial />;
+    constructor(props) {
+        super();
+        this.state = {
+        tab:
+            new URLSearchParams(props?.history?.location?.search).get("tab") ||
+            [Constants.pnlVCode.VinHome].includes(currentCompanyCode)
+            ? tabConfig.HealthInsurance
+            : tabConfig.Social,
+        };
     }
 
-    return (
-      <div className="registration-section personal-info justify-content-between internal-welfare">
-        <Tabs
-          defaultActiveKey={tab}
-          onSelect={(key) => this.updateTabLink(key)}
-        >
-          {/* <Tab eventKey="Health" title={t('heath_insurance')}>
+    updateTabLink = (key) => {
+        this.props.history.push("?tab=" + key);
+        this.setState({ tab: key });
+    };
+
+    render() {
+        const { t } = this.props;
+        const { tab } = this.state
+
+        if (tab == tabConfig.CreateInsuranceSocial) {
+            return <CreateInsuranceSocial/>
+        }
+
+        return (
+            <div className="registration-section personal-info justify-content-between internal-welfare">
+                <Tabs defaultActiveKey={tab} onSelect={(key) => this.updateTabLink(key)}>
+                    {/* <Tab eventKey="Health" title={t('heath_insurance')}>
                         <Health title={t('welfare_regime_internal')}/>
                     </Tab> */}
-          {checkIsExactPnL(
-            Constants.pnlVCode.VinSchool,
-            Constants.pnlVCode.VinFast,
-            Constants.pnlVCode.VinFastTrading,
-            Constants.pnlVCode.VinES
-          ) && (
-            <Tab eventKey={tabConfig.Social} title={t("social_insurance")}>
-              <InsuranceSocial title={t("Vinwonder/Safari")} />
-            </Tab>
-          )}
-          {checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
-            <Tab
-              eventKey={tabConfig.SocialContribute}
-              title={t("social_contribute_info")}
-            >
-              <SocialContributeInfo title={t("Vinwonder/Safari")} />
-            </Tab>
-          )}
-          {checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
-            <Tab
-              eventKey={tabConfig.SocialSupport}
-              title={t("social_support_info")}
-            >
-              <SocialSupportInfo title={t("Vinwonder/Safari")} />
-            </Tab>
-          )}
-          {checkIsExactPnL(Constants.pnlVCode.VinHome) && (
-            <Tab
-              eventKey={tabConfig.HealthInsurance}
-              title={t("HealthInsurance")}
-            >
-              <HealthInsurance needLoad={tab === tabConfig.HealthInsurance} />
-            </Tab>
-          )}
-        </Tabs>
-      </div>
-    );
-  }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES) && (
+                            <Tab eventKey={tabConfig.Social} title={t('social_insurance')}>
+                                <InsuranceSocial title={t('Vinwonder/Safari')}/>
+                            </Tab>
+                        )
+                    }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
+                            <Tab eventKey={tabConfig.SocialContribute} title={t('social_contribute_info')}>
+                                <SocialContributeInfo title={t('Vinwonder/Safari')}/>
+                            </Tab>
+                        )
+                    }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
+                            <Tab eventKey={tabConfig.SocialSupport} title={t('social_support_info')}>
+                                <SocialSupportInfo title={t('Vinwonder/Safari')}/>
+                            </Tab>
+                        )
+                    }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinHome) && (
+                            <Tab eventKey={tabConfig.HealthInsurance} title={t('HealthInsurance')}>
+                                <HealthInsurance
+                                    needLoad={tab === tabConfig.HealthInsurance}
+                                />
+                            </Tab>
+                        )
+                    }
+                </Tabs>
+            </div>
+        )
+    }
 }
 
 export default HOCComponent(withTranslation()(InsuranceRegime));
