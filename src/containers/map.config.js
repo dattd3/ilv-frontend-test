@@ -160,7 +160,8 @@ const MapConfig = {
   Recruitment: "/recruitment",
   //thông tin quyết toán thuế
   CreateTaxFinalization: "/register-tax-finalization",
-  TaxFinalizationDetail: "/tax-finalization/:id/:type"
+  TaxFinalizationDetail: "/tax-finalization/:id/:type",
+  Recruitment: "/recruitment"
 };
 
 export default MapConfig;

@@ -1,17 +1,17 @@
-import React from "react";
-import { Tabs, Tab } from "react-bootstrap";
-import { withTranslation } from "react-i18next";
-import CreateInsuranceSocial from "./CreateInsuranceSocial";
-import EmptyComponent from "./EmptyComponent";
-import Health from "./WelfareComponents/Health";
-import InsuranceSocial from "./WelfareComponents/InsuranceSocial";
-import Resource from "./WelfareComponents/Resource";
-import HOCComponent from "../../components/Common/HOCComponent";
-import SocialContributeInfo from "./WelfareComponents/SocialContributeInfo";
-import SocialSupportInfo from "./WelfareComponents/SocialSupportInfo";
-import { checkIsExactPnL } from "commons/commonFunctions";
-import Constants from "commons/Constants";
-import HealthInsurance from "./WelfareComponents/HealthInsurance";
+import React from 'react'
+import { Tabs, Tab } from 'react-bootstrap'
+import { withTranslation } from "react-i18next"
+import CreateInsuranceSocial from './CreateInsuranceSocial'
+import EmptyComponent from './EmptyComponent'
+import Health from './WelfareComponents/Health'
+import InsuranceSocial from './WelfareComponents/InsuranceSocial'
+import Resource from './WelfareComponents/Resource'
+import HOCComponent from '../../components/Common/HOCComponent'
+import SocialContributeInfo from './WelfareComponents/SocialContributeInfo'
+import SocialSupportInfo from './WelfareComponents/SocialSupportInfo'
+import HealthInsurance from './WelfareComponents/HealthInsurance'
+import Constants from 'commons/Constants'
+import { checkIsExactPnL } from 'commons/commonFunctions'
 
 const tabConfig = {
   CreateInsuranceSocial: "CreateInsuranceSocial",
@@ -21,7 +21,7 @@ const tabConfig = {
   HealthInsurance: "HealthInsurance",
 };
 
-const currentCompanyCode = localStorage.getItem("companyCode");
+const currentCompanyCode = localStorage.getItem('companyCode')
 
 class InsuranceRegime extends React.Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class InsuranceRegime extends React.Component {
     return (
       <div className="registration-section personal-info justify-content-between internal-welfare">
         <Tabs
-          defaultActiveKey={this.state.tab}
+          defaultActiveKey={tab}
           onSelect={(key) => this.updateTabLink(key)}
         >
           {/* <Tab eventKey="Health" title={t('heath_insurance')}>

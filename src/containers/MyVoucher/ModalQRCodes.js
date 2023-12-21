@@ -41,7 +41,8 @@ const ModalQRCodes = ({ isShowModal, listQRs = [], onHideModal }) => {
                             (listQRs || []).map((ele, i) => (
                                 <Carousel.Item key={i}>
                                     <div className="d-flex justify-content-center flex-column qr-item">
-                                        <div className="d-flex justify-content-center image">
+                                        <div className="d-flex justify-content-center slide">{i + 1}/{listQRs?.length}</div>
+                                        <div className="d-inline-flex justify-content-center image">
                                             <img
                                                 src={`data:image/png;base64,${ele?.qrCode}`}
                                                 alt="QR"
@@ -49,7 +50,7 @@ const ModalQRCodes = ({ isShowModal, listQRs = [], onHideModal }) => {
                                             />
                                         </div>
                                         <div className="d-flex justify-content-center code">{ele?.code}</div>
-                                        <div className="d-flex justify-content-center time">{t("EXP")}: <span className="font-weight-bold">{moment(ele?.validFrom).format("DD/MM/YYYY")} - {moment(ele?.validTo).format("DD/MM/YYYY")}</span></div>
+                                        <div className="d-flex justify-content-center time">{t("EXP")}:&nbsp;<span className="font-weight-bold">{moment(ele?.validFrom).format("DD/MM/YYYY")} - {moment(ele?.validTo).format("DD/MM/YYYY")}</span></div>
                                     </div>
                                 </Carousel.Item>
                             ))
