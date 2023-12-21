@@ -1326,6 +1326,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
                                     { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' },
                                     { label: t("VinmecUnionSupport"), field: 'union_support' },
+                                    { label: t("BonusForNapTimeWatching"), field: 'nap_time_watching_bonus' },
                                 ]
                             }
                         ]
