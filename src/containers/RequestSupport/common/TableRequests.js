@@ -28,6 +28,7 @@ import IconDeadlineOverdue from 'assets/img/icon/ic_deadline-overdue_grey.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import Constants from "commons/Constants"
+import { hasValue } from "commons/Utils"
 registerLocale("vi", vi)
 
 const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode }) => {
@@ -56,7 +57,7 @@ const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode 
     // )
 }
 
-const TableRequests = ({ masterData, tab, listRequests, total, updateToParent, cancelRequest }) => {
+const TableRequests = ({ masterData, tab, listRequests, total, updateListRequests, cancelRequest, cancelUpdate, evaluateRequest, handleFilterOnParent }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
     const { t } = useTranslation()
     const [filter, setFilter] = useState({
@@ -75,8 +76,8 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateToParent, c
     //     tab && setIsShowFilter(false)
     // }, [tab])
 
-    const handleInputChange = () => {
-
+    const handleInputChange = (id, key, value) => {
+        updateListRequests(id, key, value)
     }
 
     const handleFilterInputChange = (key, val) => {
@@ -88,7 +89,11 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateToParent, c
 
     const handleCheckboxChange = (e, id) => {
         const value = e?.target?.checked || false
-        updateToParent(id, value)
+        updateListRequests(id, 'isChecked', value)
+    }
+
+    const handleRating = (id, value) => {
+        updateListRequests(id, 'evaluate_temp', value)
     }
 
     const customFilterStyles = {
@@ -166,6 +171,8 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateToParent, c
             label: locale === Constants.LANGUAGE_VI ? item?.statusVn : item?.statusEn,
         }
     })
+
+    console.log('listRequests => ', listRequests)
 
     return (
         <table className="table">
@@ -301,7 +308,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateToParent, c
                                             portalId="root-portal" />
                                         {/* <span className="input-img"><img src={IconDatePicker} alt="Date" /></span> */}
                                     </label>
-                                    <button className="btn-search">Tìm kiếm</button>
+                                    <button className="btn-search" onClick={() => handleFilterOnParent(filter)}>Tìm kiếm</button>
                                 </div>
                             </th>
                         </tr>
@@ -310,206 +317,217 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateToParent, c
             </thead>
             <tbody>
             {
-                listRequests.map((child, index) => {
-                    let statusId = child?.supportStatus?.id
-
-                    return (
-                        <tr key={index}>
-                            {
-                                tab === tabConfig.processing && (
-                                    <td className="check">
-                                        <div className="val">
-                                            <input type="checkbox" className="cursor-pointer" checked={child?.isChecked || false} onChange={e => handleCheckboxChange(e, child?.id)} />
-                                        </div>
-                                    </td>
-                                )
-                            }
-                            <td className="icon">
-                                <div className="val d-flex" style={{ justifyContent: 'space-between' }}>
-                                    <span 
-                                        data-tip data-for={`tooltip-${index}-ic1`} 
-                                        className="highlight cursor-pointer" 
-                                    >
-                                        <ReactTooltip 
-                                            id={`tooltip-${index}-ic1`} 
-                                            scrollHide 
-                                            effect="solid" 
-                                            place="right" 
-                                            type='dark'>
-                                            {child?.requestHistory?.[0]?.contents}
-                                        </ReactTooltip>
-                                        <img src={child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? IconEmailCyan : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? IconEmailBlue : IconEmailGreen} alt="Search" />
-                                    </span>
-                                    {
-                                        tab === tabConfig.processing && (
-                                            <>
-                                                <span 
-                                                    data-tip data-for={`tooltip-${index}-ic2`} 
-                                                    className="highlight cursor-pointer" 
-                                                >
-                                                    <ReactTooltip 
-                                                        id={`tooltip-${index}-ic2`} 
-                                                        scrollHide 
-                                                        effect="solid" 
-                                                        place="right" 
-                                                        type='dark'>
-                                                        {child?.requestHistory?.[0]?.contents}
-                                                    </ReactTooltip>
-                                                    <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
-                                                </span>
-                                                <span 
-                                                    data-tip data-for={`tooltip-${index}-ic3`} 
-                                                    className="highlight cursor-pointer" 
-                                                >
-                                                    <ReactTooltip 
-                                                        id={`tooltip-${index}-ic3`} 
-                                                        scrollHide 
-                                                        effect="solid" 
-                                                        place="right" 
-                                                        type='dark'>
-                                                        {child?.requestHistory?.[0]?.contents}
-                                                    </ReactTooltip>
-                                                    <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" />
-                                                </span>
-                                            </>
-                                        )
-                                    }
-                                </div>
-                            </td>
-                            <td className="code text-center">
-                                <a href={'#'} title={''} className="val">{child?.id}</a>
-                            </td>
-                            <td className="title">
-                                <div className="val">{child?.name}</div>
-                            </td>
-                            <td className="created-by">
-                                <div className="val">{JSON.parse(child?.userInfo)?.ad}</div>
-                            </td>
-                            <td className="group">
-                                <div className="val">
-                                    {
-                                        tab === tabConfig.createdReceiving
-                                        ? (<>{child?.supportGroups?.groupName}</>)
-                                        : (
-                                            <Select 
-                                                placeholder={t("Select")} 
-                                                isClearable={true} 
-                                                value={null} 
-                                                options={[]} 
-                                                onChange={handleInputChange} 
-                                                styles={customStyles}
-                                            />
-                                        )
-                                    }
-                                </div>
-                            </td>
-                            <td className="pic">
-                                <div className="val">
-                                    {
-                                        tab === tabConfig.createdReceiving
-                                        ? (<>{JSON.parse(child?.handlerInfo)?.ad}</>)
-                                        : (
-                                            <Select 
-                                                placeholder={t("Select")} 
-                                                isClearable={true} 
-                                                value={null} 
-                                                options={[]} 
-                                                onChange={handleInputChange} 
-                                                styles={customStyles}
-                                            />
-                                        )
-                                    }
-                                </div>
-                            </td>
-                            <td className={`status-col ${tab === tabConfig.createdReceiving ? 'text-center' : ''}`}>
-                                <div className="val">
-                                    {
-                                        tab === tabConfig.createdReceiving
-                                        ? (
-                                            <span className={`status ${classIndexMapping[statusId]}`}>{locale === Constants.LANGUAGE_VI ? child?.supportStatus?.statusVn : child?.supportStatus?.statusEn}</span>
-                                        )
-                                        : (
-                                            <Select 
-                                                placeholder={t("Select")} 
-                                                isClearable={true} 
-                                                value={null} 
-                                                options={[]} 
-                                                onChange={handleInputChange} 
-                                                styles={customStyles}
-                                            />
-                                        )
-                                    }
-                                </div>
-                            </td>
-                            <td className="created-date text-center">
-                                <div className="val">{moment(child?.createdDate).isValid() ? moment(child?.createdDate).format("DD/MM/YYYY") : ''}</div>
-                            </td>
-                            {
-                                tab === tabConfig.processing && (
-                                    <td className="deadline text-center">
-                                        <div className="val">30/11/2023</div>
-                                    </td>
-                                )
-                            }
-                            {
-                                tab === tabConfig.createdReceiving && (
-                                    <>
-                                        <td className="evaluation text-center">
+                listRequests?.length > 0
+                ? (
+                    listRequests.map((child, index) => {
+                        let statusId = child?.supportStatus?.id
+                        return (
+                            <tr key={index}>
+                                {
+                                    tab === tabConfig.processing && (
+                                        <td className="check">
                                             <div className="val">
-                                                <Rating
-                                                    initialValue={child?.evaluate || 0}
-                                                    transition
-                                                    readonly={Number(statusId) < status.closed}
-                                                />
+                                                <input type="checkbox" className="cursor-pointer" checked={child?.isChecked || false} onChange={e => handleCheckboxChange(e, child?.id)} />
                                             </div>
                                         </td>
-                                        <td className="comment">
-                                            <div className="val">
+                                    )
+                                }
+                                <td className="icon">
+                                    <div className="val d-flex" style={{ justifyContent: 'space-between' }}>
+                                        <span 
+                                            data-tip data-for={`tooltip-${index}-ic1`} 
+                                            className="highlight cursor-pointer" 
+                                        >
+                                            <ReactTooltip 
+                                                id={`tooltip-${index}-ic1`} 
+                                                scrollHide 
+                                                effect="solid" 
+                                                place="right" 
+                                                type='dark'>
+                                                {child?.requestHistory?.[0]?.contents}
+                                            </ReactTooltip>
+                                            <img src={child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? IconEmailCyan : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? IconEmailBlue : IconEmailGreen} alt="Search" />
+                                        </span>
+                                        {
+                                            tab === tabConfig.processing && (
+                                                <>
+                                                    <span 
+                                                        data-tip data-for={`tooltip-${index}-ic2`} 
+                                                        className="highlight cursor-pointer" 
+                                                    >
+                                                        <ReactTooltip 
+                                                            id={`tooltip-${index}-ic2`} 
+                                                            scrollHide 
+                                                            effect="solid" 
+                                                            place="right" 
+                                                            type='dark'>
+                                                            {child?.requestHistory?.[0]?.contents}
+                                                        </ReactTooltip>
+                                                        <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
+                                                    </span>
+                                                    <span 
+                                                        data-tip data-for={`tooltip-${index}-ic3`} 
+                                                        className="highlight cursor-pointer" 
+                                                    >
+                                                        <ReactTooltip 
+                                                            id={`tooltip-${index}-ic3`} 
+                                                            scrollHide 
+                                                            effect="solid" 
+                                                            place="right" 
+                                                            type='dark'>
+                                                            {child?.requestHistory?.[0]?.contents}
+                                                        </ReactTooltip>
+                                                        <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" />
+                                                    </span>
+                                                </>
+                                            )
+                                        }
+                                    </div>
+                                </td>
+                                <td className="code text-center">
+                                    <a href={'#'} title={''} className="val">{child?.id}</a>
+                                </td>
+                                <td className="title">
+                                    <div className="val">{child?.name}</div>
+                                </td>
+                                <td className="created-by">
+                                    <div className="val">{JSON.parse(child?.userInfo)?.ad}</div>
+                                </td>
+                                <td className="group">
+                                    <div className="val">
+                                        {
+                                            tab === tabConfig.createdReceiving
+                                            ? (<>{child?.supportGroups?.groupName}</>)
+                                            : (
+                                                <Select 
+                                                    placeholder={t("Select")} 
+                                                    isClearable={true} 
+                                                    value={null} 
+                                                    options={[]} 
+                                                    onChange={handleInputChange} 
+                                                    styles={customStyles}
+                                                />
+                                            )
+                                        }
+                                    </div>
+                                </td>
+                                <td className="pic">
+                                    <div className="val">
+                                        {
+                                            tab === tabConfig.createdReceiving
+                                            ? (<>{JSON.parse(child?.handlerInfo)?.ad}</>)
+                                            : (
+                                                <Select 
+                                                    placeholder={t("Select")} 
+                                                    isClearable={true} 
+                                                    value={null} 
+                                                    options={[]} 
+                                                    onChange={handleInputChange} 
+                                                    styles={customStyles}
+                                                />
+                                            )
+                                        }
+                                    </div>
+                                </td>
+                                <td className={`status-col ${tab === tabConfig.createdReceiving ? 'text-center' : ''}`}>
+                                    <div className="val">
+                                        {
+                                            tab === tabConfig.createdReceiving
+                                            ? (
+                                                <span className={`status ${classIndexMapping[statusId]}`}>{locale === Constants.LANGUAGE_VI ? child?.supportStatus?.statusVn : child?.supportStatus?.statusEn}</span>
+                                            )
+                                            : (
+                                                <Select 
+                                                    placeholder={t("Select")} 
+                                                    isClearable={true} 
+                                                    value={null} 
+                                                    options={[]} 
+                                                    onChange={handleInputChange} 
+                                                    styles={customStyles}
+                                                />
+                                            )
+                                        }
+                                    </div>
+                                </td>
+                                <td className="created-date text-center">
+                                    <div className="val">{moment(child?.createdDate).isValid() ? moment(child?.createdDate).format("DD/MM/YYYY") : ''}</div>
+                                </td>
+                                {
+                                    tab === tabConfig.processing && (
+                                        <td className="deadline text-center">
+                                            <div className="val">30/11/2023</div>
+                                        </td> 
+                                    )
+                                }
+                                {
+                                    tab === tabConfig.createdReceiving && (
+                                        <>
+                                            <td className="evaluation text-center">
+                                                <div className="val">
+                                                    <Rating
+                                                        initialValue={child?.evaluate_temp !== undefined ? child?.evaluate_temp : (child?.evaluate || 0)}
+                                                        transition
+                                                        // readonly={Number(statusId) < status.closed || child?.evaluate}
+                                                        onClick={(value) => {
+                                                            handleRating(child?.id, value)
+                                                        }}
+                                                    />
+                                                </div>
+                                            </td>
+                                            <td className="comment">
+                                                <div className="val">
+                                                    {
+                                                        Number(statusId) === status.closed && (
+                                                            <textarea 
+                                                                rows={2} 
+                                                                placeholder={'Nhập'} 
+                                                                value={child?.comments_temp || ''} 
+                                                                onChange={e => handleInputChange(child?.id, 'comments_temp', e?.target?.value || '')} 
+                                                                disabled={hasValue(child?.comments?.trim())} 
+                                                            />
+                                                        )
+                                                    }
+                                                </div>
+                                            </td>
+                                        </>
+                                    )
+                                }
+                                {
+                                    tab === tabConfig.createdReceiving && (
+                                        <td className="action">
+                                            <div className="val text-center d-flex">
                                                 {
-                                                    Number(statusId) === status.closed && (
-                                                        <textarea 
-                                                            rows={2} 
-                                                            placeholder={'Nhập'} 
-                                                            value={child?.comments || ''} 
-                                                            onChange={handleInputChange} 
-                                                            // disabled={isDisableManagerComment} 
-                                                        />
+                                                    [status.new, status.processing].includes(Number(child?.supportStatus?.id || 0)) && (
+                                                        <span title={t("Remove")} className="cursor-pointer" onClick={() => cancelRequest(child?.id)}><img alt={t("Remove")} src={IconRemove} className="ic-remove" /></span>
+                                                    )
+                                                }
+                                                {
+                                                    ([status.closed].includes(Number(child?.supportStatus?.id || 0)) 
+                                                    && (child?.evaluate_temp || hasValue(child?.comments_temp))) && (
+                                                        <>
+                                                            <span title={t("Update")} className="cursor-pointer" onClick={() => evaluateRequest(child?.id)}><img alt={t("Update")} src={IconSave} className="ic-save" /></span>
+                                                            <span title={t("Cancel2")} className="cursor-pointer" onClick={() => cancelUpdate(child?.id)}><img alt={t("Cancel2")} src={IconCancel} className="ic-cancel" /></span>
+                                                        </>
                                                     )
                                                 }
                                             </div>
                                         </td>
-                                    </>
-                                )
-                            }
-                            {
-                                tab === tabConfig.createdReceiving && (
-                                    <td className="action">
-                                        <div className="val text-center d-flex">
-                                            {
-                                                [status.new, status.processing].includes(Number(child?.supportStatus?.id || 0)) && (
-                                                    <span title={t("Remove")} className="cursor-pointer" onClick={() => cancelRequest(child?.id)}><img alt={t("Remove")} src={IconRemove} className="ic-remove" /></span>
-                                                )
-                                            }
-                                            {
-                                                [status.closed].includes(Number(child?.supportStatus?.id || 0)) && (
-                                                    <>
-                                                        <span title={t("Update")} className="cursor-pointer" onClick={null}><img alt={t("Update")} src={IconSave} className="ic-save" /></span>
-                                                        <span title={t("Cancel2")} className="cursor-pointer" onClick={null}><img alt={t("Cancel2")} src={IconCancel} className="ic-cancel" /></span>
-                                                    </>
-                                                )
-                                            }
-                                        </div>
-                                    </td>
-                                )
-                            }
-                            {
-                                isShowFilter && tab === tabConfig.processing && (
-                                    <td className="space"><div className="val"></div></td>
-                                )
-                            }
-                        </tr>
-                    )
-                })
+                                    )
+                                }
+                                {
+                                    isShowFilter && tab === tabConfig.processing && (
+                                        <td className="space"><div className="val"></div></td>
+                                    )
+                                }
+                            </tr>
+                        )
+                    })
+                )
+                : (
+                    <tr>
+                        <td colSpan={100}><div className="text-danger data-not-found">{t("NoDataFound")}</div></td>
+                    </tr>
+                )
             }
             </tbody>
         </table>

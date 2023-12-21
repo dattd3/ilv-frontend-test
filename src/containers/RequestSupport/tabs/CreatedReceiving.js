@@ -2,8 +2,9 @@ import { useState, useEffect } from "react"
 import Select from 'react-select'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
+import { omit } from "lodash"
 import { status } from "../Constant"
-import { getRequestConfigurations } from 'commons/Utils'
+import { getRequestConfigurations, hasValue } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
 import Note from "../common/Note"
 import CreatedRequest from "../popup/CreateRequest"
@@ -13,9 +14,10 @@ import CancelModal from "components/Common/CancelModal"
 import StatusModal from "components/Common/StatusModal"
 import IconAddNew from 'assets/img/ic-add-green.svg'
 import IconFilter from "assets/img/icon/icon-filter.svg"
+import Constants from "commons/Constants"
 
 const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
-    const listPageSizes = [1, 20, 30, 40, 50]
+    const listPageSizes = [10, 20, 30, 40, 50]
     const quickFilterOptions = [
         { value: 0, label: 'Tất cả' },
         { value: 1, label: 'Yêu cầu tồn của tôi' },
@@ -54,13 +56,14 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
         isShow: false,
         isSuccess: true,
         content: "",
+        needReload: true,
     })
 
     useEffect(() => {
         needLoadData && fetchListRequest()
     }, [needLoadData])
 
-    const fetchListRequest = async (_paging, quickFilterVal) => {
+    const fetchListRequest = async (_paging, quickFilterValue, normalFilterData) => {
         try {
             setIsLoading(true)
             let pageIndex = paging.pageIndex
@@ -76,9 +79,36 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
                 pageSize: Number(pageSize || listPageSizes[0]),
             }
 
-            if (quickFilterVal !== undefined && quickFilterVal !== null) {
-                payload.filter = quickFilterVal
+            if (quickFilterValue !== undefined && quickFilterValue !== null) {
+                payload.filter = quickFilterValue
                 payload.pageIndex = 1
+            }
+
+            if (normalFilterData) {
+                if (hasValue(normalFilterData?.requestCode)) {
+                    payload.id = normalFilterData?.requestCode
+                }
+                if (hasValue(normalFilterData?.title)) {
+                    payload.q = normalFilterData?.title
+                }
+                if (hasValue(normalFilterData?.createdBy)) {
+                    payload.userId = normalFilterData?.createdBy
+                }
+                if (hasValue(normalFilterData?.group)) {
+                    payload.groupId = normalFilterData?.group
+                }
+                if (hasValue(normalFilterData?.handler)) {
+                    payload.handlerId = normalFilterData?.handler
+                }
+                if (hasValue(normalFilterData?.status)) {
+                    payload.statusId = normalFilterData?.status
+                }
+                if (hasValue(normalFilterData?.createdDateFrom)) {
+                    payload.startDate = normalFilterData?.createdDateFrom
+                }
+                if (hasValue(normalFilterData?.createdDateTo)) {
+                    payload.endDate = normalFilterData?.createdDateTo
+                }
             }
 
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/user/list`, payload, getRequestConfigurations())
@@ -86,27 +116,32 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
                 listRequest: response?.data?.data?.datas || [],
                 total: response?.data?.data?.totalRecord || 0,
             })
+        } catch (error) {
+            setRequestData({
+                listRequest: [],
+                total: 0,
+            })
         } finally {
             setIsLoading(false)
         }
     }
 
     const handleChangePageSize = (pageSize) => {
-        const pagingInput = {
+        const _paging = {
             pageIndex: 1,
             pageSize: pageSize,
         }
-        setPaging(pagingInput)
-        fetchListRequest(pagingInput)
+        setPaging(_paging)
+        fetchListRequest(_paging)
     }
 
     const handleChangePage = (page) => {
-        const pagingInput = {
+        const _paging = {
             pageIndex: page,
             pageSize: paging.pageSize,
         }
-        setPaging(pagingInput)
-        fetchListRequest(pagingInput)
+        setPaging(_paging)
+        fetchListRequest(_paging)
     }
 
     const handleQuickFilter = (e) => {
@@ -119,8 +154,6 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
     }
 
     const cancelRequest = (id) => {
-        console.log('TING TING => ', id)
-
         setCancelRequestModal({
             ...cancelRequestModal,
             id: id,
@@ -141,9 +174,7 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
     }
 
     const processCancelRequest = async (dataModal) => {
-        console.log('heheheh => ', dataModal)
-        console.log()
-
+        onHideCancelModal()
         const statusModalTemp = {...statusModal}
         statusModalTemp.isShow = true
 
@@ -152,17 +183,24 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
             const payload = {
                 id: dataModal?.id,
                 statusId: status.cancelled,
-                comments: dataModal[cancelRequestModal?.field?.inputName],
+                comments: dataModal?.reason || '',
             }
 
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/delete`, payload, getRequestConfigurations())
+            statusModalTemp.isSuccess = true
+            statusModalTemp.needReload = true
+            statusModalTemp.content = t("successfulCancelReq")
 
-            console.log('response => ', response)
-            return
+            if (response?.data?.result?.code !== Constants.API_SUCCESS_CODE) {
+                statusModalTemp.isSuccess = false
+                statusModalTemp.needReload = false
+                statusModalTemp.content = response?.data?.result?.message || t("AnErrorOccurred")
+            }
 
-            statusModalTemp.isSuccess = false
+            SetStatusModal(statusModalTemp)
         } catch (error) {
             statusModalTemp.isSuccess = false
+            statusModalTemp.needReload = false
             statusModalTemp.content = error?.response?.data?.result?.message || t("AnErrorOccurred")
             SetStatusModal(statusModalTemp)
         }
@@ -171,12 +209,26 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
         }
     }
 
+    const handleNormalFilter = (filter) => {
+        const _paging = {
+            pageIndex: 1,
+            pageSize: paging.pageSize,
+        }
+        setPaging(_paging)
+        fetchListRequest(_paging, undefined, filter)
+    }
+
     const onHideStatusModal = () => {
         SetStatusModal({
             isShow: false,
             isSuccess: true,
             content: "",
+            needReload: true,
         })
+        
+        if (statusModal?.needReload) {
+            window.location.reload()
+        }
     }
 
     const onHideCancelModal = () => {
@@ -198,25 +250,91 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
         })
     }
 
-    const updateListRequests = (id, val) => {
-        const listRequestToSave = id === null 
-        ? (requestData?.listRequest || []).map(item => {
-            return {
-                ...item,
-                isChecked: val,
-            }
+    const updateListRequests = (id, key, val) => {
+        let listRequestToSave = []
+        switch (key) {
+            case 'isChecked':
+                listRequestToSave = id === null 
+                ? (requestData?.listRequest || []).map(item => {
+                    return {
+                        ...item,
+                        isChecked: val,
+                    }
+                })
+                : (requestData?.listRequest || []).map(item => {
+                    return {
+                        ...item,
+                        isChecked: item?.id === id ? val : (item?.isChecked || false),
+                    }
+                })
+                break
+            case 'evaluate_temp':
+            case 'comments_temp':
+                listRequestToSave = (requestData?.listRequest || []).map(item => {
+                    return {
+                        ...item,
+                        ...(item?.id === id && { [key]: val }),
+                    }
+                })
+                break
+        }
+
+        setRequestData({
+            ...requestData,
+            listRequest: listRequestToSave
         })
-        : (requestData?.listRequest || []).map(item => {
-            return {
-                ...item,
-                isChecked: item?.id === id ? val : (item?.isChecked || false),
+    }
+
+    const cancelUpdate = (id) => {
+        const listRequestToSave = (requestData?.listRequest || []).map(item => {
+            let itemClone = {...item}
+            if (item?.id === id) {
+                itemClone = omit(itemClone, ['evaluate_temp', 'comments_temp'])
             }
+
+            return itemClone
         })
 
         setRequestData({
             ...requestData,
             listRequest: listRequestToSave
         })
+    }
+
+    const evaluateRequest = async (id) => {
+        const statusModalTemp = {...statusModal}
+        statusModalTemp.isShow = true
+
+        try {
+            setIsLoading(true)
+            const requestEvaluating = (requestData?.listRequest || []).find(item => item?.id == id)
+            const payload = {
+                id: id,
+                evaluate: requestEvaluating?.evaluate_temp || 0,
+                comments: requestEvaluating?.comments_temp || '',
+            }
+
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/evaluate`, payload, getRequestConfigurations())
+            statusModalTemp.isSuccess = true
+            statusModalTemp.needReload = true
+            statusModalTemp.content = t("Đã đánh giá thành công!")
+
+            if (response?.data?.result?.code !== Constants.API_SUCCESS_CODE) {
+                statusModalTemp.isSuccess = false
+                statusModalTemp.needReload = false
+                statusModalTemp.content = response?.data?.result?.message || t("AnErrorOccurred")
+            }
+
+            SetStatusModal(statusModalTemp)
+        } catch (error) {
+            statusModalTemp.isSuccess = false
+            statusModalTemp.needReload = false
+            statusModalTemp.content = error?.response?.data?.result?.message || t("AnErrorOccurred")
+            SetStatusModal(statusModalTemp)
+        }
+         finally {
+            setIsLoading(false)
+        }
     }
 
     const classIndexMapping = {
@@ -319,22 +437,17 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
                 </div>
                 <div className="request-list-region"> 
                     <div className="request-list">
-                        {
-                            requestData?.listRequest?.length > 0 
-                            ? (
-                                <>
-                                    <TableRequests 
-                                        masterData={masterData}
-                                        tab={tab}
-                                        listRequests={requestData?.listRequest}
-                                        total={requestData?.total}
-                                        updateToParent={updateListRequests}
-                                        cancelRequest={cancelRequest}
-                                    />
-                                </>
-                            )
-                            : (<div className="data-not-found">{t("NoDataFound")}</div>)
-                        }
+                        <TableRequests 
+                            masterData={masterData}
+                            tab={tab}
+                            listRequests={requestData?.listRequest}
+                            total={requestData?.total}
+                            updateListRequests={updateListRequests}
+                            cancelRequest={cancelRequest}
+                            cancelUpdate={cancelUpdate}
+                            evaluateRequest={evaluateRequest}
+                            handleFilterOnParent={handleNormalFilter}
+                        />
                     </div>
                     {
                         requestData?.listRequest?.length > 0 && (

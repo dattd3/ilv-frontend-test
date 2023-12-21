@@ -8,6 +8,10 @@ import IconCancel from "assets/img/icon/Icon_Cancel.svg"
 export default function CancelModal({ dataModal }) {
   const [inputData, setInputData] = useState({})
 
+  useEffect(() => {
+    dataModal?.isShow && setInputData({})
+  }, [dataModal?.isShow])
+
   const handleInputChange = (inputName, inputType, e) => {
     setInputData({
       ...inputData,
