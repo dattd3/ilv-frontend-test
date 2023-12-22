@@ -2093,6 +2093,8 @@
   "gui_yeu_cau_that_bai_vui_long_thu_lai": "Sending request failed. Please try again!",
   "luu_muc_tieu_that_bai_vui_long_thu_lai": "Save target failed. Please try again!",
   "trong_so_trong_khoang_1_100": "Weights range from 1 - 100",
+  "LeaveForHolidayExpats": "Holiday leave for expat",
+  "HolidayFundForExpat": "Holiday Leave fund",
   "quyet_toan_thue": "Tax finalization",
   "so_nguoi_phu_thuoc": "Number of registered dependents for tax deduction",
   "thong_tin_nguoi_phu_thuoc": "Dependent information who has been registered for tax deduction",
@@ -2101,7 +2103,5 @@
   "tax_document_guide": "Please download need forms",
   "noi_nhan_chung_tu": "Address to receive Certificate",
   "email_nhan_chung_tu": "Email to receive Certificate",
-  "yeu_cau_do_dai": "Required length of {{value1}} or {{value2}} characters",
-  "LeaveForHolidayExpats": "Holiday leave for expat",
-  "HolidayFundForExpat": "Holiday Leave fund"
+  "yeu_cau_do_dai": "Required length of {{value1}} or {{value2}} characters"
 }

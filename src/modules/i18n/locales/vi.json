@@ -2109,6 +2109,8 @@
   "gui_yeu_cau_that_bai_vui_long_thu_lai": "Gửi yêu cầu thất bại. Xin vui lòng thử lại!",
   "luu_muc_tieu_that_bai_vui_long_thu_lai": "Lưu mục tiêu thất bại. Xin vui lòng thử lại!",
   "trong_so_trong_khoang_1_100": "Trọng số trong khoảng 1 - 100",
+  "LeaveForHolidayExpats": "Nghỉ lễ người nước ngoài (có quỹ)",
+  "HolidayFundForExpat": "Quỹ nghỉ lễ",
   "quyet_toan_thue": "Quyết toán thuế",
   "so_nguoi_phu_thuoc": "Số người phụ thuộc đã giảm trừ trong năm",
   "thong_tin_nguoi_phu_thuoc": "THÔNG TIN NGƯỜI PHỤ THUỘC ĐÃ GIẢM TRỪ",
@@ -2117,7 +2119,5 @@
   "tax_document_guide": "Vui lòng tải xuống các biểu mẫu cần đính kèm",
   "noi_nhan_chung_tu": "Địa chỉ nhận chứng từ",
   "email_nhan_chung_tu": "Email",
-  "yeu_cau_do_dai": "Yêu cầu độ dài {{value1}} hoặc {{value2}} ký tự",
-  "LeaveForHolidayExpats": "Nghỉ lễ người nước ngoài (có quỹ)",
-  "HolidayFundForExpat": "Quỹ nghỉ lễ"
+  "yeu_cau_do_dai": "Yêu cầu độ dài {{value1}} hoặc {{value2}} ký tự"
 }
