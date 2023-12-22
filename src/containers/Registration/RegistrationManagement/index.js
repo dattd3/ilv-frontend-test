@@ -19,6 +19,9 @@ const RegistrationManagement = (props) => {
       ...(checkVersionPnLSameAsVinhome(Constants.MODULE.THANHTOAN_NOIBO)
         ? [{ value: 4, label: t('RequestInternalPayment') }]
         : []),
+      ...(localStorage.getItem('taxEnable') == 'true' 
+        ? [{value: 5, label: t('quyet_toan_thue')}]
+        : [])
     ];
   const [type, setType] = useState(null);
 
@@ -37,6 +40,9 @@ const RegistrationManagement = (props) => {
         break;
       case 4:
         props.history.push('/benefit-claim-request');
+        break;
+      case 5: 
+        props.history.push('/register-tax-finalization');
         break;
     }
   };

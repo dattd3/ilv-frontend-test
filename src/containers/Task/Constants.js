@@ -50,6 +50,7 @@ const requestTypes = [
   { value: [Constants.INSURANCE_SOCIAL], label: 'InsuranceSocialRequest' },
   { value: [Constants.INSURANCE_SOCIAL_INFO], label: 'InsuranceSocialInfoRequest' },
   { value: [Constants.SOCIAL_SUPPORT], label: 'social_support_info' },
+  { value: [Constants.TAX_FINALIZATION], label: 'quyet_toan_thue'}
 ]
 
 const PN03List = [

@@ -65,6 +65,7 @@ const Constants = {
   INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
   INSURANCE_SOCIAL_INFO: 21, // thông tin đóng BHXH
   SOCIAL_SUPPORT: 22, // yêu cầu hỗ trợ liên quan BH
+  TAX_FINALIZATION: 23, // yeeu cầu quyết toán thuế
 
   //Status request
   STATUS_PENDING: 0,
@@ -333,6 +334,7 @@ Constants.REQUEST_CATEGORY_2_LIST = {
   [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest",
   [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest",
   [Constants.SOCIAL_SUPPORT]: "social_support_info",
+  [Constants.TAX_FINALIZATION]: "quyet_toan_thue"
 
 }
 
