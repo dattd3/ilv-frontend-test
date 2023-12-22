@@ -28,7 +28,9 @@ import IconDeadlineOverdue from 'assets/img/icon/ic_deadline-overdue_grey.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import Constants from "commons/Constants"
-import { hasValue } from "commons/Utils"
+import { getRequestConfigurations, hasValue } from "commons/Utils"
+import { tryStatement } from "@babel/types"
+import RequestDetail from "../popup/RequestDetail"
 registerLocale("vi", vi)
 
 const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode }) => {
@@ -71,6 +73,10 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         createdDateTo: null,
     })
     const [isShowFilter, setIsShowFilter] = useState(false)
+    const [requestDetailModal, setRequestDetailModal] = useState({
+        isShow: false,
+        id: null,
+    })
 
     // useEffect(() => {
     //     tab && setIsShowFilter(false)
@@ -94,6 +100,13 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
 
     const handleRating = (id, value) => {
         updateListRequests(id, 'evaluate_temp', value)
+    }
+
+    const viewDetail = (id) => {
+        setRequestDetailModal({
+            isShow: true,
+            id: id,
+        })
     }
 
     const customFilterStyles = {
@@ -175,362 +188,372 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
     console.log('listRequests => ', listRequests)
 
     return (
-        <table className="table">
-            <thead>
-                <tr>
+        <>
+        
+            <RequestDetail
+                isShow={requestDetailModal.isShow}
+                id={requestDetailModal.id}
+                masterData={masterData}
+            />
+            <table className="table">
+                <thead>
+                    <tr>
+                        {
+                            tab === tabConfig.processing && (
+                                <th className="check">
+                                    <div className="val">
+                                        <input type="checkbox" className="cursor-pointer" checked={(listRequests || []).every(item => item?.isChecked)} onChange={e => handleCheckboxChange(e, null)} />
+                                    </div>
+                                </th>
+                            )
+                        }
+                        <th className="icon" style={{ width: tab === tabConfig.createdReceiving ? 25 : '' }}>
+                            <div className="val"><img className="cursor-pointer" onClick={() => setIsShowFilter(true)} src={IconSearch} alt="Search" /></div>
+                        </th>
+                        <th className="code text-center"><div className="val">{t("RequestNo")}</div></th>
+                        <th className="title"><div className="val">{t("Tiêu đề")}</div></th>
+                        <th className="created-by"><div className="val">{t("Người tạo")}</div></th>
+                        <th className="group"><div className="val">{t("Nhóm")}</div></th>
+                        <th className="pic"><div className="val">{t("Người xử lý")}</div></th>
+                        <th className="status-col text-center"><div className="val">{t("Status")}</div></th>
+                        <th className="created-date text-center"><div className="val">{t("Ngày tạo")}</div></th>
+                        {
+                            tab === tabConfig.processing && (
+                                <th className="deadline text-center"><div className="val">{t("Ngày hết hạn")}</div></th>
+                            )
+                        }
+                        {
+                            tab === tabConfig.createdReceiving && (
+                                <>
+                                    <th className="evaluation text-center"><div className="val">{t("Đánh giá")}</div></th>
+                                    <th className="comment"><div className="val">{t("Nhận xét")}</div></th>
+                                </>
+                            )
+                        }
+                        {
+                            tab === tabConfig.createdReceiving && (
+                                <th className="action text-center"><div className="val">{t("Thao tác")}</div></th>
+                            )
+                        }
+                        {
+                            isShowFilter && tab === tabConfig.processing && (
+                                <th className="space"><div className="val"></div></th>
+                            )
+                        }
+                    </tr>
                     {
-                        tab === tabConfig.processing && (
-                            <th className="check">
-                                <div className="val">
-                                    <input type="checkbox" className="cursor-pointer" checked={(listRequests || []).every(item => item?.isChecked)} onChange={e => handleCheckboxChange(e, null)} />
-                                </div>
-                            </th>
-                        )
-                    }
-                    <th className="icon" style={{ width: tab === tabConfig.createdReceiving ? 25 : '' }}>
-                        <div className="val"><img className="cursor-pointer" onClick={() => setIsShowFilter(true)} src={IconSearch} alt="Search" /></div>
-                    </th>
-                    <th className="code text-center"><div className="val">{t("RequestNo")}</div></th>
-                    <th className="title"><div className="val">{t("Tiêu đề")}</div></th>
-                    <th className="created-by"><div className="val">{t("Người tạo")}</div></th>
-                    <th className="group"><div className="val">{t("Nhóm")}</div></th>
-                    <th className="pic"><div className="val">{t("Người xử lý")}</div></th>
-                    <th className="status-col text-center"><div className="val">{t("Status")}</div></th>
-                    <th className="created-date text-center"><div className="val">{t("Ngày tạo")}</div></th>
-                    {
-                        tab === tabConfig.processing && (
-                            <th className="deadline text-center"><div className="val">{t("Ngày hết hạn")}</div></th>
-                        )
-                    }
-                    {
-                        tab === tabConfig.createdReceiving && (
-                            <>
-                                <th className="evaluation text-center"><div className="val">{t("Đánh giá")}</div></th>
-                                <th className="comment"><div className="val">{t("Nhận xét")}</div></th>
-                            </>
-                        )
-                    }
-                    {
-                        tab === tabConfig.createdReceiving && (
-                            <th className="action text-center"><div className="val">{t("Thao tác")}</div></th>
-                        )
-                    }
-                    {
-                        isShowFilter && tab === tabConfig.processing && (
-                            <th className="space"><div className="val"></div></th>
-                        )
-                    }
-                </tr>
-                {
-                    isShowFilter && (
-                        <tr className="row-filter">
-                            <th className="icon" colSpan={tab === tabConfig.createdReceiving ? 1 : 2}>
-                                <div className={`val ${tab === tabConfig.processing ? 'd-flex justify-content-center cursor-pointer' : ''}`} onClick={() => setIsShowFilter(false)}>
-                                    <img src={IconClose} alt="Close" />
-                                    {
-                                        tab === tabConfig.processing && (
-                                            <span style={{ margin: '2px 0 0 5px' }}>Thoát</span>
-                                        )
-                                    }
-                                </div>
-                            </th>
-                            <th className="code text-center">
-                                <div className="val">
-                                    <input type="text" value={filter?.requestCode || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('requestCode', e?.target?.value || '')} />
-                                </div>
-                            </th>
-                            <th className="title">
-                                <div className="val">
-                                    <input type="text" value={filter?.title || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('title', e?.target?.value || '')} />
-                                </div>
-                            </th>
-                            <th className="created-by">
-                                <div className="val">
-                                    <input type="text" value={filter?.createdBy || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('createdBy', e?.target?.value || '')} />
-                                </div>
-                            </th>
-                            <th className="group">
-                                <div className="val">
-                                    <Select 
-                                        placeholder={t("Chọn")} 
-                                        isClearable={true} 
-                                        value={(groups || []).find(item => item?.value == filter?.group)} 
-                                        options={groups} 
-                                        onChange={e => handleFilterInputChange('group', e?.value || null)} 
-                                        styles={customFilterStyles}
-                                        menuPortalTarget={document.body}
-                                    />
-                                </div>
-                            </th>
-                            <th className="pic">
-                                <div className="val">
-                                    <input type="text" value={filter?.handler || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('handler', e?.target?.value || '')} />
-                                </div>
-                            </th>
-                            <th className={`status-col ${!isShowFilter ? 'text-center' : ''}`}>
-                                <div className="val">
-                                    <Select 
-                                        placeholder={t("Chọn")} 
-                                        isClearable={true} 
-                                        value={(groups || []).find(item => item?.value == filter?.status)} 
-                                        options={statuses} 
-                                        onChange={e => handleFilterInputChange('status', e?.value || null)} 
-                                        styles={customFilterStyles}
-                                        menuPortalTarget={document.body}
-                                    />
-                                </div>
-                            </th>
-                            <th colSpan={tab === tabConfig.createdReceiving ? 4 : 3} className="created-date"> 
-                                <div className="val">
-                                    <label className="wrap-date-input">
-                                        <DatePicker
-                                            selected={filter.createdDateFrom ? moment(filter.createdDateFrom, 'YYYY-MM-DD').toDate() : null}
-                                            placeholderText={t("Từ ngày")}
-                                            onChange={date => handleFilterInputChange('createdDateFrom', date ? moment(date).format('YYYY-MM-DD') : null)}
-                                            dateFormat="dd/MM/yyyy"
-                                            showMonthDropdown={true}
-                                            showYearDropdown={true}
-                                            locale="vi"
-                                            className="form-control input" 
-                                            portalId="root-portal" />
-                                        {/* <span className="input-img"><img src={IconDatePicker} alt="Date" /></span> */}
-                                    </label>
-                                    <label className="wrap-date-input">
-                                        <DatePicker
-                                            selected={filter.createdDateTo ? moment(filter.createdDateTo, 'YYYY-MM-DD').toDate() : null}
-                                            placeholderText={t("Đến ngày")}
-                                            onChange={date => handleFilterInputChange('createdDateTo', date ? moment(date).format('YYYY-MM-DD') : null)}
-                                            dateFormat="dd/MM/yyyy"
-                                            showMonthDropdown={true}
-                                            showYearDropdown={true}
-                                            locale="vi"
-                                            className="form-control input" 
-                                            portalId="root-portal" />
-                                        {/* <span className="input-img"><img src={IconDatePicker} alt="Date" /></span> */}
-                                    </label>
-                                    <button className="btn-search" onClick={() => handleFilterOnParent(filter)}>Tìm kiếm</button>
-                                </div>
-                            </th>
-                        </tr>
-                    )
-                }
-            </thead>
-            <tbody>
-            {
-                listRequests?.length > 0
-                ? (
-                    listRequests.map((child, index) => {
-                        let statusId = child?.supportStatus?.id
-                        return (
-                            <tr key={index}>
-                                {
-                                    tab === tabConfig.processing && (
-                                        <td className="check">
-                                            <div className="val">
-                                                <input type="checkbox" className="cursor-pointer" checked={child?.isChecked || false} onChange={e => handleCheckboxChange(e, child?.id)} />
-                                            </div>
-                                        </td>
-                                    )
-                                }
-                                <td className="icon">
-                                    <div className="val d-flex" style={{ justifyContent: 'space-between' }}>
-                                        <span 
-                                            data-tip data-for={`tooltip-${index}-ic1`} 
-                                            className="highlight cursor-pointer" 
-                                        >
-                                            <ReactTooltip 
-                                                id={`tooltip-${index}-ic1`} 
-                                                scrollHide 
-                                                effect="solid" 
-                                                place="right" 
-                                                type='dark'>
-                                                {child?.requestHistory?.[0]?.contents}
-                                            </ReactTooltip>
-                                            <img src={child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? IconEmailCyan : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? IconEmailBlue : IconEmailGreen} alt="Search" />
-                                        </span>
+                        isShowFilter && (
+                            <tr className="row-filter">
+                                <th className="icon" colSpan={tab === tabConfig.createdReceiving ? 1 : 2}>
+                                    <div className={`val ${tab === tabConfig.processing ? 'd-flex justify-content-center cursor-pointer' : ''}`} onClick={() => setIsShowFilter(false)}>
+                                        <img src={IconClose} alt="Close" />
                                         {
                                             tab === tabConfig.processing && (
-                                                <>
-                                                    <span 
-                                                        data-tip data-for={`tooltip-${index}-ic2`} 
-                                                        className="highlight cursor-pointer" 
-                                                    >
-                                                        <ReactTooltip 
-                                                            id={`tooltip-${index}-ic2`} 
-                                                            scrollHide 
-                                                            effect="solid" 
-                                                            place="right" 
-                                                            type='dark'>
-                                                            {child?.requestHistory?.[0]?.contents}
-                                                        </ReactTooltip>
-                                                        <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
-                                                    </span>
-                                                    <span 
-                                                        data-tip data-for={`tooltip-${index}-ic3`} 
-                                                        className="highlight cursor-pointer" 
-                                                    >
-                                                        <ReactTooltip 
-                                                            id={`tooltip-${index}-ic3`} 
-                                                            scrollHide 
-                                                            effect="solid" 
-                                                            place="right" 
-                                                            type='dark'>
-                                                            {child?.requestHistory?.[0]?.contents}
-                                                        </ReactTooltip>
-                                                        <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" />
-                                                    </span>
-                                                </>
+                                                <span style={{ margin: '2px 0 0 5px' }}>Thoát</span>
                                             )
                                         }
                                     </div>
-                                </td>
-                                <td className="code text-center">
-                                    <a href={'#'} title={''} className="val">{child?.id}</a>
-                                </td>
-                                <td className="title">
-                                    <div className="val">{child?.name}</div>
-                                </td>
-                                <td className="created-by">
-                                    <div className="val">{JSON.parse(child?.userInfo)?.ad}</div>
-                                </td>
-                                <td className="group">
+                                </th>
+                                <th className="code text-center">
                                     <div className="val">
-                                        {
-                                            tab === tabConfig.createdReceiving
-                                            ? (<>{child?.supportGroups?.groupName}</>)
-                                            : (
-                                                <Select 
-                                                    placeholder={t("Select")} 
-                                                    isClearable={true} 
-                                                    value={null} 
-                                                    options={[]} 
-                                                    onChange={handleInputChange} 
-                                                    styles={customStyles}
-                                                />
-                                            )
-                                        }
+                                        <input type="text" value={filter?.requestCode || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('requestCode', e?.target?.value || '')} />
                                     </div>
-                                </td>
-                                <td className="pic">
+                                </th>
+                                <th className="title">
                                     <div className="val">
-                                        {
-                                            tab === tabConfig.createdReceiving
-                                            ? (<>{JSON.parse(child?.handlerInfo)?.ad}</>)
-                                            : (
-                                                <Select 
-                                                    placeholder={t("Select")} 
-                                                    isClearable={true} 
-                                                    value={null} 
-                                                    options={[]} 
-                                                    onChange={handleInputChange} 
-                                                    styles={customStyles}
-                                                />
-                                            )
-                                        }
+                                        <input type="text" value={filter?.title || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('title', e?.target?.value || '')} />
                                     </div>
-                                </td>
-                                <td className={`status-col ${tab === tabConfig.createdReceiving ? 'text-center' : ''}`}>
+                                </th>
+                                <th className="created-by">
                                     <div className="val">
-                                        {
-                                            tab === tabConfig.createdReceiving
-                                            ? (
-                                                <span className={`status ${classIndexMapping[statusId]}`}>{locale === Constants.LANGUAGE_VI ? child?.supportStatus?.statusVn : child?.supportStatus?.statusEn}</span>
-                                            )
-                                            : (
-                                                <Select 
-                                                    placeholder={t("Select")} 
-                                                    isClearable={true} 
-                                                    value={null} 
-                                                    options={[]} 
-                                                    onChange={handleInputChange} 
-                                                    styles={customStyles}
-                                                />
-                                            )
-                                        }
+                                        <input type="text" value={filter?.createdBy || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('createdBy', e?.target?.value || '')} />
                                     </div>
-                                </td>
-                                <td className="created-date text-center">
-                                    <div className="val">{moment(child?.createdDate).isValid() ? moment(child?.createdDate).format("DD/MM/YYYY") : ''}</div>
-                                </td>
-                                {
-                                    tab === tabConfig.processing && (
-                                        <td className="deadline text-center">
-                                            <div className="val">30/11/2023</div>
-                                        </td> 
-                                    )
-                                }
-                                {
-                                    tab === tabConfig.createdReceiving && (
-                                        <>
-                                            <td className="evaluation text-center">
+                                </th>
+                                <th className="group">
+                                    <div className="val">
+                                        <Select 
+                                            placeholder={t("Chọn")} 
+                                            isClearable={true} 
+                                            value={(groups || []).find(item => item?.value == filter?.group)} 
+                                            options={groups} 
+                                            onChange={e => handleFilterInputChange('group', e?.value || null)} 
+                                            styles={customFilterStyles}
+                                            menuPortalTarget={document.body}
+                                        />
+                                    </div>
+                                </th>
+                                <th className="pic">
+                                    <div className="val">
+                                        <input type="text" value={filter?.handler || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('handler', e?.target?.value || '')} />
+                                    </div>
+                                </th>
+                                <th className={`status-col ${!isShowFilter ? 'text-center' : ''}`}>
+                                    <div className="val">
+                                        <Select 
+                                            placeholder={t("Chọn")} 
+                                            isClearable={true} 
+                                            value={(groups || []).find(item => item?.value == filter?.status)} 
+                                            options={statuses} 
+                                            onChange={e => handleFilterInputChange('status', e?.value || null)} 
+                                            styles={customFilterStyles}
+                                            menuPortalTarget={document.body}
+                                        />
+                                    </div>
+                                </th>
+                                <th colSpan={tab === tabConfig.createdReceiving ? 4 : 3} className="created-date"> 
+                                    <div className="val">
+                                        <label className="wrap-date-input">
+                                            <DatePicker
+                                                selected={filter.createdDateFrom ? moment(filter.createdDateFrom, 'YYYY-MM-DD').toDate() : null}
+                                                placeholderText={t("Từ ngày")}
+                                                onChange={date => handleFilterInputChange('createdDateFrom', date ? moment(date).format('YYYY-MM-DD') : null)}
+                                                dateFormat="dd/MM/yyyy"
+                                                showMonthDropdown={true}
+                                                showYearDropdown={true}
+                                                locale="vi"
+                                                className="form-control input" 
+                                                portalId="root-portal" />
+                                            {/* <span className="input-img"><img src={IconDatePicker} alt="Date" /></span> */}
+                                        </label>
+                                        <label className="wrap-date-input">
+                                            <DatePicker
+                                                selected={filter.createdDateTo ? moment(filter.createdDateTo, 'YYYY-MM-DD').toDate() : null}
+                                                placeholderText={t("Đến ngày")}
+                                                onChange={date => handleFilterInputChange('createdDateTo', date ? moment(date).format('YYYY-MM-DD') : null)}
+                                                dateFormat="dd/MM/yyyy"
+                                                showMonthDropdown={true}
+                                                showYearDropdown={true}
+                                                locale="vi"
+                                                className="form-control input" 
+                                                portalId="root-portal" />
+                                            {/* <span className="input-img"><img src={IconDatePicker} alt="Date" /></span> */}
+                                        </label>
+                                        <button className="btn-search" onClick={() => handleFilterOnParent(filter)}>Tìm kiếm</button>
+                                    </div>
+                                </th>
+                            </tr>
+                        )
+                    }
+                </thead>
+                <tbody>
+                {
+                    listRequests?.length > 0
+                    ? (
+                        listRequests.map((child, index) => {
+                            let statusId = child?.supportStatus?.id
+                            return (
+                                <tr key={index}>
+                                    {
+                                        tab === tabConfig.processing && (
+                                            <td className="check">
                                                 <div className="val">
-                                                    <Rating
-                                                        initialValue={child?.evaluate_temp !== undefined ? child?.evaluate_temp : (child?.evaluate || 0)}
-                                                        transition
-                                                        // readonly={Number(statusId) < status.closed || child?.evaluate}
-                                                        onClick={(value) => {
-                                                            handleRating(child?.id, value)
-                                                        }}
-                                                    />
+                                                    <input type="checkbox" className="cursor-pointer" checked={child?.isChecked || false} onChange={e => handleCheckboxChange(e, child?.id)} />
                                                 </div>
                                             </td>
-                                            <td className="comment">
-                                                <div className="val">
+                                        )
+                                    }
+                                    <td className="icon">
+                                        <div className="val d-flex" style={{ justifyContent: 'space-between' }}>
+                                            <span 
+                                                data-tip data-for={`tooltip-${index}-ic1`} 
+                                                className="highlight cursor-pointer" 
+                                            >
+                                                <ReactTooltip 
+                                                    id={`tooltip-${index}-ic1`} 
+                                                    scrollHide 
+                                                    effect="solid" 
+                                                    place="right" 
+                                                    type='dark'>
+                                                    {child?.requestHistory?.[0]?.contents}
+                                                </ReactTooltip>
+                                                <img src={child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? IconEmailCyan : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? IconEmailBlue : IconEmailGreen} alt="Search" />
+                                            </span>
+                                            {
+                                                tab === tabConfig.processing && (
+                                                    <>
+                                                        <span 
+                                                            data-tip data-for={`tooltip-${index}-ic2`} 
+                                                            className="highlight cursor-pointer" 
+                                                        >
+                                                            <ReactTooltip 
+                                                                id={`tooltip-${index}-ic2`} 
+                                                                scrollHide 
+                                                                effect="solid" 
+                                                                place="right" 
+                                                                type='dark'>
+                                                                {child?.requestHistory?.[0]?.contents}
+                                                            </ReactTooltip>
+                                                            <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
+                                                        </span>
+                                                        <span 
+                                                            data-tip data-for={`tooltip-${index}-ic3`} 
+                                                            className="highlight cursor-pointer" 
+                                                        >
+                                                            <ReactTooltip 
+                                                                id={`tooltip-${index}-ic3`} 
+                                                                scrollHide 
+                                                                effect="solid" 
+                                                                place="right" 
+                                                                type='dark'>
+                                                                {child?.requestHistory?.[0]?.contents}
+                                                            </ReactTooltip>
+                                                            <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" />
+                                                        </span>
+                                                    </>
+                                                )
+                                            }
+                                        </div>
+                                    </td>
+                                    <td className="code text-center">
+                                        <div className="val cursor-pointer" onClick={() => viewDetail(child?.id)}>{child?.id}</div>
+                                    </td>
+                                    <td className="title">
+                                        <div className="val">{child?.name}</div>
+                                    </td>
+                                    <td className="created-by">
+                                        <div className="val">{JSON.parse(child?.userInfo)?.ad}</div>
+                                    </td>
+                                    <td className="group">
+                                        <div className="val">
+                                            {
+                                                tab === tabConfig.createdReceiving
+                                                ? (<>{child?.supportGroups?.groupName}</>)
+                                                : (
+                                                    <Select 
+                                                        placeholder={t("Select")} 
+                                                        isClearable={true} 
+                                                        value={null} 
+                                                        options={[]} 
+                                                        onChange={handleInputChange} 
+                                                        styles={customStyles}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    </td>
+                                    <td className="pic">
+                                        <div className="val">
+                                            {
+                                                tab === tabConfig.createdReceiving
+                                                ? (<>{JSON.parse(child?.handlerInfo)?.ad}</>)
+                                                : (
+                                                    <Select 
+                                                        placeholder={t("Select")} 
+                                                        isClearable={true} 
+                                                        value={null} 
+                                                        options={[]} 
+                                                        onChange={handleInputChange} 
+                                                        styles={customStyles}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    </td>
+                                    <td className={`status-col ${tab === tabConfig.createdReceiving ? 'text-center' : ''}`}>
+                                        <div className="val">
+                                            {
+                                                tab === tabConfig.createdReceiving
+                                                ? (
+                                                    <span className={`status ${classIndexMapping[statusId]}`}>{locale === Constants.LANGUAGE_VI ? child?.supportStatus?.statusVn : child?.supportStatus?.statusEn}</span>
+                                                )
+                                                : (
+                                                    <Select 
+                                                        placeholder={t("Select")} 
+                                                        isClearable={true} 
+                                                        value={null} 
+                                                        options={[]} 
+                                                        onChange={handleInputChange} 
+                                                        styles={customStyles}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    </td>
+                                    <td className="created-date text-center">
+                                        <div className="val">{moment(child?.createdDate).isValid() ? moment(child?.createdDate).format("DD/MM/YYYY") : ''}</div>
+                                    </td>
+                                    {
+                                        tab === tabConfig.processing && (
+                                            <td className="deadline text-center">
+                                                <div className="val">30/11/2023</div>
+                                            </td> 
+                                        )
+                                    }
+                                    {
+                                        tab === tabConfig.createdReceiving && (
+                                            <>
+                                                <td className="evaluation text-center">
+                                                    <div className="val">
+                                                        <Rating
+                                                            initialValue={child?.evaluate_temp !== undefined ? child?.evaluate_temp : (child?.evaluate || 0)}
+                                                            transition
+                                                            readonly={Number(child?.evaluate) > 0 ? true : Number(statusId) == status.closed ? false : true}
+                                                            onClick={(value) => {
+                                                                handleRating(child?.id, value)
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </td>
+                                                <td className="comment">
+                                                    <div className="val">
+                                                        {
+                                                            hasValue(child?.comments)
+                                                            ? child?.comments
+                                                            : Number(statusId) === status.closed && (
+                                                                <textarea 
+                                                                    rows={2} 
+                                                                    placeholder={'Nhập'} 
+                                                                    value={child?.comments_temp || ''} 
+                                                                    onChange={e => handleInputChange(child?.id, 'comments_temp', e?.target?.value || '')} 
+                                                                    disabled={hasValue(child?.comments?.trim())} 
+                                                                />
+                                                            )
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </>
+                                        )
+                                    }
+                                    {
+                                        tab === tabConfig.createdReceiving && (
+                                            <td className="action">
+                                                <div className="val text-center d-flex">
                                                     {
-                                                        Number(statusId) === status.closed && (
-                                                            <textarea 
-                                                                rows={2} 
-                                                                placeholder={'Nhập'} 
-                                                                value={child?.comments_temp || ''} 
-                                                                onChange={e => handleInputChange(child?.id, 'comments_temp', e?.target?.value || '')} 
-                                                                disabled={hasValue(child?.comments?.trim())} 
-                                                            />
+                                                        [status.new, status.processing].includes(Number(child?.supportStatus?.id || 0)) && (
+                                                            <span title={t("Remove")} className="cursor-pointer" onClick={() => cancelRequest(child?.id)}><img alt={t("Remove")} src={IconRemove} className="ic-remove" /></span>
+                                                        )
+                                                    }
+                                                    {
+                                                        ([status.closed].includes(Number(child?.supportStatus?.id || 0)) 
+                                                        && (child?.evaluate_temp || hasValue(child?.comments_temp))) && (
+                                                            <>
+                                                                <span title={t("Update")} className="cursor-pointer" onClick={() => evaluateRequest(child?.id)}><img alt={t("Update")} src={IconSave} className="ic-save" /></span>
+                                                                <span title={t("Cancel2")} className="cursor-pointer" onClick={() => cancelUpdate(child?.id)}><img alt={t("Cancel2")} src={IconCancel} className="ic-cancel" /></span>
+                                                            </>
                                                         )
                                                     }
                                                 </div>
                                             </td>
-                                        </>
-                                    )
-                                }
-                                {
-                                    tab === tabConfig.createdReceiving && (
-                                        <td className="action">
-                                            <div className="val text-center d-flex">
-                                                {
-                                                    [status.new, status.processing].includes(Number(child?.supportStatus?.id || 0)) && (
-                                                        <span title={t("Remove")} className="cursor-pointer" onClick={() => cancelRequest(child?.id)}><img alt={t("Remove")} src={IconRemove} className="ic-remove" /></span>
-                                                    )
-                                                }
-                                                {
-                                                    ([status.closed].includes(Number(child?.supportStatus?.id || 0)) 
-                                                    && (child?.evaluate_temp || hasValue(child?.comments_temp))) && (
-                                                        <>
-                                                            <span title={t("Update")} className="cursor-pointer" onClick={() => evaluateRequest(child?.id)}><img alt={t("Update")} src={IconSave} className="ic-save" /></span>
-                                                            <span title={t("Cancel2")} className="cursor-pointer" onClick={() => cancelUpdate(child?.id)}><img alt={t("Cancel2")} src={IconCancel} className="ic-cancel" /></span>
-                                                        </>
-                                                    )
-                                                }
-                                            </div>
-                                        </td>
-                                    )
-                                }
-                                {
-                                    isShowFilter && tab === tabConfig.processing && (
-                                        <td className="space"><div className="val"></div></td>
-                                    )
-                                }
-                            </tr>
-                        )
-                    })
-                )
-                : (
-                    <tr>
-                        <td colSpan={100}><div className="text-danger data-not-found">{t("NoDataFound")}</div></td>
-                    </tr>
-                )
-            }
-            </tbody>
-        </table>
+                                        )
+                                    }
+                                    {
+                                        isShowFilter && tab === tabConfig.processing && (
+                                            <td className="space"><div className="val"></div></td>
+                                        )
+                                    }
+                                </tr>
+                            )
+                        })
+                    )
+                    : (
+                        <tr>
+                            <td colSpan={100}><div className="text-danger data-not-found">{t("NoDataFound")}</div></td>
+                        </tr>
+                    )
+                }
+                </tbody>
+            </table>
+        </>
     )
 }
 

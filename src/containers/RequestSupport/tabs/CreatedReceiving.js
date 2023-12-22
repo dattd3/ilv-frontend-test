@@ -52,7 +52,7 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
             submitButtonOk: null,
         }
     })
-    const [statusModal, SetStatusModal] = useState({
+    const [statusModal, setStatusModal] = useState({
         isShow: false,
         isSuccess: true,
         content: "",
@@ -197,12 +197,12 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
                 statusModalTemp.content = response?.data?.result?.message || t("AnErrorOccurred")
             }
 
-            SetStatusModal(statusModalTemp)
+            setStatusModal(statusModalTemp)
         } catch (error) {
             statusModalTemp.isSuccess = false
             statusModalTemp.needReload = false
             statusModalTemp.content = error?.response?.data?.result?.message || t("AnErrorOccurred")
-            SetStatusModal(statusModalTemp)
+            setStatusModal(statusModalTemp)
         }
          finally {
             setIsLoading(false)
@@ -219,7 +219,7 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
     }
 
     const onHideStatusModal = () => {
-        SetStatusModal({
+        setStatusModal({
             isShow: false,
             isSuccess: true,
             content: "",
@@ -325,12 +325,12 @@ const CreatedReceiving = ({ masterData, needLoadData, tab }) => {
                 statusModalTemp.content = response?.data?.result?.message || t("AnErrorOccurred")
             }
 
-            SetStatusModal(statusModalTemp)
+            setStatusModal(statusModalTemp)
         } catch (error) {
             statusModalTemp.isSuccess = false
             statusModalTemp.needReload = false
             statusModalTemp.content = error?.response?.data?.result?.message || t("AnErrorOccurred")
-            SetStatusModal(statusModalTemp)
+            setStatusModal(statusModalTemp)
         }
          finally {
             setIsLoading(false)
