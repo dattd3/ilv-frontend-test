@@ -3,7 +3,7 @@ import { useGuardStore } from '../../modules';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getCurrentLanguage, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { formatStringByMuleValue, getCurrentLanguage, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
 import { FirebaseUpdateToken } from '../../commons/Firebase';
@@ -225,6 +225,7 @@ function Authorize(props) {
                             master_code: user.master_code || '',
                             cost_center: user?.cost_center,
                             insurance_number: user?.insurance_number,
+                            streetName: (user?.street_name === null || user?.street_name === '#') ? "" : user?.street_name,
                             essAvaible: essAvaible,
                             taxEnable: taxFinalizationAvaible
                         });
@@ -275,7 +276,8 @@ function Authorize(props) {
                         ad: user?.username,
                         master_code: '',
                         cost_center: user?.cost_center,
-                        insurance_number: user?.insurance_number || ''
+                        insurance_number: user?.insurance_number || '',
+                        streetName: (user?.street_name === null || user?.street_name === '#') ? "" : user?.street_name,
                     });
                 })
                 .finally(result => {

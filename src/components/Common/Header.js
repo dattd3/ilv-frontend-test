@@ -329,6 +329,10 @@ function Header(props) {
                             return `/target-management?tab=OWNER&id=${item?.subRequestId || 0}`
                         case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
                             return `/target-management?tab=REQUEST&id=${item?.subRequestId || 0}`
+                        case Constants.notificationType.REGISTERED_VOUCHER_SUCCESSFULLY:
+                            return `/my-voucher`
+                        case Constants.notificationType.VOUCHER_NEW_PROGRAM:
+                            return `/my-voucher/notices/${item?.subRequestId}`
                         default:
                             return `${item.url}`
                     }
