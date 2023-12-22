@@ -648,8 +648,8 @@ class PersonalInfoEdit extends React.Component {
     return newMainInfo.Birthday ? moment(newMainInfo.Birthday, 'DD-MM-YYYY').format('YYYYMMDD') : moment(this.resetValueInValid(userDetail.birthday), 'DD-MM-YYYY').format('YYYYMMDD')
   }
 
-  prepareBirthProvince = (newMainInfo, userDetail) => {
-    return newMainInfo.BirthProvince ? newMainInfo.BirthProvince : this.resetValueInValid(userDetail.province_id);
+  prepareBirthProvince = (newMainInfo) => {
+    return newMainInfo?.BirthProvince || ''
   }
 
   getMaritalDateForStatus = (status, newMaritalDate, oldMaritalDate) => {
@@ -701,7 +701,7 @@ class PersonalInfoEdit extends React.Component {
           const nationalityAndBirthCountry = this.prepareNationalityAndBirthCountry(newMainInfo, userDetail);
           obj.natio = nationalityAndBirthCountry[1];
           obj.gblnd = nationalityAndBirthCountry[0];
-          obj.gbdep = this.prepareBirthProvince(newMainInfo, userDetail)
+          obj.gbdep = this.prepareBirthProvince(newMainInfo)
           const maritalInfo = this.prepareMaritalInfo(newMainInfo, userDetail);
           obj.famst = maritalInfo[0];
           obj.famdt = maritalInfo[1];
