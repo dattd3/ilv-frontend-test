@@ -20,6 +20,30 @@ export const Navigation = [
     role: "U",
   },
   {
+    id: 99,
+    parentId: 0,
+    icon: 'employee-privileges',
+    label: "VingroupEmployeePrivileges",
+    to: map.VingroupEmployeePrivileges,
+    role: 'U'
+  },
+  {
+    id: 9901,
+    parentId: 99,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "News",
+    to: map.EmployeePrivileges,
+    role: 'U'
+  },
+  {
+    id: 9902,
+    parentId: 99,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "MyVoucher",
+    to: map.MyVoucher,
+    role: 'U'
+  },
+  {
     id: 10,
     parentId: 0,
     icon: "c-hr",
