@@ -153,6 +153,9 @@ const MapConfig = {
   //thông tin liên quan BH
   SocialSupportDetail: "/social-support/:id/:type",
 
+  VingroupEmployeePrivileges: "/vingroup-employee-privileges",
+  MyVoucher: "/my-voucher",
+  MyVoucherNoticeDetail: "/my-voucher/notices/:id",
   Recruitment: "/recruitment"
 };
 
