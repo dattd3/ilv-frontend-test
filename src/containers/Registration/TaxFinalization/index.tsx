@@ -9,6 +9,7 @@ import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
 import {
   formatStringByMuleValue,
+  getCulture,
   getMuleSoftHeaderConfigurations,
   getRequestConfigurationsWithCulture,
 } from "commons/Utils";
@@ -495,6 +496,9 @@ const SocialContributeInfo = (props: any) => {
         "Content-Type": "multipart/form-data",
         Authorization: `${localStorage.getItem("accessToken")}`,
       },
+      params: {
+        culture: getCulture()
+      }
     })
       .then((response) => {
         if (
