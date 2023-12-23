@@ -223,6 +223,14 @@ const getRequestConfigurations = () => {
     return {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+    }
+}
+
+const getRequestConfigurationsWithCulture = () => {
+    return {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
         },
         params: {
             culture: getCulture()
@@ -697,5 +705,5 @@ export {
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem, getRequestConfigurationsWithCulture
 }

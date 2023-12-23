@@ -8,8 +8,7 @@ import axios from "axios";
 import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
 import {
-  getMuleSoftHeaderConfigurations,
-  getRequestConfigurations,
+  getRequestConfigurationsWithCulture,
 } from "commons/Utils";
 import { IDropdownValue } from "models/CommonModel";
 import ProcessHistoryComponent from "containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ProcessHistoryComponent";
@@ -69,7 +68,7 @@ const DetailTaxFinalization = (props: any) => {
 
   const getSocialInfoData = async () => {
     setLoading(true);
-    const requestConfig = getRequestConfigurations();
+    const requestConfig = getRequestConfigurationsWithCulture();
     const getInfoDetail = axios.get(
       `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/${requestId}`,
       requestConfig
@@ -90,7 +89,7 @@ const DetailTaxFinalization = (props: any) => {
   };
 
   const getTaxTemplate = async () => {
-    const config = getRequestConfigurations();
+    const config = getRequestConfigurationsWithCulture();
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateDocumentByTypes`,

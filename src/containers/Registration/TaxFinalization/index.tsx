@@ -10,7 +10,7 @@ import LoadingModal from "components/Common/LoadingModal";
 import {
   formatStringByMuleValue,
   getMuleSoftHeaderConfigurations,
-  getRequestConfigurations,
+  getRequestConfigurationsWithCulture,
 } from "commons/Utils";
 import {
   TAX_TYPE_CONSTANT,
@@ -111,7 +111,7 @@ const SocialContributeInfo = (props: any) => {
   };
 
   const getTaxTemplate = async () => {
-    const config = getRequestConfigurations();
+    const config = getRequestConfigurationsWithCulture();
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateDocumentByTypes`,
