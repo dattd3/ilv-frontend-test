@@ -8,7 +8,7 @@ import _ from "lodash";
 import InputNumberComponent from "containers/Welfare/InternalPayment/component/InputNumberComponent";
 import { ITaxMemberInfo } from "./TaxModel.types";
 import SelectInputComponent from "containers/Welfare/InternalPayment/component/SelectInputComponent";
-import { RELATIONSHIP_WITH_INSURED, SOCIAL_NUMBER_INPUT } from "./TaxConstants";
+import {SOCIAL_NUMBER_INPUT, getRelationshipWithInsured } from "./TaxConstants";
 
 interface IMemberInfoProps {
   t: any;
@@ -66,7 +66,7 @@ function TaxMemberInfo({
           <div className="col-4">
             {t('Relationship')}<span className="required">(*)</span>
             <SelectInputComponent
-              options={RELATIONSHIP_WITH_INSURED}
+              options={getRelationshipWithInsured(t)}
               maxLeng={255}
               otherValueDefault={SOCIAL_NUMBER_INPUT}
               name="relation"
