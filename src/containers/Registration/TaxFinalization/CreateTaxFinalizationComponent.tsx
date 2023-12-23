@@ -343,6 +343,7 @@ const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
           supervisors={supervisors}
           approver={approver}
           setApprover={setApprover}
+          notifyMessage={notifyMessage}
           errors={errors}
         />
       ) : null}

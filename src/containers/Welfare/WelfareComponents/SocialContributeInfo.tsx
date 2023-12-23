@@ -535,7 +535,7 @@ const SocialContributeInfo = (props: any) => {
       isShowStatusModal: false,
     });
     if (resultModal.isSuccess) {
-      window.location.href = "/tasks?requestTypes=14,15,20,21";
+      window.location.href = "/tasks?requestTypes=14,15,20,21,22,23";
     }
   };
 
@@ -558,7 +558,7 @@ const SocialContributeInfo = (props: any) => {
         <div className="clearfix edit-button w-100 pb-2">
           {/* <a href="/insurance-manager/social-contribute-info"><div className="btn bg-white btn-create"
                     ><i className="fas fa-plus"></i> {t('createRequest')}</div></a> */}
-          <a href="/tasks?requestTypes=14,15,20,21" className="btn btn-info shadow-customize d-flex align-items-center"><img src={IconHistory} alt='History' style={{marginRight: '4px'}}/>{t("History")}</a>
+          <a href="/tasks?requestTypes=14,15,20,21,22,23" className="btn btn-info shadow-customize d-flex align-items-center"><img src={IconHistory} alt='History' style={{marginRight: '4px'}}/>{t("History")}</a>
 
           <a onClick={() => onEdit()}>
             <div className="btn shadow-customize ml-3 d-flex align-items-center" style={{backgroundColor: '#FF7F00', color: 'white'}}>
