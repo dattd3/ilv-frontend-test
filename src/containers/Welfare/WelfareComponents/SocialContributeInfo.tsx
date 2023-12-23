@@ -19,7 +19,7 @@ import Constants from "commons/Constants";
 import axios from "axios";
 import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
-import { getMuleSoftHeaderConfigurations, getRequestConfigurationsWithCulture } from "commons/Utils";
+import { getCulture, getMuleSoftHeaderConfigurations, getRequestConfigurationsWithCulture } from "commons/Utils";
 import { IDropdownValue } from "models/CommonModel";
 import IconEdit from 'assets/img/icon/ic_edit_information_white.svg'
 import IconHistory from 'assets/img/icon/ic_history_white.svg'
@@ -501,6 +501,9 @@ const SocialContributeInfo = (props: any) => {
         "Content-Type": "multipart/form-data",
         Authorization: `${localStorage.getItem("accessToken")}`,
       },
+      params: {
+        culture: getCulture()
+      }
     })
       .then((response) => {
         if (

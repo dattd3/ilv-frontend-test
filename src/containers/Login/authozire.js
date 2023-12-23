@@ -122,6 +122,9 @@ function Authorize(props) {
             const config = {
                 headers: {
                   'Authorization': token
+                },
+                params: {
+                    companyCode: companyCode
                 }
             }
             const response = await axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}common/taxsettlement-status`, config)
