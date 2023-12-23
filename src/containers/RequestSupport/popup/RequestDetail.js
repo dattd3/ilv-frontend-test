@@ -7,6 +7,7 @@ import { Rating } from 'react-simple-star-rating'
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
+import purify from "dompurify"
 import { useGuardStore } from 'modules'
 import Constants from 'commons/Constants'
 import { getRequestConfigurations } from 'commons/Utils'
@@ -19,6 +20,9 @@ import LoadingModal from 'components/Common/LoadingModal'
 import IconClose from 'assets/img/icon/icon_x.svg'
 import IconSend from 'assets/img/icon/Icon_send.svg'
 import IconAttachment from 'assets/img/icon/ic_upload_attachment.svg'
+import IconSendBlue from 'assets/img/icon/icon-send.svg'
+import IconAttachmentBlue from 'assets/img/icon/ic_upload_attachment_blue.svg'
+
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -34,9 +38,9 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
         data: [],
         total: 0,
     })
+    const [feedbackFiles, setFeedbackFiles] = useState([])
 
     const data = {}
-    const files = []
 
     const [statusModal, setStatusModal] = useState({
         isShow: false,
@@ -71,9 +75,9 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
     const handleFileChange = (e) => {
         if (validateFileMimeType(e, e?.target?.files, t)) {
             const filesSelected = Object.values(e?.target?.files)
-            const fileClone = [...files, ...filesSelected];
+            const fileClone = [...feedbackFiles, ...filesSelected];
             if (validateTotalFileSize(e, fileClone, t)) {
-                setFiles(fileClone)
+                setFeedbackFiles(fileClone)
             }
         }
     }
@@ -113,8 +117,8 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
             // formData.append('categorySubId', null)
             // formData.append('categorySubItemId', null)
             // formData.append('receives', null)
-            for (let key in files) {
-                formData.append('files', files[key])
+            for (let key in feedbackFiles) {
+                formData.append('files', feedbackFiles[key])
             }
 
             const config = getRequestConfigurations()
@@ -184,9 +188,9 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
     }
 
     const handleRemoveFile = (index) => {
-        const fileClone = [...files]
+        const fileClone = [...feedbackFiles]
         fileClone.splice(index, 1)
-        setFiles(fileClone)
+        setFeedbackFiles(fileClone)
     }
 
     const onHideStatusModal = () => {
@@ -201,8 +205,6 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
             window.location.reload()
         }
     }
-
-    const listRequests = [{}, {}, {}, {}, {}, {}]
 
     const classIndexMapping = {
         0: 'new',
@@ -306,7 +308,7 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
         { value: true, label: 'Có' },
     ]
 
-    console.log('feedbacks => ', feedbacks)
+    console.log('requestDetail => ', requestDetail)
 
     return (
         <>
@@ -315,13 +317,13 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                 show={statusModal.isShow} 
                 isSuccess={statusModal.isSuccess} 
                 content={statusModal.content} 
-                className="evaluation-status-modal"
+                className="common-status-modal"
                 onHide={onHideStatusModal} 
             />
             <Modal
                 show={isShow}
                 onHide={onHide}
-                className="create-request-modal"
+                className="request-detail-modal"
             >
                 <Modal.Body className='rounded'>
                     <div className="header">
@@ -329,14 +331,9 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                     </div>
                     <div className='content'>
                         <UserInfo />
-                        <FeedbackHistory />
-                        <div className="request-info">
+                        <div className="feedback-action">
                             <h2>Phản hồi/Thao tác</h2>
                             <div className="content-region shadow-customize">
-                                <div className="title-block">
-                                    <label>Tiêu đề</label>
-                                    <input type="text" placeholder="Nhập" onChange={e => handleInputChange('title', e)} value={data?.title || ''} />
-                                </div>
                                 <div className="content-block">
                                     <label>Nội dung</label>
                                     <Editor
@@ -347,50 +344,110 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                         // disabled={isReadOnly || false}
                                     />
                                 </div>
+                                <div className="button-region">
+                                    {
+                                        feedbackFiles?.length > 0 && (
+                                            <div className="attachment">
+                                                <div className="content-region">
+                                                    {
+                                                        (feedbackFiles || []).map((file, index) => {
+                                                            return (
+                                                                <span className="item" key={`file-${index}`}>
+                                                                    <span className="file-name">{file?.name}</span>&nbsp;
+                                                                    <span>({file?.size * 0.001}KB)</span>
+                                                                    <img src={IconClose} className="remove" alt="Close" onClick={() => handleRemoveFile(index)} />
+                                                                </span>
+                                                            )
+                                                        }
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                    <div className="d-flex justify-content-end button-block">
+                                        <label htmlFor="i_files" className="btn btn-attachment">
+                                            <img src={IconAttachmentBlue} alt="Attachment" />
+                                            {t("AttachFile")}
+                                            <input
+                                                id="i_files"
+                                                type="file"
+                                                onChange={handleFileChange}
+                                                accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf"
+                                                multiple
+                                            />
+                                        </label>
+                                        <button className="btn btn-send" onClick={sendRequest}><img src={IconSendBlue} alt="Send" />{t("Send")}</button>
+                                    </div>
+                                </div>
+                                <FeedbackHistory
+                                    feedbacks={feedbacks}
+                                />
+                            </div>
+                        </div>
+                        <div className="request-info">
+                            <h2>Thông tin yêu cầu</h2>
+                            <div className="content-region shadow-customize">
+                                <div className="row-customize d-block">
+                                    <label>Tiêu đề</label>
+                                    <div className="val">{requestDetail?.name || ''}</div>
+                                </div>
+                                <div className="row-customize d-block">
+                                    <label>Nội dung</label>
+                                    <div 
+                                        className="val ck ck-content"
+                                        dangerouslySetInnerHTML={{
+                                        __html: purify.sanitize(requestDetail?.contents || ''),
+                                        }}
+                                    />
+                                </div>
                                 <div className="row-customize">
                                     <div className="col">
                                         <label>Loại</label>
-                                        <Select
+                                        <div className="val">{requestDetail?.supportServiceType?.typeVn || requestDetail?.supportServiceType?.typeEn}</div>
+                                        {/* <Select
                                             value={(serviceTypes || []).find(item => item?.value == data?.typeId) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('typeId', e)}
                                             placeholder={t('Chọn')} 
                                             options={serviceTypes}
                                             classNamePrefix="filter-select"
-                                        />
+                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Bảo mật</label>
-                                        <Select
+                                        <div className="val">{requestDetail?.security ? 'Có' : 'Không'}</div>
+                                        {/* <Select
                                             value={(securities || []).find(item => item?.value == data?.isSecurity) || null}
                                             isClearable={false}
                                             onChange={e => handleInputChange('isSecurity', e)}
                                             placeholder={t('Chọn')} 
                                             options={securities}
                                             classNamePrefix="filter-select"
-                                        />
+                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Công ty</label>
-                                        <Select
+                                        <div className="val">{requestDetail?.company?.name || ''}</div>
+                                        {/* <Select
                                             value={(companies || []).find(item => item?.value == data?.companyCode) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('companyCode', e)}
                                             placeholder={t('Chọn')} 
                                             options={companies}
                                             classNamePrefix="filter-select"
-                                        />
+                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Nhóm</label>
-                                        <Select
+                                        <div className="val">{requestDetail?.supportGroups?.groupName || ''}</div>
+                                        {/* <Select
                                             value={(groups || []).find(item => item?.value == data?.groupId) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('groupId', e)}
                                             placeholder={t('Chọn')} 
                                             options={groups}
                                             classNamePrefix="filter-select"
-                                        />
+                                        /> */}
                                     </div>
                                 </div>
                                 <div className="row-customize">
@@ -400,25 +457,27 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                     </div>
                                     <div className="col">
                                         <label>Người cùng nhận thông tin</label>
-                                        <Select
+                                        <div className="val">{data?.receives || ''}</div>
+                                        {/* <Select
                                             value={null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('receives', e)}
                                             placeholder={t('Chọn')} 
                                             options={[]}
                                             classNamePrefix="filter-select"
-                                        />
+                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Ưu tiên</label>
-                                        <Select
+                                        <div className="val">{requestDetail?.priorityId || ''}</div>
+                                        {/* <Select
                                             value={(priorities || []).find(item => item?.value === data?.priorityId) || null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('priorityId', e)}
                                             placeholder={t('Chọn')} 
                                             options={priorities}
                                             classNamePrefix="filter-select"
-                                        />
+                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Trạng thái</label>
@@ -436,17 +495,6 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                         </div>
                         
                         <div className="d-flex justify-content-end button-block">
-                            <label htmlFor="i_files" className="btn btn-attachment">
-                                <img src={IconAttachment} alt="Attachment" />
-                                {t("AttachFile")}
-                                <input
-                                    id="i_files"
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf"
-                                    multiple
-                                />
-                            </label>
                             <button className="btn btn-send" onClick={sendRequest}><img src={IconSend} alt="Send" />{t("Send")}</button>
                         </div>
                     </div>

@@ -75,6 +75,9 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                 pnlEmail: user?.plEmail || '',
                 jobTitle: user?.jobTitle || '',
                 department: user?.department || '',
+                shortenedOrgLevel2Name: '',
+                shortenedOrgLevel3Name: '',
+                shortenedOrgLevel4Name: '',
             }))
             formData.append('contents', data?.content || '')
             // formData.append('handlerId', null)
@@ -304,7 +307,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                 show={statusModal.isShow} 
                 isSuccess={statusModal.isSuccess} 
                 content={statusModal.content} 
-                className="evaluation-status-modal"
+                className="common-status-modal"
                 onHide={onHideStatusModal} 
             />
             <Modal

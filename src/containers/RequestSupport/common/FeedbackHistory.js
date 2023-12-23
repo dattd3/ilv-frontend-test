@@ -1,66 +1,117 @@
-import { Fragment, useState } from "react"
+import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { groupUsersConfig } from ".."
+import purify from "dompurify"
+import moment from 'moment'
+import { feedBackLine } from "../Constant"
 import IconEmailGreen from 'assets/img/icon/ic_mail-green.svg'
 import IconEmailBlue from 'assets/img/icon/ic_mail-blue.svg'
 import IconEmailCyan from 'assets/img/icon/ic_mail-cyan.svg'
 import IconDownload from 'assets/img/ic_download_red.svg'
 import IconExpand from 'assets/img/icon/ic_expand_grey.svg'
 import IconCollapse from 'assets/img/icon/ic_collapse_grey.svg'
+import IconCollapseBlue from 'assets/img/icon/ic_collapse_blue.svg'
+import IconExpandGreen from 'assets/img/icon/ic_expand_green.svg'
 
-const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode }) => {
+import '../../../assets/css/ck-editor5.css'
+
+const FeedbackHistoryItem = ({ index, fullName, ad, company, time, message, colorLine, files, isExpanded, handleExpanded }) => {
     const statusIconMapping = {
-        0: IconEmailGreen,
-        1: IconEmailBlue,
-        2: IconEmailCyan,
+        [feedBackLine.requester]: IconEmailCyan,
+        [feedBackLine.receiveInformationTogether]: IconEmailBlue,
+        [feedBackLine.sameGroup]: IconEmailGreen,
     }
 
-    const [expanded, setExpanded] = useState(false)
+    const saveAttachments = () => {
+
+    }
 
     return (
         <div className="d-flex justify-content-between item">
             <div className="d-inline-flex align-items-baseline left">
-                <span className="icon"><img src={statusIconMapping[statusCode]} alt="Mail" /></span>
+                <span className="icon"><img src={statusIconMapping[colorLine]} alt="Mail" /></span>
                 <div className="d-flex flex-column content">
                     <div className="author"><span className="font-weight-bold">{fullName}</span> ({ad}-{company}) - {time}</div>
-                    { expanded && (<div className="comment">{message}</div>) }
-                    <span className="cursor-pointer action" onClick={() => setExpanded(!expanded)}><img src={expanded ? IconCollapse : IconExpand} alt="Action" />{expanded ? 'Rút gọn' : 'Xem chi tiết'}</span>
+                    { isExpanded && (
+                        <div 
+                            className="comment ck ck-content"
+                            dangerouslySetInnerHTML={{
+                            __html: purify.sanitize(message || ''),
+                            }}
+                        />
+                    )}
+                    <span className="cursor-pointer action" onClick={() => handleExpanded(index, !isExpanded)}><img src={isExpanded ? IconCollapse : IconExpand} alt="Action" />{isExpanded ? 'Rút gọn' : 'Xem chi tiết'}</span>
                 </div>
             </div>
-            <div className="right">
-                <button className="btn-download"><img src={IconDownload} alt="Download" />Tải về tệp tin</button>
-            </div>
+            {
+                files?.length && (
+                    <div className="right">
+                        <button className="btn-download" onClick={saveAttachments}><img src={IconDownload} alt="Download" />Tải về tệp tin</button>
+                    </div>
+                )
+            }
         </div>
     )
 }
 
-const FeedbackHistory = (props) => {
+const FeedbackHistory = ({ feedbacks }) => {
     const { t } = useTranslation()
-    const lstItems = [{}, {}, {}]
- 
+    const [feedbackData, setFeedbackData] = useState({})
+
+    useEffect(() => {
+        feedbacks && setFeedbackData(feedbacks)
+    }, [feedbacks])
+
+    const handleExpanded = (index, status) => {
+        const feedbackListClone = {...feedbackData}
+        feedbackListClone.data = (feedbackListClone?.data || []).map((item, _index) => {
+            return {
+                ...item,
+                isExpanded: (index === null || index === undefined) ? status : _index == index ? status : (item?.isExpanded || false),
+            }
+        })
+
+        setFeedbackData(feedbackListClone)
+    }
+
     return (
-        <div className="feedback-history-block">
-            <h5 className="font-weight-bold title-block">Lịch sử phản hồi </h5>
-            <div className="d-flex align-items-center expanded-collapsed-button">
-                <button className="d-inline-flex justify-content-center align-items-center btn collapsed">Thu gọn</button>
-                <button className="d-inline-flex justify-content-center align-items-center btn expanded">Mở rộng</button>
-            </div>
-            <div className="history">
-                {
-                    (lstItems || []).map((item, index) => (
-                        <FeedbackHistoryItem 
-                            key={index}
-                            fullName={index === 0 ? 'Lê Đình Hoàng' : index === 1 ? 'Hoàng Tú Dũng' : 'Nguyễn Văn An'}
-                            ad={index === 0 ? 'hoangld2' : index === 1 ? 'dunght12' : 'annv1'}
-                            company={'CTVIS'}
-                            time={'25/10/2023 | 12:30:00'}
-                            message={'Yêu cầu của bạn đã được xử lý'}
-                            statusCode={index === 0 ? 0 : index === 1 ? 1 : 2}
-                        />
-                    ))
-                }
-            </div>
-        </div>
+        <>
+            {
+                feedbackData?.data?.length > 0 && (
+                    <div className="feedback-history-block">
+                        <h5 className="font-weight-bold title-block">Lịch sử phản hồi </h5>
+                        <div className="d-flex align-items-center expanded-collapsed-button">
+                            <button className="d-inline-flex justify-content-center align-items-center btn collapsed" onClick={() => handleExpanded(null, false)}><img src={IconCollapseBlue} alt="collapsed" />Thu gọn</button>
+                            <button className="d-inline-flex justify-content-center align-items-center btn expanded" onClick={() => handleExpanded(null, true)}><img src={IconExpandGreen} alt="expanded" />Mở rộng</button>
+                        </div>
+                        <div className="history">
+                            {
+                                (feedbackData?.data || []).map((item, index) => {
+                                    let userInfo = JSON.parse(item?.createdInfo || '{}')
+                                    let shortenedOrg = [userInfo?.shortenedOrgLevel2Name || '', userInfo?.shortenedOrgLevel3Name || '', userInfo?.shortenedOrgLevel4Name || '']
+                                    .filter(name => name).join('-')
+
+                                    return (
+                                        <FeedbackHistoryItem 
+                                            key={index}
+                                            index={index}
+                                            fullName={userInfo?.fullName}
+                                            ad={userInfo?.ad}
+                                            company={shortenedOrg}
+                                            time={moment(item?.createdDate).isValid() ? moment(item?.createdDate).format("DD/MM/YYYY | HH:mm:ss") : ''}
+                                            message={item?.contents}
+                                            colorLine={item?.colorLine}
+                                            files={item?.supportDocuments}
+                                            isExpanded={item?.isExpanded || false}
+                                            handleExpanded={handleExpanded}
+                                        />
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                )
+            }
+        </>
     ) 
 }
 

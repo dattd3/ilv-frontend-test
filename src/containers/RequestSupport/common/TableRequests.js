@@ -29,7 +29,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import Constants from "commons/Constants"
 import { getRequestConfigurations, hasValue } from "commons/Utils"
-import { tryStatement } from "@babel/types"
 import RequestDetail from "../popup/RequestDetail"
 registerLocale("vi", vi)
 
@@ -106,6 +105,13 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         setRequestDetailModal({
             isShow: true,
             id: id,
+        })
+    }
+
+    const onHideRequestDetailModal = () => {
+        setRequestDetailModal({
+            isShow: false,
+            id: null,
         })
     }
 
@@ -194,6 +200,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                 isShow={requestDetailModal.isShow}
                 id={requestDetailModal.id}
                 masterData={masterData}
+                onHide={onHideRequestDetailModal}
             />
             <table className="table">
                 <thead>
