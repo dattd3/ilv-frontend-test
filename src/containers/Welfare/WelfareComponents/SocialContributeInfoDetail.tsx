@@ -253,7 +253,7 @@ const SocialContributeDetailInfo = (props: any) => {
       isShowStatusModal: false,
     });
     if (resultModal.isSuccess) {
-      window.location.href = "/tasks?requestTypes=14,15,20,21";
+      window.location.href = "/tasks?requestTypes=14,15,20,21,22,23";
     }
   };
 
