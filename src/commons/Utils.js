@@ -223,12 +223,19 @@ const getRequestConfigurations = () => {
     return {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        params: {
+            culture: getCulture()
         }
     }
 }
 
 const getMuleSoftHeaderConfigurations = () => {
-    const requestConfigurations = getRequestConfigurations()
+    const requestConfigurations = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+    };
     requestConfigurations.headers['client_id'] = process.env.REACT_APP_MULE_CLIENT_ID
     requestConfigurations.headers['client_secret'] = process.env.REACT_APP_MULE_CLIENT_SECRET
     
