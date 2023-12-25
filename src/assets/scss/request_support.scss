@@ -894,25 +894,6 @@
                         }
                     }
                 }
-                .button-block {
-                    margin-top: 20px;
-                    .btn {
-                        font-size: inherit;
-                        display: inline-flex;
-                        align-items: center;
-                        margin-bottom: 0;
-                        padding: 10px 20px;
-                        outline: none;
-                        &.btn-send {
-                            background: #347EF9;
-                            color: #FFFFFF;
-                            margin-left: 15px;
-                            img {
-                                margin: -2px 6px 0 0;
-                            }
-                        }
-                    }
-                }
                 // .note {
                 //     line-height: 18px;
                 //     &:last-child {
@@ -923,6 +904,26 @@
                 //         cursor: pointer;
                 //     }
                 // }
+                .button-block {
+                    margin-top: 20px;
+                    .btn {
+                        font-size: inherit;
+                        display: inline-flex;
+                        align-items: center;
+                        margin-bottom: 0;
+                        padding: 0 30px;
+                        outline: none;
+                        height: 38px;
+                        &.btn-save {
+                            background: #FFAE46;
+                            color: #FFFFFF;
+                            img {
+                                margin: -2px 6px 0 0;
+                                height: 12px;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

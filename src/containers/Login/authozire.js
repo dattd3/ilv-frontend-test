@@ -3,7 +3,7 @@ import { useGuardStore } from '../../modules';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getCurrentLanguage, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { formatStringByMuleValue, getCurrentLanguage, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
 import { FirebaseUpdateToken } from '../../commons/Firebase';
@@ -149,6 +149,9 @@ function Authorize(props) {
                 }
             })
                 .then(res => {
+                    const departmentStr = [user?.division, user?.department, user?.unit]
+                    .filter(item => formatStringByMuleValue(item))
+                    .join(' / ')
                     if (res && res.data && res.data.data) {
                         guard.setIsAuth({
                             tokenType: 'Bearer',
@@ -169,7 +172,7 @@ function Authorize(props) {
                             sabaId: `saba-${user.uid}`,
                             employeeNo: user.uid,
                             jobType: user.rank_name,
-                            department: `${user.division} / ${user.department} / ${user.unit}`,
+                            department: departmentStr,
                             actualDepartment: user?.department,
                             organizationLvId: user.organization_id,
                             organizationLv1: user.organization_lv1,
@@ -198,6 +201,9 @@ function Authorize(props) {
                             cost_center: user?.cost_center,
                             insurance_number: user?.insurance_number,
                             cell_phone_no: user?.cell_phone_no,
+                            orgshort_lv2: formatStringByMuleValue(user?.orgshort_lv2),
+                            orgshort_lv3: formatStringByMuleValue(user?.orgshort_lv3),
+                            orgshort_lv4: formatStringByMuleValue(user?.orgshort_lv4),
                         });
                         FirebaseUpdateToken();
                     }
@@ -222,7 +228,7 @@ function Authorize(props) {
                         sabaId: `saba-${user.uid}`,
                         employeeNo: user.uid,
                         jobType: user.rank_name,
-                        department: `${user.division} / ${user.department} / ${user.unit}`,
+                        department: departmentStr,
                         actualDepartment: user?.department,
                         organizationLv1: user.organization_lv1,
                         organizationLv2: user.organization_lv2,
@@ -248,6 +254,9 @@ function Authorize(props) {
                         cost_center: user?.cost_center,
                         insurance_number: user?.insurance_number || '',
                         cell_phone_no: user?.cell_phone_no,
+                        orgshort_lv2: formatStringByMuleValue(user?.orgshort_lv2),
+                        orgshort_lv3: formatStringByMuleValue(user?.orgshort_lv3),
+                        orgshort_lv4: formatStringByMuleValue(user?.orgshort_lv4),
                     });
                 })
                 .finally(result => {

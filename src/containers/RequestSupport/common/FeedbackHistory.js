@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import purify from "dompurify"
 import moment from 'moment'
+import { saveAs } from 'file-saver'
 import { feedBackLine } from "../Constant"
 import IconEmailGreen from 'assets/img/icon/ic_mail-green.svg'
 import IconEmailBlue from 'assets/img/icon/ic_mail-blue.svg'
@@ -14,7 +15,7 @@ import IconExpandGreen from 'assets/img/icon/ic_expand_green.svg'
 
 import '../../../assets/css/ck-editor5.css'
 
-const FeedbackHistoryItem = ({ index, fullName, ad, company, time, message, colorLine, files, isExpanded, handleExpanded }) => {
+const FeedbackHistoryItem = ({ index, fullName, ad, company, time, message, colorLine, file, isExpanded, handleExpanded }) => {
     const statusIconMapping = {
         [feedBackLine.requester]: IconEmailCyan,
         [feedBackLine.receiveInformationTogether]: IconEmailBlue,
@@ -22,7 +23,7 @@ const FeedbackHistoryItem = ({ index, fullName, ad, company, time, message, colo
     }
 
     const saveAttachments = () => {
-
+        saveAs(file?.url, file?.name)
     }
 
     return (
@@ -43,7 +44,7 @@ const FeedbackHistoryItem = ({ index, fullName, ad, company, time, message, colo
                 </div>
             </div>
             {
-                files?.length && (
+                file && (
                     <div className="right">
                         <button className="btn-download" onClick={saveAttachments}><img src={IconDownload} alt="Download" />Tải về tệp tin</button>
                     </div>
@@ -100,7 +101,7 @@ const FeedbackHistory = ({ feedbacks }) => {
                                             time={moment(item?.createdDate).isValid() ? moment(item?.createdDate).format("DD/MM/YYYY | HH:mm:ss") : ''}
                                             message={item?.contents}
                                             colorLine={item?.colorLine}
-                                            files={item?.supportDocuments}
+                                            file={item?.supportDocuments?.[0] ? {name: item?.supportDocuments?.[0]?.fileName, url: item?.supportDocuments?.[0]?.fileUrl}: null}
                                             isExpanded={item?.isExpanded || false}
                                             handleExpanded={handleExpanded}
                                         />

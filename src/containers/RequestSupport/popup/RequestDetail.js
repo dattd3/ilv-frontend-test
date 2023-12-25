@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react"
 import { Modal } from "react-bootstrap"
 import Select from 'react-select'
-import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
-import { Rating } from 'react-simple-star-rating'
 import axios from 'axios'
-import moment from 'moment'
 import _ from 'lodash'
 import purify from "dompurify"
 import { useGuardStore } from 'modules'
@@ -18,14 +15,9 @@ import FeedbackHistory from "../common/FeedbackHistory"
 import StatusModal from 'components/Common/StatusModal'
 import LoadingModal from 'components/Common/LoadingModal'
 import IconClose from 'assets/img/icon/icon_x.svg'
-import IconSend from 'assets/img/icon/Icon_send.svg'
-import IconAttachment from 'assets/img/icon/ic_upload_attachment.svg'
+import IconSave from 'assets/img/ic-save.svg'
 import IconSendBlue from 'assets/img/icon/icon-send.svg'
 import IconAttachmentBlue from 'assets/img/icon/ic_upload_attachment_blue.svg'
-
-import 'react-datepicker/dist/react-datepicker.css'
-import vi from 'date-fns/locale/vi'
-registerLocale("vi", vi)
 
 const RequestDetail = ({ isShow , id, masterData, onHide }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
@@ -39,8 +31,10 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
         total: 0,
     })
     const [feedbackFiles, setFeedbackFiles] = useState([])
-
-    const data = {}
+    const [data, setData] = useState({
+        content: '',
+        statusId: null,
+    })
 
     const [statusModal, setStatusModal] = useState({
         isShow: false,
@@ -58,6 +52,10 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
 
                 const [responseRequestDetail, responseFeedbackList] = await Promise.allSettled([getRequestDetail, getFeedbackList])
                 setRequestDetail(responseRequestDetail?.value?.data?.data)
+                setData({
+                    ...data,
+                    statusId: responseRequestDetail?.value?.data?.data?.statusId || null
+                })
                 setFeedbacks({
                     data: responseFeedbackList?.value?.data?.data?.datas || [],
                     total: responseFeedbackList?.value?.data?.data?.totalRecord || 0,
@@ -82,14 +80,13 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
         }
     }
 
-    const sendRequest = async () => {
+    const sendFeedback = async () => {
         const statusModalTemp = { ...statusModal }
         setIsLoading(true)
         try {
             let formData = new FormData()
-            formData.append('id', 0)
-            formData.append('name', data?.title || '')
-            formData.append('userId', user?.email || '')
+            formData.append('id', id) 
+            formData.append('contents', data?.content || '')
             formData.append('userInfo', JSON.stringify({
                 employeeCode: user?.employeeNo || '',
                 ad: user?.ad || '',
@@ -98,27 +95,102 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                 pnlEmail: user?.plEmail || '',
                 jobTitle: user?.jobTitle || '',
                 department: user?.department || '',
+                shortenedOrgLevel2Name: user?.orgshort_lv2,
+                shortenedOrgLevel3Name: user?.orgshort_lv3,
+                shortenedOrgLevel4Name: user?.orgshort_lv4,
             }))
-            formData.append('contents', data?.content || '')
-            // formData.append('handlerId', null)
-            // formData.append('handlerInfo', null)
-            formData.append('companyCode', data?.companyCode || null)
-            formData.append('groupId', data?.groupId || null)
-            // formData.append('causesCsId', null)
-            // formData.append('causesVsId', null)
-            // formData.append('typeId', null)
-            formData.append('security', data?.isSecurity || false)
-            formData.append('slaId', data?.priorityId)
-            formData.append('statusId', data?.statusId)
-            // formData.append('statusNotes', '')
-            formData.append('serviceTypeId', data?.typeId)
-            // formData.append('levelId', null)
-            // formData.append('categoryId', null)
-            // formData.append('categorySubId', null)
-            // formData.append('categorySubItemId', null)
-            // formData.append('receives', null)
+
             for (let key in feedbackFiles) {
                 formData.append('files', feedbackFiles[key])
+            }
+
+            const config = getRequestConfigurations()
+            config.headers['content-type'] = 'multipart/form-data'
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/feedback`, formData, config)
+            statusModalTemp.isShow = true
+            statusModalTemp.needReload = false
+            if (response?.data) {
+                const result = response.data?.result
+                if (result?.code == Constants.API_SUCCESS_CODE) { 
+                    statusModalTemp.isSuccess = true
+                    statusModalTemp.content = "Gửi phản hồi thành công!"
+                    statusModalTemp.needReload = true
+                } else {
+                    statusModalTemp.isSuccess = false
+                    statusModalTemp.content = result?.message
+                }
+            } else {
+                statusModalTemp.isSuccess = false
+                statusModalTemp.content = "Đã có lỗi xảy ra. Xin vui lòng thử lại!"
+            }
+            setStatusModal(statusModalTemp)
+        } catch (e) {
+            statusModalTemp.isShow = true
+            statusModalTemp.isSuccess = false
+            statusModalTemp.content = e?.response?.data?.result?.message || t("AnErrorOccurred")
+            statusModalTemp.needReload = false
+            setStatusModal(statusModalTemp)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const updateRequest = async () => {
+        const statusModalTemp = { ...statusModal }
+        setIsLoading(true)
+        try {
+            let formData = new FormData()
+            formData.append('id', id)
+            formData.append('name', requestDetail?.name || '')
+            formData.append('userId', requestDetail?.userId || '')
+            formData.append('userInfo', requestDetail?.userInfo)
+            formData.append('contents', requestDetail?.contents || '')
+            if (requestDetail?.handlerId) {
+                formData.append('handlerId', requestDetail?.handlerId)
+            }
+            if (requestDetail?.handlerInfo) {
+                formData.append('handlerInfo', requestDetail?.handlerInfo)
+            }
+            formData.append('companyCode', requestDetail?.companyCode || '')
+            if (requestDetail?.groupId) {
+                formData.append('groupId', requestDetail?.groupId)
+            }
+            if (requestDetail?.causesCsId !== undefined && requestDetail?.causesCsId !== null) {
+                formData.append('causesCsId', requestDetail?.causesCsId)
+            }
+            if (requestDetail?.causesVsId !== undefined && requestDetail?.causesVsId !== null) {
+                formData.append('causesVsId', requestDetail?.causesVsId)
+            }
+            if (requestDetail?.typeId !== undefined && requestDetail?.typeId !== null) {
+                formData.append('typeId', requestDetail?.typeId)
+            }
+            formData.append('security', requestDetail?.security)
+            if (requestDetail?.slaId !== undefined && requestDetail?.slaId !== null) {
+                formData.append('slaId', requestDetail?.slaId)
+            }
+            if (requestDetail?.statusId !== undefined && requestDetail?.statusId !== null) {
+                formData.append('statusId', requestDetail?.statusId)
+            }
+            if (requestDetail?.statusNotes !== undefined && requestDetail?.statusNotes !== null) {
+                formData.append('statusNotes', requestDetail?.statusNotes)
+            }
+            if (requestDetail?.serviceTypeId !== undefined && requestDetail?.serviceTypeId !== null) {
+                formData.append('serviceTypeId', requestDetail?.serviceTypeId)
+            }
+            if (requestDetail?.levelId !== undefined && requestDetail?.levelId !== null) {
+                formData.append('levelId', requestDetail?.levelId)
+            }
+            if (requestDetail?.categoryId !== undefined && requestDetail?.categoryId !== null) {
+                formData.append('categoryId', requestDetail?.categoryId)
+            }
+            if (requestDetail?.categorySubId !== undefined && requestDetail?.categorySubId !== null) {
+                formData.append('categorySubId', requestDetail?.categorySubId)
+            }
+            if (requestDetail?.categorySubItemId !== undefined && requestDetail?.categorySubItemId !== null) {
+                formData.append('categorySubItemId', requestDetail?.categorySubItemId)
+            }
+            if (requestDetail?.receives !== undefined && requestDetail?.receives !== null) {
+                formData.append('receives', requestDetail?.receives)
             }
 
             const config = getRequestConfigurations()
@@ -130,7 +202,7 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                 const result = response.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
                     statusModalTemp.isSuccess = true
-                    statusModalTemp.content = "Gửi yêu cầu thành công!"
+                    statusModalTemp.content = "Cập nhật yêu cầu thành công!"
                     statusModalTemp.needReload = true
                 } else {
                     statusModalTemp.isSuccess = false
@@ -155,29 +227,11 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
     const handleInputChange = (key, e) => {
         const obj = {}
         switch (key) {
-            case 'title':
-                obj[key] = e?.target?.value || ''
-                break
             case 'content':
                 obj[key] = e || ''
                 break
-            case 'typeId':
-            case 'isSecurity':
-            case 'priorityId':
             case 'statusId':
                 obj[key] = e?.value || null
-                break
-            case 'companyCode':
-                obj[key] = e?.value || null
-                obj.groupId = null
-                break
-            case 'groupId':
-                obj[key] = e?.value || null
-                obj.priorityId = null
-                obj.companyCode = (masterData?.companies || []).find(item => item?.code === e?.companyCode)?.code || null
-                break
-            case 'receives':
-                obj[key] = e || []
                 break
         }
 
@@ -341,7 +395,6 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                         onChange={(e, editor) => {
                                             handleInputChange('content', editor?.getData())
                                         }}
-                                        // disabled={isReadOnly || false}
                                     />
                                 </div>
                                 <div className="button-region">
@@ -372,11 +425,11 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                                 id="i_files"
                                                 type="file"
                                                 onChange={handleFileChange}
-                                                accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf"
+                                                accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf, .zip"
                                                 multiple
                                             />
                                         </label>
-                                        <button className="btn btn-send" onClick={sendRequest}><img src={IconSendBlue} alt="Send" />{t("Send")}</button>
+                                        <button className="btn btn-send" onClick={sendFeedback}><img src={IconSendBlue} alt="Send" />{t("Send")}</button>
                                     </div>
                                 </div>
                                 <FeedbackHistory
@@ -403,51 +456,19 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                 <div className="row-customize">
                                     <div className="col">
                                         <label>Loại</label>
-                                        <div className="val">{requestDetail?.supportServiceType?.typeVn || requestDetail?.supportServiceType?.typeEn}</div>
-                                        {/* <Select
-                                            value={(serviceTypes || []).find(item => item?.value == data?.typeId) || null}
-                                            isClearable={true}
-                                            onChange={e => handleInputChange('typeId', e)}
-                                            placeholder={t('Chọn')} 
-                                            options={serviceTypes}
-                                            classNamePrefix="filter-select"
-                                        /> */}
+                                        <div className="val">{locale === Constants.LANGUAGE_VI ? requestDetail?.supportServiceType?.typeVn : (requestDetail?.supportServiceType?.typeEn || requestDetail?.supportServiceType?.typeVn)}</div>
                                     </div>
                                     <div className="col">
                                         <label>Bảo mật</label>
                                         <div className="val">{requestDetail?.security ? 'Có' : 'Không'}</div>
-                                        {/* <Select
-                                            value={(securities || []).find(item => item?.value == data?.isSecurity) || null}
-                                            isClearable={false}
-                                            onChange={e => handleInputChange('isSecurity', e)}
-                                            placeholder={t('Chọn')} 
-                                            options={securities}
-                                            classNamePrefix="filter-select"
-                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Công ty</label>
                                         <div className="val">{requestDetail?.company?.name || ''}</div>
-                                        {/* <Select
-                                            value={(companies || []).find(item => item?.value == data?.companyCode) || null}
-                                            isClearable={true}
-                                            onChange={e => handleInputChange('companyCode', e)}
-                                            placeholder={t('Chọn')} 
-                                            options={companies}
-                                            classNamePrefix="filter-select"
-                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Nhóm</label>
                                         <div className="val">{requestDetail?.supportGroups?.groupName || ''}</div>
-                                        {/* <Select
-                                            value={(groups || []).find(item => item?.value == data?.groupId) || null}
-                                            isClearable={true}
-                                            onChange={e => handleInputChange('groupId', e)}
-                                            placeholder={t('Chọn')} 
-                                            options={groups}
-                                            classNamePrefix="filter-select"
-                                        /> */}
                                     </div>
                                 </div>
                                 <div className="row-customize">
@@ -458,32 +479,15 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Người cùng nhận thông tin</label>
                                         <div className="val">{data?.receives || ''}</div>
-                                        {/* <Select
-                                            value={null}
-                                            isClearable={true}
-                                            onChange={e => handleInputChange('receives', e)}
-                                            placeholder={t('Chọn')} 
-                                            options={[]}
-                                            classNamePrefix="filter-select"
-                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Ưu tiên</label>
-                                        <div className="val">{requestDetail?.priorityId || ''}</div>
-                                        {/* <Select
-                                            value={(priorities || []).find(item => item?.value === data?.priorityId) || null}
-                                            isClearable={true}
-                                            onChange={e => handleInputChange('priorityId', e)}
-                                            placeholder={t('Chọn')} 
-                                            options={priorities}
-                                            classNamePrefix="filter-select"
-                                        /> */}
+                                        <div className="val">{locale === Constants.LANGUAGE_VI ? requestDetail?.supportSla?.prioritizeVn : (requestDetail?.supportSla?.prioritizeEn || requestDetail?.supportSla?.prioritizeVn)}</div>
                                     </div>
                                     <div className="col">
                                         <label>Trạng thái</label>
                                         <Select
                                             value={(statuses || []).find(item => item?.value == data?.statusId) || null}
-                                            isClearable={true}
                                             onChange={e => handleInputChange('statusId', e)}
                                             placeholder={t('Chọn')} 
                                             options={statuses}
@@ -493,9 +497,8 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                 </div>
                             </div>
                         </div>
-                        
                         <div className="d-flex justify-content-end button-block">
-                            <button className="btn btn-send" onClick={sendRequest}><img src={IconSend} alt="Send" />{t("Send")}</button>
+                            <button className="btn btn-save" onClick={updateRequest}><img src={IconSave} alt="Send" />{t("Save")}</button>
                         </div>
                     </div>
                 </Modal.Body>

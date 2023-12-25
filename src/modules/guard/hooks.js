@@ -87,6 +87,9 @@ const Storage = {
     localStorage.setItem('cost_center', currentAuthUser.cost_center);
     localStorage.setItem('insurance_number', currentAuthUser.insurance_number);
     localStorage.setItem('cell_phone_no', currentAuthUser.cell_phone_no);
+    localStorage.setItem('orgshort_lv2', currentAuthUser.orgshort_lv2);
+    localStorage.setItem('orgshort_lv3', currentAuthUser.orgshort_lv3);
+    localStorage.setItem('orgshort_lv4', currentAuthUser.orgshort_lv4);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -137,7 +140,10 @@ const Storage = {
       master_code: localStorage.getItem('master_code'),
       cost_center: localStorage.getItem('cost_center'),
       insurance_number: localStorage.getItem('insurance_number'),
-      cell_phone_no: localStorage.getItem('cell_phone_no')
+      cell_phone_no: localStorage.getItem('cell_phone_no'),
+      orgshort_lv2: localStorage.getItem('orgshort_lv2'),
+      orgshort_lv3: localStorage.getItem('orgshort_lv3'),
+      orgshort_lv4: localStorage.getItem('orgshort_lv4'),
     }
   },
   reset() {
@@ -190,6 +196,9 @@ const Storage = {
     localStorage.removeItem('insurance_number');
     localStorage.removeItem('cultureMenu');
     localStorage.removeItem('cell_phone_no');
+    localStorage.removeItem('orgshort_lv2');
+    localStorage.removeItem('orgshort_lv3');
+    localStorage.removeItem('orgshort_lv4');
   }
 }
 
@@ -240,4 +249,7 @@ const deserialize = (currentAuthUser) => ({
   cost_center: currentAuthUser.cost_center,
   insurance_number: currentAuthUser.insurance_number,
   cell_phone_no: currentAuthUser.cell_phone_no,
+  orgshort_lv2: currentAuthUser.orgshort_lv2,
+  orgshort_lv3: currentAuthUser.orgshort_lv3,
+  orgshort_lv4: currentAuthUser.orgshort_lv4,
 })

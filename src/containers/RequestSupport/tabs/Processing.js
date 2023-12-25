@@ -38,7 +38,7 @@ const Processing = ({ masterData, needLoadData, tab }) => {
                 pageIndex: 1, 
                 pageSize: 10,
             }
-            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/user/list`, payload, getRequestConfigurations())
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}api/support/tech/list`, payload, getRequestConfigurations())
             setRequestData({
                 listRequest: response?.data?.data?.datas || [],
                 total: response?.data?.data?.totalRecord || 0,

@@ -75,9 +75,9 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                 pnlEmail: user?.plEmail || '',
                 jobTitle: user?.jobTitle || '',
                 department: user?.department || '',
-                shortenedOrgLevel2Name: '',
-                shortenedOrgLevel3Name: '',
-                shortenedOrgLevel4Name: '',
+                shortenedOrgLevel2Name: user?.orgshort_lv2,
+                shortenedOrgLevel3Name: user?.orgshort_lv3,
+                shortenedOrgLevel4Name: user?.orgshort_lv4,
             }))
             formData.append('contents', data?.content || '')
             // formData.append('handlerId', null)
@@ -454,7 +454,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     id="i_files"
                                     type="file"
                                     onChange={handleFileChange}
-                                    accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf"
+                                    accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf, .zip"
                                     multiple
                                 />
                             </label>
