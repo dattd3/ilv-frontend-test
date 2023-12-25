@@ -464,6 +464,7 @@ const SocialContributeInfo = (props: any) => {
     }));
 
     const formData = new FormData();
+    formData.append("culture", getCulture());
     formData.append("requestInfo", JSON.stringify(userProfileInfo));
     formData.append("orgLv2Id", localStorage.getItem("organizationLv2") || "");
     formData.append("orgLv3Id", localStorage.getItem("divisionId") || "");
