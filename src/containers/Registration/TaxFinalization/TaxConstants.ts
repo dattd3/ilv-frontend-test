@@ -40,7 +40,6 @@ export const RELATIONSHIP_WITH_INSURED = [
 
 export const getRelationshipWithInsured = (t) => {
         return [
-        { value: SOCIAL_NUMBER_INPUT, label: t('RelationshipOther') },
         {value: 'V001', label: t("RelationshipFather")},
         {value: 'V002', label: t("RelationshipMother")},
         {value: 'V003', label: t("RelationshipStepFather")},
@@ -55,6 +54,7 @@ export const getRelationshipWithInsured = (t) => {
         {value: 'V012', label: t("RelationshipYoungerSibling")},
         {value: 'V013', label: t("RelationshipHusband")},
         {value: 'V014', label: t("RelationshipSon")},
-        {value: 'V015', label: t("RelationshipDaughter")}
+        {value: 'V015', label: t("RelationshipDaughter")},
+        { value: 'V016', label: t('RelationshipOther') },
     ]
 }
