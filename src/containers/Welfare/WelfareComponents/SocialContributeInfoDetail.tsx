@@ -19,7 +19,7 @@ import Constants from "commons/Constants";
 import axios from "axios";
 import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "commons/Utils";
+import { getMuleSoftHeaderConfigurations, getRequestConfigurationsWithCulture } from "commons/Utils";
 import { IDropdownValue } from "models/CommonModel";
 import InsuranceApproveActionButtons from "../InsuranceComponents/InsuranceApproveActionButtons";
 import ProcessHistoryComponent from "containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ProcessHistoryComponent";
@@ -70,7 +70,7 @@ const SocialContributeDetailInfo = (props: any) => {
 
   const getSocialInfoData = async () => {
     setLoading(true);
-    const requestConfig = getRequestConfigurations();
+    const requestConfig = getRequestConfigurationsWithCulture();
     const getInfoDetail = axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/${requestId}`, requestConfig)
     Promise.allSettled([ getInfoDetail]).then((res: any) => {
         if (res && res[0].value) {
@@ -253,7 +253,7 @@ const SocialContributeDetailInfo = (props: any) => {
       isShowStatusModal: false,
     });
     if (resultModal.isSuccess) {
-      window.location.href = "/tasks?requestTypes=14,15,20,21";
+      window.location.href = "/tasks?requestTypes=14,15,20,21,22,23";
     }
   };
 

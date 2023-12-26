@@ -14,7 +14,7 @@ import Constants from "commons/Constants";
 import axios from "axios";
 import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations} from "commons/Utils";
+import { getCulture, getMuleSoftHeaderConfigurations, getRequestConfigurations} from "commons/Utils";
 import SocialSupportListComponent from "../InsuranceSocialSupport/SocialSupportListComponent";
 import CreateSocialSupportInfo from "../InsuranceSocialSupport/CreateSocialSupportInfo";
 
@@ -203,6 +203,9 @@ const SocialSupportInfo = (props: any) => {
         "Content-Type": "multipart/form-data",
         Authorization: `${localStorage.getItem("accessToken")}`,
       },
+      params: {
+        culture: getCulture()
+      }
     })
       .then((response) => {
         if (
@@ -237,7 +240,7 @@ const SocialSupportInfo = (props: any) => {
       isShowStatusModal: false,
     });
     if (resultModal.isSuccess) {
-      window.location.href = "/tasks?requestTypes=14,15,20,21,22";
+      window.location.href = "/tasks?requestTypes=14,15,20,21,22,22,23";
     }
   };
 

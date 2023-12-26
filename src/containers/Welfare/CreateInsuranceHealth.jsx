@@ -8,6 +8,7 @@ import Constants from "../../commons/Constants";
 import BulletIcon from "../../assets/img/icon/ic_bullet.svg";
 import _ from "lodash";
 import {
+  getCulture,
   getMuleSoftHeaderConfigurations,
   getRequestConfigurations,
 } from "../../commons/Utils";
@@ -244,6 +245,9 @@ const CreateInsuranceHealth = ({ t }) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `${localStorage.getItem("accessToken")}`,
+        params: {
+          culture: getCulture()
+        }
       },
     })
       .then((response) => {

@@ -9,8 +9,9 @@ import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
 import {
   formatStringByMuleValue,
+  getCulture,
   getMuleSoftHeaderConfigurations,
-  getRequestConfigurations,
+  getRequestConfigurationsWithCulture,
 } from "commons/Utils";
 import {
   TAX_TYPE_CONSTANT,
@@ -83,8 +84,8 @@ const SocialContributeInfo = (props: any) => {
     ) as string;
     _data.idNumber = convertDataExtract(profile?.personal_id_no) as string;
     _data.dateIssue = convertDataExtract(
-      profile?.date_of_issue
-        ? moment(profile.date_of_issue, "DD-MM-YYYY").format("DD/MM/YYYY")
+      profile?.pid_date_of_issue
+        ? moment(profile.pid_date_of_issue, "DD-MM-YYYY").format("DD/MM/YYYY")
         : ""
     ) as string;
     _data.placeIssue = convertDataExtract(profile?.place_of_issue) as string;
@@ -111,7 +112,7 @@ const SocialContributeInfo = (props: any) => {
   };
 
   const getTaxTemplate = async () => {
-    const config = getRequestConfigurations();
+    const config = getRequestConfigurationsWithCulture();
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateDocumentByTypes`,
@@ -159,8 +160,8 @@ const SocialContributeInfo = (props: any) => {
       profile = res.data.data[0];
       _userInfo = {
         idNumber: profile?.personal_id_no || "",
-        dateOfIssue: profile?.date_of_issue
-          ? moment(profile.date_of_issue, "DD-MM-YYYY").format("YYYY-MM-DD")
+        dateOfIssue: profile?.pid_date_of_issue
+          ? moment(profile.pid_date_of_issue, "DD-MM-YYYY").format("YYYY-MM-DD")
           : "",
         placeOfIssue: profile?.place_of_issue || "",
         employeeNo: localStorage.getItem("employeeNo"),
@@ -463,6 +464,7 @@ const SocialContributeInfo = (props: any) => {
     }));
 
     const formData = new FormData();
+    formData.append("culture", getCulture());
     formData.append("requestInfo", JSON.stringify(userProfileInfo));
     formData.append("orgLv2Id", localStorage.getItem("organizationLv2") || "");
     formData.append("orgLv3Id", localStorage.getItem("divisionId") || "");
@@ -495,6 +497,9 @@ const SocialContributeInfo = (props: any) => {
         "Content-Type": "multipart/form-data",
         Authorization: `${localStorage.getItem("accessToken")}`,
       },
+      params: {
+        culture: getCulture()
+      }
     })
       .then((response) => {
         if (
@@ -529,7 +534,7 @@ const SocialContributeInfo = (props: any) => {
       isShowStatusModal: false,
     });
     if (resultModal.isSuccess) {
-      window.location.href = "/tasks?requestTypes=14,15,20,21";
+      window.location.href = "/tasks?requestTypes=14,15,20,21,22,23";
     }
   };
 
