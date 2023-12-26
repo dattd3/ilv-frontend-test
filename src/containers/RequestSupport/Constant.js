@@ -24,8 +24,8 @@ const tabConfig = {
 }
 
 const groupUsersConfig = {
-    sameGroup: { label: 'Người cùng nhóm', icon: IconMailGreen },
-    receiveInformationTogether: { label: 'Người cùng nhận thông tin', icon: IconMailBlue },
+    sameGroup: { label: 'Kĩ thuật viên', icon: IconMailGreen },
+    receiveInformationTogether: { label: 'Người nhận thông tin', icon: IconMailBlue },
     requester: { label: 'Người yêu cầu', icon: IconMailCyan },
 }
 

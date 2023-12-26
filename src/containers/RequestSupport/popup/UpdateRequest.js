@@ -19,12 +19,12 @@ import LoadingModal from 'components/Common/LoadingModal'
 import IconClose from 'assets/img/icon/icon_x.svg'
 import IconSend from 'assets/img/icon/Icon_send.svg'
 import IconAttachment from 'assets/img/icon/ic_upload_attachment.svg'
+
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
-import SearchMultiUsers from "components/Common/SearchMultiUsers"
 registerLocale("vi", vi)
 
-const CreatedRequest = ({ isShow, masterData, onHide }) => {
+const UpdateRequest = ({ isShow, masterData, onHide }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
     const guard = useGuardStore()
     const user = guard.getCurentUser()
@@ -49,7 +49,6 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         content: "",
         needReload: true
     })
-    const [listEmployees, setListEmployees] = useState([])
 
     const handleFileChange = (e) => {
         if (validateFileMimeType(e, e?.target?.files, t)) {
@@ -186,26 +185,6 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         if (statusModal?.needReload) {
             window.location.reload()
         }
-    }
-
-    const handleDeleteEmployee = (employeeCode = null) => {
-        const listEmployees = [...listEmployees]
-        let rest = []
-        if (employeeCode) {
-          rest = (listEmployees || []).filter(item => item?.code != employeeCode)
-        }
-        setListEmployees(rest)
-    }
-
-    const handleSelectEmployee = (employee) => {
-        if (!employee || employee?.length === 0) {
-            return
-        }
-    
-        let listEmployees = [...listEmployees]
-        listEmployees = [...listEmployees, ...employee]
-        listEmployees = _.uniqWith(listEmployees, _.isEqual)
-        setListEmployees(listEmployees)
     }
 
     const listRequests = [{}, {}, {}, {}, {}, {}]
@@ -413,20 +392,14 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     </div>
                                     <div className="col">
                                         <label>Người cùng nhận thông tin</label>
-                                        <SearchMultiUsers
-                                            handleDeleteEmployee={handleDeleteEmployee}
-                                            listEmployees={listEmployees}
-                                            handleSelectEmployee={handleSelectEmployee}
-                                            isDisabled={false}
-                                        />
-                                        {/* <Select
+                                        <Select
                                             value={null}
                                             isClearable={true}
                                             onChange={e => handleInputChange('receives', e)}
                                             placeholder={t('Chọn')} 
                                             options={[]}
                                             classNamePrefix="filter-select"
-                                        /> */}
+                                        />
                                     </div>
                                     <div className="col">
                                         <label>Ưu tiên</label>
@@ -495,4 +468,4 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
     )
 }
 
-export default CreatedRequest
+export default UpdateRequest

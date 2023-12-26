@@ -55,9 +55,20 @@
                             height: 12px;
                         }
                     }
+                    &.btn-update-request {
+                        border: none;
+                        color: #FFFFFF;
+                        background: #05BD29;
+                        padding-left: 25px;
+                        padding-right: 25px;
+                        img {
+                            margin: -2px 0 0 10px;
+                            height: 11px;
+                        }
+                    }
                 }
                 .filter {
-                    width: 180px;
+                    width: 260px;
                     margin-left: 20px;
                     .icon-prefix-select {
                         position: absolute;
@@ -227,7 +238,7 @@
                         }
                     }
                     .title {
-                        width: 255px;
+                        width: 260px;
                     }
                     .created-by {
                         width: 100px;
@@ -308,7 +319,7 @@
                         }
                     }
                     .comment {
-                        width: 200px;
+                        width: 250px;
                         font-style: normal;
                         textarea {
                             width: 100%;

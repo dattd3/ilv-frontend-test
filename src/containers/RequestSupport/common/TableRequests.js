@@ -5,15 +5,12 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import ReactTooltip from 'react-tooltip'
 import { Rating } from 'react-simple-star-rating'
 import moment from 'moment'
+import purify from "dompurify"
 import { groupUsersConfig } from ".."
 import { status, feedBackLine, tabConfig } from "../Constant"
 import IconEmailGreen from 'assets/img/icon/ic_mail-green.svg'
 import IconEmailBlue from 'assets/img/icon/ic_mail-blue.svg'
 import IconEmailCyan from 'assets/img/icon/ic_mail-cyan.svg'
-import IconDownload from 'assets/img/ic_download_red.svg'
-import IconExpand from 'assets/img/icon/ic_expand_grey.svg'
-import IconCollapse from 'assets/img/icon/ic_collapse_grey.svg'
-import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconSearch from "assets/img/icon/icon-search.svg"
 import IconRemove from 'assets/img/icon-delete.svg'
 import IconSave from 'assets/img/icon/ic_tick_green.svg'
@@ -191,8 +188,6 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         }
     })
 
-    console.log('listRequests => ', listRequests)
-
     return (
         <>
         
@@ -209,7 +204,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                             tab === tabConfig.processing && (
                                 <th className="check">
                                     <div className="val">
-                                        <input type="checkbox" className="cursor-pointer" checked={(listRequests || []).every(item => item?.isChecked)} onChange={e => handleCheckboxChange(e, null)} />
+                                        <input type="checkbox" className="cursor-pointer" checked={(listRequests || []).every(item => item?.isChecked) && listRequests?.length > 0} onChange={e => handleCheckboxChange(e, null)} />
                                     </div>
                                 </th>
                             )
@@ -371,41 +366,57 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                     effect="solid" 
                                                     place="right" 
                                                     type='dark'>
-                                                    {child?.requestHistory?.[0]?.contents}
+                                                    {child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? 'Phản hồi cuối bởi: người yêu cầu' : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? 'Phản hồi cuối bởi: người nhận thông tin' : 'Phản hồi cuối bởi: Kĩ thuật viên'}
                                                 </ReactTooltip>
                                                 <img src={child?.requestHistory?.[0]?.colorLine == feedBackLine.requester ? IconEmailCyan : child?.requestHistory?.[0]?.colorLine == feedBackLine.receiveInformationTogether ? IconEmailBlue : IconEmailGreen} alt="Search" />
                                             </span>
                                             {
                                                 tab === tabConfig.processing && (
                                                     <>
-                                                        <span 
-                                                            data-tip data-for={`tooltip-${index}-ic2`} 
-                                                            className="highlight cursor-pointer" 
-                                                        >
-                                                            <ReactTooltip 
-                                                                id={`tooltip-${index}-ic2`} 
-                                                                scrollHide 
-                                                                effect="solid" 
-                                                                place="right" 
-                                                                type='dark'>
-                                                                {child?.requestHistory?.[0]?.contents}
-                                                            </ReactTooltip>
-                                                            <img src={index === 0 ? IconFeedbackOverdueActive : index === 1 ? IconFeedbackOverdue : IconFeedbackOverdueActive} alt="Search" />
-                                                        </span>
-                                                        <span 
-                                                            data-tip data-for={`tooltip-${index}-ic3`} 
-                                                            className="highlight cursor-pointer" 
-                                                        >
-                                                            <ReactTooltip 
-                                                                id={`tooltip-${index}-ic3`} 
-                                                                scrollHide 
-                                                                effect="solid" 
-                                                                place="right" 
-                                                                type='dark'>
-                                                                {child?.requestHistory?.[0]?.contents}
-                                                            </ReactTooltip>
-                                                            <img src={index === 0 ? IconDeadlineOverdueActive : index === 1 ? IconDeadlineOverdue : IconDeadlineOverdueActive} alt="Search" />
-                                                        </span>
+                                                        {
+                                                            moment(child?.feedbackDeadline).isValid() && moment(child?.feedbackDeadline).isBefore(moment()) 
+                                                            ? (
+                                                                <span 
+                                                                    data-tip data-for={`tooltip-${index}-ic2`} 
+                                                                    className="highlight cursor-pointer" 
+                                                                >
+                                                                    <ReactTooltip 
+                                                                        id={`tooltip-${index}-ic2`} 
+                                                                        scrollHide 
+                                                                        effect="solid" 
+                                                                        place="right" 
+                                                                        type='dark'>
+                                                                        Quá hạn phản hồi
+                                                                    </ReactTooltip>
+                                                                    <img src={IconFeedbackOverdueActive} alt="Icon" />
+                                                                </span>
+                                                            )
+                                                            : (
+                                                                <span className="highlight cursor-pointer"><img src={IconFeedbackOverdue} alt="Icon" /></span>
+                                                            )
+                                                        }
+                                                        {
+                                                            moment(child?.closingDeadline).isValid() && moment(child?.closingDeadline).isBefore(moment()) 
+                                                            ? (
+                                                                <span 
+                                                                    data-tip data-for={`tooltip-${index}-ic3`} 
+                                                                    className="highlight cursor-pointer" 
+                                                                >
+                                                                    <ReactTooltip 
+                                                                        id={`tooltip-${index}-ic3`} 
+                                                                        scrollHide 
+                                                                        effect="solid" 
+                                                                        place="right" 
+                                                                        type='dark'>
+                                                                        Quá hạn đóng
+                                                                    </ReactTooltip>
+                                                                    <img src={IconDeadlineOverdueActive} alt="Icon" />
+                                                                </span>
+                                                            )
+                                                            : (
+                                                                <span className="highlight cursor-pointer"><img src={IconDeadlineOverdue} alt="Icon" /></span>
+                                                            )
+                                                        }
                                                     </>
                                                 )
                                             }
@@ -482,7 +493,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                     {
                                         tab === tabConfig.processing && (
                                             <td className="deadline text-center">
-                                                <div className="val">30/11/2023</div>
+                                                <div className="val">{moment(child?.closingDeadline).isValid() ? moment(child?.closingDeadline).format("DD/MM/YYYY") : ''}</div>
                                             </td> 
                                         )
                                     }

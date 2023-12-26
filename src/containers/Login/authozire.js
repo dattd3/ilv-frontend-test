@@ -6,6 +6,7 @@ import axios from 'axios';
 import { formatStringByMuleValue, getCurrentLanguage, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
+import { omit } from 'lodash'
 import { FirebaseUpdateToken } from '../../commons/Firebase';
 
 const ERROR_TYPE = {
@@ -139,6 +140,9 @@ function Authorize(props) {
             } else {
                 benefitTitle = user.employee_level;
             }
+            const departmentStr = [user?.division, user?.department, user?.unit]
+            .filter(item => formatStringByMuleValue(item))
+            .join(' / ')
             //check permission show prepare tab 
             const shouldShowPrepareOnboard = await hasPermissonShowPrepareTab(jwtToken, user.company_code);
             // Get company config
@@ -149,9 +153,6 @@ function Authorize(props) {
                 }
             })
                 .then(res => {
-                    const departmentStr = [user?.division, user?.department, user?.unit]
-                    .filter(item => formatStringByMuleValue(item))
-                    .join(' / ')
                     if (res && res.data && res.data.data) {
                         guard.setIsAuth({
                             tokenType: 'Bearer',
@@ -304,7 +305,7 @@ function Authorize(props) {
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}user/update`,
-            data: userData,
+            data: omit(userData, ['avatar']),
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwtToken}`}
         })
         .then(res => {
