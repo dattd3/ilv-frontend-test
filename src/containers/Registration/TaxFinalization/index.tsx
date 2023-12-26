@@ -84,8 +84,8 @@ const SocialContributeInfo = (props: any) => {
     ) as string;
     _data.idNumber = convertDataExtract(profile?.personal_id_no) as string;
     _data.dateIssue = convertDataExtract(
-      profile?.date_of_issue
-        ? moment(profile.date_of_issue, "DD-MM-YYYY").format("DD/MM/YYYY")
+      profile?.pid_date_of_issue
+        ? moment(profile.pid_date_of_issue, "DD-MM-YYYY").format("DD/MM/YYYY")
         : ""
     ) as string;
     _data.placeIssue = convertDataExtract(profile?.place_of_issue) as string;
@@ -160,8 +160,8 @@ const SocialContributeInfo = (props: any) => {
       profile = res.data.data[0];
       _userInfo = {
         idNumber: profile?.personal_id_no || "",
-        dateOfIssue: profile?.date_of_issue
-          ? moment(profile.date_of_issue, "DD-MM-YYYY").format("YYYY-MM-DD")
+        dateOfIssue: profile?.pid_date_of_issue
+          ? moment(profile.pid_date_of_issue, "DD-MM-YYYY").format("YYYY-MM-DD")
           : "",
         placeOfIssue: profile?.place_of_issue || "",
         employeeNo: localStorage.getItem("employeeNo"),
