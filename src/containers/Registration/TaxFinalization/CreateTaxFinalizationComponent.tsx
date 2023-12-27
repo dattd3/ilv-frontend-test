@@ -57,7 +57,7 @@ const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
   const handleTextInputChange = (e, name) => {
     const candidateInfos = { ...data };
     let value = e?.target?.value;
-    if (name == "dependentNumber" && value) {
+    if ((name == "dependentNumber" || name == 'PitNo') && value) {
       value = value.replace(/[^0-9]/g, "");
     }
     candidateInfos[name] = e != null ? value : "";
@@ -230,7 +230,7 @@ const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
               className="form-control input mv-10 w-100"
               name="PitNo"
               autoComplete="off"
-              maxLength={255}
+              maxLength={13}
               disabled={!isCreateMode}
             />
             {errors["PitNo"] ? (

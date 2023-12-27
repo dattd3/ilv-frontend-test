@@ -40,6 +40,6 @@ const checkVersionPnLSameAsVinhome = (moduleType = 1, ...otherPnl) => {
     return checkIsExactPnL(...pnlAvaiable);
 }
 
-const IS_VINFAST = () => checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
+const IS_VINFAST = (hasVinES = false) => checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, hasVinES ? Constants.pnlVCode.VinES : null);
 
 export { getRequestConfigs, checkIsExactPnL, getStateRedirect, checkVersionPnLSameAsVinhome, IS_VINFAST }
