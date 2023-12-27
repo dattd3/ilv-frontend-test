@@ -124,15 +124,15 @@ function NewsOnHome() {
               },
             }
           ),
-          requestGetEmployeePrivilegeBanner = axios.get(
-            `${process.env.REACT_APP_REQUEST_URL}article/detail`,
-            {
-              ...config,
-              params: {
-                type: "BANNER",
-              },
-            }
-          ),
+          // requestGetEmployeePrivilegeBanner = axios.get(
+          //   `${process.env.REACT_APP_REQUEST_URL}article/detail`,
+          //   {
+          //     ...config,
+          //     params: {
+          //       type: "BANNER",
+          //     },
+          //   }
+          // ),
           getPrivilegeBanners = axios.get(
             `${process.env.REACT_APP_REQUEST_URL}api/vanhoavin/list`,
             {
@@ -149,13 +149,13 @@ function NewsOnHome() {
           _listInternalNews,
           _listInternalNewsPodcasts,
           _listInternalNewsVideos,
-          employeePrivilegeBanner,
+          // employeePrivilegeBanner,
           privilegeBanners,
         ] = await Promise.allSettled([
           requestGetListInternalNews,
           requestGetListInternalNewsPodcasts,
           requestGetListInternalNewsVideos,
-          requestGetEmployeePrivilegeBanner,
+          // requestGetEmployeePrivilegeBanner,
           getPrivilegeBanners,
         ]);
         setListInternalNews(
@@ -173,22 +173,22 @@ function NewsOnHome() {
             lang
           )
         );
-        const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
-        setPrivilegeBanner({
-          ...privilegeBanner,
-          description: isJsonString(_privilegeBanner?.description)
-            ? JSON.parse(_privilegeBanner?.description)?.[lang] ||
-              JSON.parse(_privilegeBanner?.description)?.["vi"]
-            : _privilegeBanner?.description,
-          thumbnail: isJsonString(_privilegeBanner?.thumbnail)
-            ? JSON.parse(_privilegeBanner?.thumbnail)?.[lang] ||
-              JSON.parse(_privilegeBanner?.thumbnail)?.["vi"]
-            : _privilegeBanner?.thumbnail,
-          title: isJsonString(_privilegeBanner?.title)
-            ? JSON.parse(_privilegeBanner?.title)?.[lang] ||
-              JSON.parse(_privilegeBanner?.title)?.["vi"]
-            : _privilegeBanner?.title,
-        });
+        // const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
+        // setPrivilegeBanner({
+        //   ...privilegeBanner,
+        //   description: isJsonString(_privilegeBanner?.description)
+        //     ? JSON.parse(_privilegeBanner?.description)?.[lang] ||
+        //       JSON.parse(_privilegeBanner?.description)?.["vi"]
+        //     : _privilegeBanner?.description,
+        //   thumbnail: isJsonString(_privilegeBanner?.thumbnail)
+        //     ? JSON.parse(_privilegeBanner?.thumbnail)?.[lang] ||
+        //       JSON.parse(_privilegeBanner?.thumbnail)?.["vi"]
+        //     : _privilegeBanner?.thumbnail,
+        //   title: isJsonString(_privilegeBanner?.title)
+        //     ? JSON.parse(_privilegeBanner?.title)?.[lang] ||
+        //       JSON.parse(_privilegeBanner?.title)?.["vi"]
+        //     : _privilegeBanner?.title,
+        // });
         setBanners(privilegeBanners?.value?.data?.data || []);
       } finally {
         setIsLoading(false);
