@@ -165,7 +165,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST() ? -14 : -7);
+    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST(true) ? -14 : -7);
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -204,7 +204,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         shouldDisable = true;
     }
     let canAddJob = !isAfterT_7; //data.canAddJob && !isAfterT_7
-    if(IS_VINFAST()) {
+    if(IS_VINFAST(true)) {
       canAddJob = true//data.canAddJob;
     }
     if(checkIsExactPnL(Constants.pnlVCode.VinAI)) {
@@ -223,7 +223,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   checkSameVinfast = () => {
-    return IS_VINFAST() || checkIsExactPnL(Constants.pnlVCode.VinAI);
+    return IS_VINFAST(true) || checkIsExactPnL(Constants.pnlVCode.VinAI);
   }
 
   getSubordinates = async () => {
@@ -1370,7 +1370,7 @@ renderEvalution = (name, data, isDisable) => {
   // }
 
   // checkShowApprovalComment = (data) => {
-  //   if (IS_VINFAST()) {
+  //   if (IS_VINFAST(true)) {
   //     return data.processStatus == 12;
   //   }
   //   if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
@@ -1471,7 +1471,7 @@ renderEvalution = (name, data, isDisable) => {
     if(visible) {
       _noteModal.content = (<p
         dangerouslySetInnerHTML={{
-          __html: purify.sanitize(this.props.t(IS_VINFAST() ? "ContractTimeNote" : 'ContractTimeNoteOther') || ""),
+          __html: purify.sanitize(this.props.t(IS_VINFAST(true) ? "ContractTimeNote" : 'ContractTimeNoteOther') || ""),
         }}
       />);
     }
