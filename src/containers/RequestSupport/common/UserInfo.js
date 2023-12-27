@@ -4,7 +4,7 @@ import { useGuardStore } from 'modules'
 
 const UserInfo = (props) => {
     const guard = useGuardStore()
-    const user = guard.getCurentUser()
+    const user = props?.userInfo || guard.getCurentUser()
     const { t } = useTranslation()
     const [expanded, setExpanded] = useState(false)
  
@@ -19,7 +19,7 @@ const UserInfo = (props) => {
                     </div>
                     <div className="col-item employee-code">
                         <label>Mã nhân viên</label>
-                        <div className="val">{user?.employeeNo}</div>
+                        <div className="val">{user?.employeeCode || user?.employeeNo}</div>
                     </div>
                     <div className="col-item employee-ad">
                         <label>Mã AD</label>
@@ -36,11 +36,11 @@ const UserInfo = (props) => {
                             <div className="row-customize d-flex">
                                 <div className="col-item full-name">
                                     <label>Số điện thoại</label>
-                                    <div className="val">{user?.cell_phone_no}</div>
+                                    <div className="val">{user?.phoneNumber || user?.cell_phone_no}</div>
                                 </div>
                                 <div className="col-item employee-code">
                                     <label>Email</label>
-                                    <div className="val">{user?.plEmail}</div>
+                                    <div className="val">{user?.pnlEmail || user?.plEmail}</div>
                                 </div>
                                 <div className="col-item">
                                     <label>Chức danh</label>

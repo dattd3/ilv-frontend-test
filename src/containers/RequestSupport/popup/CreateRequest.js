@@ -6,14 +6,13 @@ import { useTranslation } from "react-i18next"
 import { Rating } from 'react-simple-star-rating'
 import axios from 'axios'
 import moment from 'moment'
-import _ from 'lodash'
+import _, { omit } from 'lodash'
 import { useGuardStore } from 'modules'
 import Constants from 'commons/Constants'
 import { getRequestConfigurations } from 'commons/Utils'
 import { validateFileMimeType, validateTotalFileSize } from "utils/file"
 import Editor from "components/Forms/Editor"
 import UserInfo from "../common/UserInfo"
-import FeedbackHistory from "../common/FeedbackHistory"
 import StatusModal from 'components/Common/StatusModal'
 import LoadingModal from 'components/Common/LoadingModal'
 import IconClose from 'assets/img/icon/icon_x.svg'
@@ -49,7 +48,18 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         content: "",
         needReload: true
     })
-    const [listEmployees, setListEmployees] = useState([])
+
+    useEffect(() => {
+        if (isShow) {
+            setData({
+                ...data,
+                typeId: masterData?.serviceTypes?.[0]?.id,
+                statusId: masterData?.statuses?.[0]?.id,
+            })
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isShow])
 
     const handleFileChange = (e) => {
         if (validateFileMimeType(e, e?.target?.files, t)) {
@@ -98,7 +108,17 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
             // formData.append('categoryId', null)
             // formData.append('categorySubId', null)
             // formData.append('categorySubItemId', null)
-            // formData.append('receives', null)
+            const receives = (data?.receives || []).map(item => {
+                let res = omit(item, ['value', 'label'])
+                return {
+                    id: 0,
+                    receiveId: `${res?.ad?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`,
+                    receiveInfo: JSON.stringify(res),
+                }
+            })
+            if (receives && receives?.length > 0) {
+                formData.append('receives', JSON.stringify(receives))
+            }
             for (let key in files) {
                 formData.append('files', files[key])
             }
@@ -158,9 +178,6 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                 obj.priorityId = null
                 obj.companyCode = (masterData?.companies || []).find(item => item?.code === e?.companyCode)?.code || null
                 break
-            case 'receives':
-                obj[key] = e || []
-                break
         }
 
         setData((data) => ({
@@ -189,12 +206,16 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
     }
 
     const handleDeleteEmployee = (employeeCode = null) => {
-        const listEmployees = [...listEmployees]
+        const _listEmployees = [...data?.receives]
         let rest = []
         if (employeeCode) {
-          rest = (listEmployees || []).filter(item => item?.code != employeeCode)
+            rest = (_listEmployees || []).filter(item => item?.employeeCode != employeeCode)
         }
-        setListEmployees(rest)
+
+        setData({
+            ...data,
+            receives: rest,
+        })
     }
 
     const handleSelectEmployee = (employee) => {
@@ -202,13 +223,14 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
             return
         }
     
-        let listEmployees = [...listEmployees]
-        listEmployees = [...listEmployees, ...employee]
-        listEmployees = _.uniqWith(listEmployees, _.isEqual)
-        setListEmployees(listEmployees)
+        let _listEmployees = [...data?.receives]
+        _listEmployees = [..._listEmployees, ...employee]
+        _listEmployees = _.uniqWith(_listEmployees, _.isEqual)
+        setData({
+            ...data,
+            receives: _listEmployees,
+        })
     }
-
-    const listRequests = [{}, {}, {}, {}, {}, {}]
 
     const classIndexMapping = {
         0: 'new',
@@ -365,7 +387,6 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                         <label>Loại</label>
                                         <Select
                                             value={(serviceTypes || []).find(item => item?.value == data?.typeId) || null}
-                                            isClearable={true}
                                             onChange={e => handleInputChange('typeId', e)}
                                             placeholder={t('Chọn')} 
                                             options={serviceTypes}
@@ -415,18 +436,10 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                         <label>Người cùng nhận thông tin</label>
                                         <SearchMultiUsers
                                             handleDeleteEmployee={handleDeleteEmployee}
-                                            listEmployees={listEmployees}
+                                            listEmployees={data?.receives}
                                             handleSelectEmployee={handleSelectEmployee}
                                             isDisabled={false}
                                         />
-                                        {/* <Select
-                                            value={null}
-                                            isClearable={true}
-                                            onChange={e => handleInputChange('receives', e)}
-                                            placeholder={t('Chọn')} 
-                                            options={[]}
-                                            classNamePrefix="filter-select"
-                                        /> */}
                                     </div>
                                     <div className="col">
                                         <label>Ưu tiên</label>
@@ -443,15 +456,14 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                         <label>Trạng thái</label>
                                         <Select
                                             value={(statuses || []).find(item => item?.value == data?.statusId) || null}
-                                            isClearable={true}
                                             onChange={e => handleInputChange('statusId', e)}
                                             placeholder={t('Chọn')} 
                                             options={statuses}
                                             classNamePrefix="filter-select"
+                                            isDisabled={true}
                                         />
                                     </div>
                                 </div>
-                                {/* <FeedbackHistory /> */}
                             </div>
                         </div>
                         {

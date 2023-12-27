@@ -3,7 +3,6 @@ import _ from "lodash"
 import { CKEditor } from "@ckeditor/ckeditor5-react"
 import { Editor as ClassicEditor } from "ckeditor5-custom-build"
 import { UploadAdapterPlugin } from "commons/UploadAdapter"
-// import emailTemplateAjax from "../../ajax/emailTemplate"
 
 function Editor({ onChange, data, name = "", config = {}, ...props }) {
     const [prevUrlImages, setPrevUrlImages] = useState([]);
@@ -14,6 +13,7 @@ function Editor({ onChange, data, name = "", config = {}, ...props }) {
             .parseFromString(editor.getData(), "text/html")
             .querySelectorAll("img")
         ).map((img) => img.getAttribute("src")),
+        // imageDeleted => list S3 file urls
         imageDeleted = _.without(
             _.difference(prevUrlImages, urlImages),
             null,
@@ -21,16 +21,16 @@ function Editor({ onChange, data, name = "", config = {}, ...props }) {
         );
 
         // if (imageDeleted?.length > 0) {
-        //   emailTemplateAjax.deleteNotificationImages({
-        //     images: imageDeleted,
-        //   });
+        //     emailTemplateAjax.deleteNotificationImages({
+        //         images: imageDeleted,
+        //     });
         // }
 
         setPrevUrlImages(urlImages);
         onChange(e, editor);
     };
 
-//   if (!CKEditor) return <div>Editor content is loading</div>;
+    if (!CKEditor) return <div>Editor content is loading</div>;
 
     return (
         <CKEditor

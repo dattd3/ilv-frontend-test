@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react"
 import { Modal } from "react-bootstrap"
 import Select from 'react-select'
+import ReactTooltip from 'react-tooltip'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
 import _ from 'lodash'
+import moment from 'moment'
+import { saveAs } from 'file-saver'
 import purify from "dompurify"
 import { useGuardStore } from 'modules'
 import Constants from 'commons/Constants'
@@ -18,6 +21,10 @@ import IconClose from 'assets/img/icon/icon_x.svg'
 import IconSave from 'assets/img/ic-save.svg'
 import IconSendBlue from 'assets/img/icon/icon-send.svg'
 import IconAttachmentBlue from 'assets/img/icon/ic_upload_attachment_blue.svg'
+import IconFeedbackOverdueActive from 'assets/img/icon/ic_feedback-overdue_active.svg'
+import IconFeedbackOverdue from 'assets/img/icon/ic_feedback-overdue_grey.svg'
+import IconDeadlineOverdueActive from 'assets/img/icon/ic_deadline-overdue_active.svg'
+import IconDeadlineOverdue from 'assets/img/icon/ic_deadline-overdue_grey.svg'
 
 const RequestDetail = ({ isShow , id, masterData, onHide }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
@@ -260,6 +267,10 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
         }
     }
 
+    const downloadAttachment = (url, fileName) => {
+        saveAs(url, fileName)
+    }
+
     const classIndexMapping = {
         0: 'new',
         1: 'processing',
@@ -362,8 +373,6 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
         { value: true, label: 'Có' },
     ]
 
-    console.log('requestDetail => ', requestDetail)
-
     return (
         <>
             <LoadingModal show={isLoading} />
@@ -384,9 +393,57 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                         <span className="close" onClick={onHide}><img src={IconClose} alt="Close" /></span>
                     </div>
                     <div className='content'>
-                        <UserInfo />
+                        <UserInfo userInfo={JSON.parse(requestDetail?.userInfo || '{}')} />
                         <div className="feedback-action">
-                            <h2>Phản hồi/Thao tác</h2>
+                            <h2 className="d-flex align-items-center justify-content-between">
+                                <span>Phản hồi/Thao tác</span>
+                                <span className="feedback-action-status">
+                                    {
+                                            moment(requestDetail?.feedbackDeadline).isValid() && moment(requestDetail?.feedbackDeadline).isBefore(moment()) 
+                                            ? (
+                                                <span 
+                                                    data-tip data-for={`tooltip-ic1`} 
+                                                    className="highlight cursor-pointer" 
+                                                >
+                                                    <ReactTooltip 
+                                                        id={`tooltip-ic1`} 
+                                                        scrollHide 
+                                                        effect="solid" 
+                                                        place="right" 
+                                                        type='dark'>
+                                                        Quá hạn phản hồi
+                                                    </ReactTooltip>
+                                                    <img src={IconFeedbackOverdueActive} alt="Icon" />
+                                                </span>
+                                            )
+                                            : (
+                                                <span className="highlight cursor-pointer"><img src={IconFeedbackOverdue} alt="Icon" /></span>
+                                            )
+                                    }
+                                    {
+                                        moment(requestDetail?.closingDeadline).isValid() && moment(requestDetail?.closingDeadline).isBefore(moment()) 
+                                        ? (
+                                            <span 
+                                                data-tip data-for={`tooltip-ic2`} 
+                                                className="highlight cursor-pointer" 
+                                            >
+                                                <ReactTooltip 
+                                                    id={`tooltip-ic2`} 
+                                                    scrollHide 
+                                                    effect="solid" 
+                                                    place="right" 
+                                                    type='dark'>
+                                                    Quá hạn đóng
+                                                </ReactTooltip>
+                                                <img src={IconDeadlineOverdueActive} alt="Icon" />
+                                            </span>
+                                        )
+                                        : (
+                                            <span className="highlight cursor-pointer"><img src={IconDeadlineOverdue} alt="Icon" /></span>
+                                        )
+                                    }
+                                </span>
+                            </h2>
                             <div className="content-region shadow-customize">
                                 <div className="content-block">
                                     <label>Nội dung</label>
@@ -474,11 +531,20 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                 <div className="row-customize">
                                     <div className="col">
                                         <label>Người xử lý</label>
-                                        <div className="val">{data?.handlerId || ''}</div>
+                                        <div className="val">{requestDetail?.handlerInfo ? JSON.parse(requestDetail?.handlerInfo)?.ad : ''}</div>
                                     </div>
                                     <div className="col">
                                         <label>Người cùng nhận thông tin</label>
-                                        <div className="val">{data?.receives || ''}</div>
+                                        <div className="val d-flex align-items-center justify-content-between" style={{ height: 38 }}>
+                                            {
+                                                requestDetail?.requestReceives?.length > 0 && (
+                                                    <>
+                                                        <span className="tag">{JSON.parse(requestDetail?.requestReceives[0]?.receiveInfo)?.ad}</span>
+                                                        <span className="total d-inline-flex align-items-center justify-content-center">{requestDetail?.requestReceives?.length}</span>
+                                                    </>
+                                                )
+                                            }
+                                        </div>
                                     </div>
                                     <div className="col">
                                         <label>Ưu tiên</label>
@@ -497,6 +563,26 @@ const RequestDetail = ({ isShow , id, masterData, onHide }) => {
                                 </div>
                             </div>
                         </div>
+                        {
+                            requestDetail?.documents?.length > 0 && (
+                                <div className="attachment">
+                                    <h2>Tệp đính kèm</h2>
+                                    <div className="content-region shadow-customize">
+                                        {
+                                            (requestDetail?.documents || []).map((file, index) => {
+                                                return (
+                                                    <span className="item" key={`file-${index}`}>
+                                                        <span className="cursor-pointer file-name" onClick={() => downloadAttachment(file?.fileUrl, file?.fileName)}>{file?.fileName}</span>
+                                                        <span>({file?.fileSize}KB)</span>
+                                                        {/* <img src={IconClose} className="remove" alt="Close" onClick={() => handleRemoveFile(index)} /> */}
+                                                    </span>
+                                                )
+                                            }
+                                        )}
+                                    </div>
+                                </div>
+                            )
+                        }
                         <div className="d-flex justify-content-end button-block">
                             <button className="btn btn-save" onClick={updateRequest}><img src={IconSave} alt="Send" />{t("Save")}</button>
                         </div>

@@ -8,13 +8,41 @@ import {
     DropdownToggle,
 } from "reactstrap"
 import { debounce } from "lodash"
+import axios from "axios"
 import Constants from "commons/Constants"
+import { getRequestConfigurations } from "commons/Utils"
 import StatusModal from "./StatusModal"
 import IconClose from "assets/img/icon/icon_x.svg"
-import IconCloseSmall from "assets/img/actions/ic_close_small.svg"
-import IconDropDownSmall from "assets/img/icons/icon_drop_down_small.svg"
+import IconCloseSmall from "assets/img/icon/icon_x.svg"
+import IconDropDownSmall from "assets/img/icon/icon_drop_down_small.svg"
 
 const codeSelectAll = '*'
+
+const customFilterStyles = {
+    // control: base => ({
+    //     ...base,
+    //     height: 30,
+    //     minHeight: 30
+    // }),
+    valueContainer: (provided, state) => ({
+        ...provided,
+        font: 'normal 14px Arial, Helvetica, sans-serif',
+        textTransform: 'math-auto',
+    }),
+    singleValue: (provided, state) => ({
+        font: 'normal 14px Arial, Helvetica, sans-serif',
+        textTransform: 'math-auto',
+    }),
+    noOptionsMessage: (provided, state) => ({
+        ...provided,
+        font: 'normal 14px Arial, Helvetica, sans-serif',
+        textTransform: 'math-auto',
+    }),
+    // input: (provided, state) => ({
+    //     ...provided,
+    //     margin: 0,
+    // }),
+}
 
 export default class SearchMultiUsers extends Component {
     constructor(props) {
@@ -74,28 +102,28 @@ export default class SearchMultiUsers extends Component {
                 pnl_code: [],
             }
 
-            userAjax
-            .searchMultiUser(payload)
+            axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search/empid`, payload, getRequestConfigurations())
             .then(response => {
                 const data = (response?.data?.data || []).map(item => {
                     return {
+                        employeeCode: item?.uid || '',
+                        ad: item?.username || '',
+                        fullName: item?.fullname || '',
+                        phoneNumber: '',
+                        pnlEmail: item?.company_email || '',
+                        jobTitle: item?.title || '',
+                        department: item?.department || '',
+                        shortenedOrgLevel2Name: '',
+                        shortenedOrgLevel3Name: '',
+                        shortenedOrgLevel4Name: '',
                         value: item?.uid,
                         label: item?.fullname,
-                        code: item?.uid,
-                        ad: item?.username,
-                        fullName: item?.fullname,
-                        avatar: item?.avatar,
-                        position: item?.title,
-                        pnl: item?.pnl || "",
-                        employeeLevel: item.rank || "",
-                        department: item?.department || "",
-                        orglv2Id: item?.organization_lv2 || "",
-                        company_email: item?.company_email?.toLowerCase() || "",
                     }
                 })
 
                 this.setState({ listUsers: data })
             })
+            .catch(() => this.setState({ listUsers: [] }))
             .finally(() => {
                 this.setState({ isSearching: false })
             })
@@ -125,9 +153,9 @@ export default class SearchMultiUsers extends Component {
                                 />
                             </div>
                             <div className="label">
-                                <p className="full-name">{employeeData.fullName}</p>
+                                <p className="full-name">{employeeData?.fullName}</p>
                                 <p className="description">
-                                    <span>{`(${employeeData.ad}) ${employeeData.position}`}</span>
+                                    <span>{`(${employeeData?.ad}) ${employeeData?.jobTitle}`}</span>
                                 </p>
                             </div>
                         </>
@@ -172,27 +200,20 @@ export default class SearchMultiUsers extends Component {
                     onClick={this.toggleOpen}
                 >
                     <div className="input-area d-flex align-items-center">
-                        {hasEmployeeSelected ? (
-                        <>
-                            {listEmployees.map((item, index) => (
-                            <div
-                                key={`staff-${index}`}
-                                className="align-items-center d-inline-flex child-tag"
-                            >
-                                <p>{item?.fullName}</p>
-                                <div className="btn-delete">
-                                <Image
-                                    onClick={() => handleDeleteEmployee(item?.code)}
-                                    src={IconCloseSmall}
-                                    alt="Delete"
-                                />
+                        {
+                            hasEmployeeSelected ? (
+                                <div className="align-items-center d-inline-flex child-tag">
+                                    <p>{listEmployees?.[0]?.ad}</p>
+                                    <div className="btn-delete">
+                                    <Image
+                                        onClick={() => handleDeleteEmployee(listEmployees?.[0]?.employeeCode)}
+                                        src={IconCloseSmall}
+                                        alt="Delete"
+                                    />
+                                    </div>
                                 </div>
-                            </div>
-                            ))}
-                        </>
-                        ) : (
-                            <div className="placeholder"><p>Tìm kiếm</p></div>
-                        )}
+                            ) : (<div className="placeholder"><p>Tìm kiếm</p></div>)
+                        }
                     </div>
                     <div className="right-search d-flex">
                         <div className="total" style={{visibility: `${hasEmployeeSelected ? 'visible' : 'hidden'}`}}>{listEmployees?.length}</div>
@@ -217,15 +238,16 @@ export default class SearchMultiUsers extends Component {
                         <DropdownItem header>
                             <Select
                                 isLoading={isSearching}
+                                placeholder={"Tìm kiếm"}
                                 options={optionUsers}
                                 onInputChange={this.onInputChange}
                                 isClearable={false}
                                 noOptionsMessage={() => "Không có lựa chọn"}
-                                name="employee"
                                 onChange={this.handleSelectUsers}
                                 filterOption={(option, inputvalue) => true}
                                 components={{ Option: this.customOption }}
                                 isDisabled={isDisabled}
+                                styles={customFilterStyles}
                             />
                         </DropdownItem>
                         <DropdownItem divider></DropdownItem>
@@ -233,10 +255,9 @@ export default class SearchMultiUsers extends Component {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th className="col-code">Mã nhân viên</th>
                                         <th className="col-ad">Mã AD</th>
                                         <th className="col-fullname">Họ và tên</th>
-                                        <th className="col-action">Tác vụ</th>
+                                        <th className="text-center col-action">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -244,13 +265,12 @@ export default class SearchMultiUsers extends Component {
                                     (listEmployees || []).map((item, index) => {
                                         return (
                                             <tr key={index}>
-                                                <td className="col-code">{item?.code}</td>
                                                 <td className="col-ad">{item?.ad}</td>
                                                 <td className="col-fullname">{item?.fullName}</td>
-                                                <td className="col-action">
+                                                <td className="text-center col-action">
                                                     <span className="btn-action" title="Delete">
                                                         <Image
-                                                            onClick={() => handleDeleteEmployee(item?.code)}
+                                                            onClick={() => handleDeleteEmployee(item?.employeeCode)}
                                                             src={IconClose}
                                                             alt="Delete"
                                                         />

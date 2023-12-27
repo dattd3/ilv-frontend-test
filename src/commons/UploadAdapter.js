@@ -15,7 +15,7 @@ export class UploadAdapter {
             return axios({
                 data,
                 method: "POST",
-                url: `${process.env.REACT_APP_REQUEST_URL}notifications/upload-notification-content-files`,
+                url: `https://cms-myvpapi.cloudvst.net/notifications/upload-notification-content-files`,
                 headers: {
                     "Content-Type": "multipart/form-data",
                     'Authorization': `${localStorage.getItem('accessToken')}`
