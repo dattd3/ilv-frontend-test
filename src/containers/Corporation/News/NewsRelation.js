@@ -21,7 +21,7 @@ export default function NewsRelation(props) {
             config.params = {
                 id: id,
                 count: 4,
-                ...(isEmployeePrivilege && {type: 'PRIVILEGE'})
+                ...(isEmployeePrivilege && { type: 'PRIVILEGE', culture: lang }),
             }
 
             try {
