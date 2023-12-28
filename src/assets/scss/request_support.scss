@@ -786,6 +786,32 @@
                         padding: 15px;
                         background: #FFFFFF;
                         border-radius: 4px;
+                        .tabs-hidden {
+                            display: none;
+                        }
+                        .nav-tabs {
+                            border: none;
+                            .nav-link {
+                                margin-bottom: 0;
+                                border-radius: 4px;
+                                color: #36B9CC;
+                                border: 1px solid #36B9CC;
+                                padding-left: 25px;
+                                padding-right: 25px;
+                                &:first-child {
+                                    border-top-right-radius: 0;
+                                    border-bottom-right-radius: 0;
+                                }
+                                &:last-child {
+                                    border-top-left-radius: 0;
+                                    border-bottom-left-radius: 0;
+                                }
+                                &.active {
+                                    background: #36B9CC;
+                                    color: #FFFFFF;
+                                }
+                            }
+                        }
                         .button-region {
                             padding: 15px 0;
                             border-bottom: 1px solid #DEE2E6;
@@ -802,11 +828,12 @@
                                     display: inline-flex;
                                     align-items: center;
                                     margin-bottom: 0;
-                                    padding: 5px 10px;
+                                    padding: 0 10px;
                                     border: none;
                                     outline: none;
                                     color: #000000;
                                     background: #FFFFFF;
+                                    height: auto;
                                     &:last-child {
                                         padding-right: 0 !important;
                                     }
@@ -824,6 +851,65 @@
                                     #i_files {
                                         display: none !important;
                                     }
+                                }
+                            }
+                        }
+                        .feedback-tab-content {
+                            margin-top: 15px;
+                        }
+                        .action-tab-content {
+                            margin-top: 15px;
+                            .action-table {
+                                white-space: pre-wrap;
+                                margin: 0;
+                                border: 1px solid #DEE2E6;
+                                border-collapse: separate;
+                                border-spacing: 0;
+                                table-layout: fixed;
+                                width: 100%;
+                                border-radius: 4px;
+                                th, td {
+                                    padding: 10px 5px;
+                                }
+                                th {
+                                    background: #F2F2F2;
+                                    border: none;
+                                }
+                                thead {
+                                    tr {
+                                        th {
+                                            &:first-child {
+                                                border-top-left-radius: 3px;
+                                            }
+                                            &:last-child {
+                                                border-top-right-radius: 3px;
+                                            }
+                                        }
+                                    }
+                                }
+                                tbody {
+                                    tr {
+                                        td {
+                                            border-bottom: 1px solid #DEE2E6;
+                                        }
+                                        &:last-child {
+                                            td {
+                                                border-bottom: none;
+                                            }
+                                        }
+                                    }
+                                }
+                                .col-no {
+                                    width: 6%;
+                                }
+                                .col-time {
+                                    width: 16%;
+                                }
+                                .col-action {
+                                    width: 20%;
+                                }
+                                .col-description {
+                                    width: 58%;
                                 }
                             }
                         }
@@ -866,6 +952,13 @@
                             display: flex;
                             & > label {
                                 display: block;
+                            }
+                            textarea {
+                                width: 100%;
+                                border-radius: 4px;
+                                border: 1px solid #DEE2E6;
+                                outline: none;
+                                padding: 5px 10px;
                             }
                             .col {
                                 flex: 1;

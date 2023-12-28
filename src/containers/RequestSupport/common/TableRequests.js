@@ -195,6 +195,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                 isShow={requestDetailModal.isShow}
                 id={requestDetailModal.id}
                 masterData={masterData}
+                tab={tab}
                 onHide={onHideRequestDetailModal}
             />
             <table className="table">
