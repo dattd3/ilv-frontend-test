@@ -46,7 +46,7 @@ function EmployeePrivilegeDetailElement({ match, location }) {
         description = isJsonString(detail?.description) ? JSON.parse(detail?.description)?.[lang] : detail?.description,
         content = isJsonString(detail?.content) ? JSON.parse(detail?.content)?.[lang] : detail?.content;
 
-    if (!title || !description || !content) {
+    if ((!title || !content) && !!detail) {
         window.location.href = mapConfig.EmployeePrivileges;
         return;
     }
