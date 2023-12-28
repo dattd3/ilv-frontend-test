@@ -53,7 +53,6 @@
 }
 
 .payslips-section {
-    margin-top: 10px;
     font-size: 14px;
     .clear {
         clear: both;
@@ -63,6 +62,37 @@
     }
     .bold {
         font-weight: bold;
+    }
+
+    .nav-tabs {
+        border: none;
+        padding: 1em 0;
+        margin: 0 auto;
+        gap: 24px 32px;
+        .nav-link {
+          border: none;
+        }
+        .nav-item {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #293281;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+        }
+        .active {
+          background-color: #347ef9;
+          color: #fff;
+        }
+        a {
+            min-width: auto;
+            padding: 0;
+            width: calc((100% - 6rem) / 5) !important;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
     }
 
     .search-block {
@@ -134,6 +164,29 @@
     }
 
     .other-result-section {
+        .tax-infomation {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            .top-title {
+                padding: 10px 10px;
+                color: #FFFFFF;
+                text-transform: uppercase;
+                font-weight: bold;
+                background: #347EF9;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+            }
+            .table-contain {
+                padding: 10px;
+                background-color: #FFFFFF;
+            }
+
+            tbody {
+                td {
+                    border: 1px solid #DEE2E6 !important;
+                }
+            }
+        }
         .workday-information-table {
             display: block;
             overflow-x: auto;
@@ -156,6 +209,14 @@
                 .same-width {
                     width: 7.14%;
                     padding: 10px 5px;
+                }
+                .bg-gray {
+                    background-color: #F6F6F6;
+                }
+                .title-tax {
+                    font-weight: 700;
+                    color: #000000;
+                    font-size: 14px;
                 }
             }
             thead {
