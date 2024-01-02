@@ -159,7 +159,7 @@ class MyComponent extends React.Component {
   render() {
     const { t } = this.props;
     const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter, staffHandbookLink } = this.state  
-    const isShowStaffHandbookLink = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinHome].includes(currentCompanyCode)
+    const isShowStaffHandbookLink = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinHome, Constants.pnlVCode.VinES].includes(currentCompanyCode)
 
     const reload = () => {
       if (isShowStatusModal) {

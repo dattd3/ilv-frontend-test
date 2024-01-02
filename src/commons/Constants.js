@@ -253,7 +253,7 @@ const Constants = {
     2: ["V040", "V005", "V061", "V077", "V070", "V099"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
     4: ["V040", "V077", "V070"],//NGHIVIEC
-    5: ["V077", "V070"],//PHUCLOI
+    5: ["V077", "V070", "V053"],//PHUCLOI
     6: ["V077", "V070"], //DIEUCHUYEN
     7: ["V077", "V070"], //BONHIEM,
     8: [], //THANHTOAN_NOIBO
@@ -265,7 +265,7 @@ const Constants = {
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041", "V070", "V077"
     4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
-    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
+    5: ["V070", "V077", "V053"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
     7: ["V040", "V070", "V077"], //BONHIEM
     8: ["V040", "V070", "V077", "V030"], //THANH TOAN NOI BO
