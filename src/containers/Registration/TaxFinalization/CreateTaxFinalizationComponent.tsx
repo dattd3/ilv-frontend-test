@@ -164,7 +164,7 @@ const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
     //check files
     if(!hasErrors) {
       let checkfiles = (!files || files?.length === 0) ? t("Required") + ' ' + t('AttachmentFile') : null
-      if(checkfiles) {
+      if (checkfiles && data.typeRequest?.value == TaxAuthorizationOptions.AUTHORIZE_TAX) {
         notifyMessage(checkfiles);
         hasErrors = true;
       }
