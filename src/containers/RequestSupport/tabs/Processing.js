@@ -287,6 +287,10 @@ const Processing = ({ masterData, needLoadData, tab }) => {
         }),
     }
 
+    const isDisableUpdateBtn = (() => {
+        return !(requestData?.listRequest || []).some(item => item?.isChecked)
+    })()
+
     return (
         <>
             <LoadingModal show={isLoading} />
@@ -307,7 +311,7 @@ const Processing = ({ masterData, needLoadData, tab }) => {
                     <h1 className="header-title">Quản lý yêu cầu</h1>
                     <div className="d-flex justify-content-between align-items-center content">
                         <div className="d-inline-flex left">
-                            <button className="btn btn-update-request" onClick={() => setIsShowUpdateRequestModal(true)}>Cập nhật<img src={IconArrowWhite} alt="Create" /> </button>
+                            <button className="btn btn-update-request" disabled={isDisableUpdateBtn} onClick={() => setIsShowUpdateRequestModal(true)}>Cập nhật<img src={IconArrowWhite} alt="Create" /> </button>
                             <div className="filter position-relative">
                                 <img src={IconFilter} alt="Filter" className="icon-prefix-select" />
                                 <Select

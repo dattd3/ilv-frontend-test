@@ -4,7 +4,7 @@ import Select from 'react-select'
 import ReactTooltip from 'react-tooltip'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
-import _ from 'lodash'
+import { omit, uniqWith, isEqual } from 'lodash'
 import moment from 'moment'
 import { saveAs } from 'file-saver'
 import purify from "dompurify"
@@ -215,8 +215,8 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
             if (requestDetail?.categorySubItemId !== undefined && requestDetail?.categorySubItemId !== null) {
                 formData.append('categorySubItemId', requestDetail?.categorySubItemId)
             }
-            if (requestDetail?.receives !== undefined && requestDetail?.receives !== null) {
-                formData.append('receives', requestDetail?.receives)
+            if (requestDetail?.requestReceives !== undefined && requestDetail?.requestReceives !== null) {
+                formData.append('receives', JSON.stringify(requestDetail?.requestReceives))
             }
 
             const config = getRequestConfigurations()
@@ -257,10 +257,12 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
         
         const obj = {}
         switch (key) {
-            case 'updateReason':
+            // case 'updateReason':
+            case 'statusNotes':
                 obj[key] = e?.target?.value || ''
                 break
             case 'typeId':
+            case 'levelId':
             case 'serviceTypeId':
             case 'slaId':
             case 'statusId':
@@ -323,30 +325,39 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
     }
 
     const handleDeleteEmployee = (employeeCode = null) => {
-        // const _listEmployees = [...data?.receives]
-        // let rest = []
-        // if (employeeCode) {
-        //     rest = (_listEmployees || []).filter(item => item?.employeeCode != employeeCode)
-        // }
+        const _listEmployees = [...(requestDetail?.requestReceives || [])]
+        let rest = []
+        if (employeeCode) {
+            rest = (_listEmployees || []).filter(item => JSON.parse(item?.receiveInfo || '{}')?.employeeCode != employeeCode)
+        }
 
-        // setData({
-        //     ...data,
-        //     receives: rest,
-        // })
+        setRequestDetail({
+            ...requestDetail,
+            requestReceives: rest,
+        })
     }
 
     const handleSelectEmployee = (employee) => {
-        // if (!employee || employee?.length === 0) {
-        //     return
-        // }
+        if (!employee || employee?.length === 0) {
+            return
+        }
     
-        // let _listEmployees = [...data?.receives]
-        // _listEmployees = [..._listEmployees, ...employee]
-        // _listEmployees = _.uniqWith(_listEmployees, _.isEqual)
-        // setData({
-        //     ...data,
-        //     receives: _listEmployees,
-        // })
+        const _employee = (employee || []).map(item => {
+            let res = omit(item, ['value', 'label'])
+            return {
+                id: 0,
+                receiveId: `${res?.ad?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`,
+                receiveInfo: JSON.stringify(res),
+                supportRequestId: id,
+            }
+        })
+        let _listEmployees = [...(requestDetail?.requestReceives || [])]
+        _listEmployees = [..._listEmployees, ..._employee]
+        _listEmployees = uniqWith(_listEmployees, isEqual)
+        setRequestDetail({
+            ...requestDetail,
+            requestReceives: _listEmployees,
+        })
     }
 
     const classIndexMapping = {
@@ -490,9 +501,37 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
         })
     })()
 
+    const levelSupport = (() => {
+        return (masterData?.levels || []).map(item => {
+            return {
+                value: item?.id,
+                label: locale === Constants.LANGUAGE_VI ? item?.typeVn : item?.typeEn,
+            }
+        })
+    })()
+
+    const errorCauses = (() => {
+        return (masterData?.causessError || []).map(item => {
+            return {
+                value: item?.id,
+                label: locale === Constants.LANGUAGE_VI ? item?.causesCsVn : item?.causesCsEn,
+            }
+        })
+    })()
+
+    const overdueReasons = (() => {
+        return (masterData?.causessDeadated || []).map(item => {
+            return {
+                value: item?.id,
+                label: locale === Constants.LANGUAGE_VI ? item?.causesVsVn : item?.causesVsEn,
+            }
+        })
+    })()
+
     const viewByTechnician = tab === tabConfig.processing
 
     console.log('TING TING => ', masterData)
+    console.log('requestDetail => ', requestDetail)
 
     return (
         <>
@@ -769,7 +808,14 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
                                             ? (
                                                 <SearchMultiUsers
                                                     handleDeleteEmployee={handleDeleteEmployee}
-                                                    listEmployees={{}?.receives}
+                                                    listEmployees={(requestDetail?.requestReceives || [])
+                                                        .map(item => JSON.parse(item?.receiveInfo || '{}'))
+                                                        .map(item => ({
+                                                            ...item,
+                                                            value: item?.employeeCode,
+                                                            label: item?.fullName,
+                                                        }))
+                                                    }
                                                     handleSelectEmployee={handleSelectEmployee}
                                                     isDisabled={false}
                                                 />
@@ -828,33 +874,33 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
                                                 <div className="col">
                                                     <label>Hỗ trợ mức độ</label>
                                                     <Select
-                                                        value={(statuses || []).find(item => item?.value == requestDetail?.levelId) || null}
+                                                        value={(levelSupport || []).find(item => item?.value == requestDetail?.levelId) || null}
                                                         isClearable={true}
                                                         onChange={e => handleInputChange('levelId', e)}
                                                         placeholder={t('Chọn')} 
-                                                        options={statuses}
+                                                        options={levelSupport}
                                                         classNamePrefix="filter-select"
                                                     />
                                                 </div>
                                                 <div className="col">
                                                     <label>Nguyên nhân lỗi</label>
                                                     <Select
-                                                        value={(statuses || []).find(item => item?.value == requestDetail?.causesCsId) || null}
+                                                        value={(errorCauses || []).find(item => item?.value == requestDetail?.causesCsId) || null}
                                                         isClearable={true}
                                                         onChange={e => handleInputChange('causesCsId', e)}
                                                         placeholder={t('Chọn')} 
-                                                        options={statuses}
+                                                        options={errorCauses}
                                                         classNamePrefix="filter-select"
                                                     />
                                                 </div>
                                                 <div className="col">
                                                     <label>Lý do quá hạn</label>
                                                     <Select
-                                                        value={(statuses || []).find(item => item?.value == requestDetail?.causesVsId) || null}
+                                                        value={(overdueReasons || []).find(item => item?.value == requestDetail?.causesVsId) || null}
                                                         isClearable={true}
                                                         onChange={e => handleInputChange('causesVsId', e)}
                                                         placeholder={t('Chọn')} 
-                                                        options={statuses}
+                                                        options={overdueReasons}
                                                         classNamePrefix="filter-select"
                                                     />
                                                 </div>

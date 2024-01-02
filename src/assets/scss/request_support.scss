@@ -1140,6 +1140,84 @@
     }
 }
 
+.update-request-modal {
+    font: normal 14px Arial, Helvetica, sans-serif;
+    color: #000000;
+    .modal-dialog {
+        max-width: 950px;
+        margin: 0 auto!important;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .modal-body {
+            padding: 1rem 1.2rem;
+            .header {
+                position: relative;
+                .close {
+                    position: absolute;
+                    top: -15px;
+                    right: -15px;
+                    cursor: pointer;
+                }
+            }
+            .text-title {
+                font-weight: bold;
+                font-size: 16px;
+                color: #000000;
+                border-bottom: 1px solid #CED4DA;
+                padding-bottom: 15px;
+            }
+            .content {
+                .row-items {
+                    margin-top: 15px;
+                    display: flex;
+                    grid-gap: 10px 15px;
+                    .col-customize {
+                        flex: 1 1;
+                    }
+                    & > label {
+                        display: block;
+                        margin-bottom: 10px;
+                    }
+                }
+                .input {
+                    width: 100%;
+                    border: 1px solid #DEE2E6;
+                    border-radius: 4px;
+                    outline: none;
+                    padding: 10px;
+                }
+                .button-block {
+                    margin-top: 15px;
+                    .btn {
+                        outline: none;
+                        color: #FFFFFF;
+                        height: 38px;
+                        width: 120px;
+                        border: none;
+                        font-size: 14px;
+                        &.cancel {
+                            background: #CED4DA;
+                            & > img {
+                                margin: 0 5px 0 0;
+                                height: 12px;
+                            }
+                        }
+                        &.ok {
+                            background: #347EF9;
+                            margin-left: 20px;
+                            & > img {
+                                margin: -2px 5px 0 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 .cancel-modal {
     font: normal 14px Arial, Helvetica, sans-serif;
     color: #000000;

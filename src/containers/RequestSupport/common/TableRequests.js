@@ -188,6 +188,8 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         }
     })
 
+    console.log('listRequests => ', listRequests)
+
     return (
         <>
         
@@ -295,7 +297,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                         <Select 
                                             placeholder={t("Chọn")} 
                                             isClearable={true} 
-                                            value={(groups || []).find(item => item?.value == filter?.status)} 
+                                            value={(statuses || []).find(item => item?.value == filter?.status)} 
                                             options={statuses} 
                                             onChange={e => handleFilterInputChange('status', e?.value || null)} 
                                             styles={customFilterStyles}
@@ -442,9 +444,10 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                         placeholder={t("Select")} 
                                                         isClearable={true} 
                                                         value={null} 
-                                                        options={[]} 
+                                                        options={groups} 
                                                         onChange={handleInputChange} 
                                                         styles={customStyles}
+                                                        isDisabled={child?.isChecked || false}
                                                     />
                                                 )
                                             }
@@ -463,6 +466,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                         options={[]} 
                                                         onChange={handleInputChange} 
                                                         styles={customStyles}
+                                                        isDisabled={child?.isChecked || false}
                                                     />
                                                 )
                                             }
@@ -480,9 +484,10 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                         placeholder={t("Select")} 
                                                         isClearable={true} 
                                                         value={null} 
-                                                        options={[]} 
+                                                        options={statuses} 
                                                         onChange={handleInputChange} 
                                                         styles={customStyles}
+                                                        isDisabled={child?.isChecked || false}
                                                     />
                                                 )
                                             }
