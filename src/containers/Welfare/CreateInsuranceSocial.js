@@ -356,7 +356,7 @@ const CreateInsuranceSocial = (props) => {
             isShowStatusModal: false
         })
         if(resultModal.isSuccess) {
-            window.location.href = '/tasks?requestTypes=14,15,20';
+            window.location.href = '/tasks?requestTypes=14,15,20,21,22,23';
         }
     }
 

@@ -20,6 +20,30 @@ export const Navigation = [
     role: "U",
   },
   {
+    id: 99,
+    parentId: 0,
+    icon: 'employee-privileges',
+    label: "VingroupEmployeePrivileges",
+    to: map.VingroupEmployeePrivileges,
+    role: 'U'
+  },
+  {
+    id: 9901,
+    parentId: 99,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "News",
+    to: map.EmployeePrivileges,
+    role: 'U'
+  },
+  {
+    id: 9902,
+    parentId: 99,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "MyVoucher",
+    to: map.MyVoucher,
+    role: 'U'
+  },
+  {
     id: 10,
     parentId: 0,
     icon: "c-hr",
@@ -514,8 +538,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RequestCreate",
     to: map.RegistrationManagement,
-    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.THANHTOAN_NOIBO]]
-    //role: 'NA'
+    //role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.THANHTOAN_NOIBO]]
+    role: 'U' //check trong Sidebar.js
   },
   // {
   //     id: 129999,

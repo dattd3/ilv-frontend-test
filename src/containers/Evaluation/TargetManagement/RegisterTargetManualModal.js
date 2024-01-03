@@ -532,7 +532,7 @@ export default function TargetRegistrationManualModal(props) {
                 </div>
                 <div className="mb-15">
                   <div className="mb-15">
-                    Metric 1 ({t("EvaluationDetailPartAttitudeScore")} 1) <span className="red-color">(*)</span>
+                    Metric 1 <span className="red-color">(*)</span>
                   </div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric1}</div>
@@ -550,7 +550,7 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Metric 2 ({t("EvaluationDetailPartAttitudeScore")} 2)</div>
+                  <div className="mb-15">Metric 2</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric2}</div>
                   ) : (
@@ -567,7 +567,7 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Metric 3 ({t("EvaluationDetailPartAttitudeScore")} 3)</div>
+                  <div className="mb-15">Metric 3</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric3}</div>
                   ) : (
@@ -584,7 +584,7 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Metric 4 ({t("EvaluationDetailPartAttitudeScore")} 4)</div>
+                  <div className="mb-15">Metric 4</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric4}</div>
                   ) : (
@@ -601,7 +601,7 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Metric 5 ({t("EvaluationDetailPartAttitudeScore")} 5)</div>
+                  <div className="mb-15">Metric 5</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric5}</div>
                   ) : (
@@ -645,7 +645,7 @@ export default function TargetRegistrationManualModal(props) {
                     )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Job Details</div>
+                  <div className="mb-15">{t("mo_ta_muc_tieu")}</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.jobDetail}</div>
                   ) : (
@@ -723,7 +723,7 @@ export default function TargetRegistrationManualModal(props) {
         )}
         <div className="form-container">
           <div className="approver-title mb-15">
-            {isApprover ? "CBNV đăng ký mục tiêu" : t("cbql_phe_duyet")}
+            {isApprover ? t("cbnv_dang_ky_muc_tieu") : t("cbql_phe_duyet")}
           </div>
           <div className="row group">
             <div className="col-xl-4">

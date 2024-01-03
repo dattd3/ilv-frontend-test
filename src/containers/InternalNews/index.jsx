@@ -109,7 +109,7 @@ function InternalNewsPage(props) {
               ))}
               <div className="wrap-paging">
                 <CustomPaging
-                  pageSize={12}
+                  pageSize={15}
                   onChangePage={onChangePage}
                   totalRecords={total} />
               </div>
