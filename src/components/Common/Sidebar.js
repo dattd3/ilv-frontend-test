@@ -198,6 +198,9 @@ function SideBar(props) {
         if(user.prepare != 'true') {
             rootNav = rootNav.filter(x => x.id != 1006)
         }
+        if(user.essAvaible != 'true') {
+          rootNav = rootNav.filter(x => x.label != 'RequestCreate')
+        }
         return rootNav;
     }
 

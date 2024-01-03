@@ -32,6 +32,7 @@ const EmployeePrivileges = (props) => {
             config.params = {
                 pageIndex: 1,
                 pageSize: 100,
+                culture: lang,
                 domain: 'ILVG',
             }
 
