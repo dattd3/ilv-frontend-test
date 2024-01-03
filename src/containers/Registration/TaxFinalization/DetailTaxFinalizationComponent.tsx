@@ -8,6 +8,7 @@ import {
   STATUS,
   TaxAuthorizationOptions,
   getTaxAuthrizationOptions,
+  getTaxIncomeOptions,
 } from "./TaxConstants";
 import AssessorInfoComponent from "containers/Welfare/InternalPayment/component/AssessorInfoComponent";
 
@@ -223,7 +224,44 @@ const DetailTaxFinalizationComponent: FC<IDetailTaxFinalizationComponent> = ({
             </React.Fragment>
           ))}
         </div>
-        {data?.typeRequest?.value == TaxAuthorizationOptions.EXPOSE_TAX ? (
+        {
+        data?.typeRequest?.value == TaxAuthorizationOptions.AUTHORIZE_TAX ? (
+          <>
+          <div
+              className="w-100 "
+              style={{
+                height: "1px",
+                width: "100%",
+                backgroundColor: "#DEE2E6",
+                margin: "12px 0",
+              }}
+            ></div>
+            <div >
+              {
+                getTaxIncomeOptions(t).map((option, index) => (
+                  <div key={index} className="row mv-10 mx-4">
+                    <span className="d-flex flex-col align-items-center">
+                    <input
+                      type="radio"
+                      id={"action_income_accept" + option.value}
+                      name={"action_income" + option.value}
+                      readOnly={true}
+                      checked={data.incomeType?.value == option.value}
+                    />
+                    <label
+                      htmlFor={"action_income_accept" + option.value}
+                      className="ml-1"
+                    >
+                      {option.label}
+                    </label>
+                  </span>
+                  </div>
+                ))
+              }
+            </div>
+          </>
+        ) : 
+        data?.typeRequest?.value == TaxAuthorizationOptions.EXPOSE_TAX ? (
           <>
             <div
               className="w-100 "

@@ -73,6 +73,9 @@ class ConfirmationModal extends React.Component {
             case Constants.STATUS_REVOCATION: // hủy
                 dataToSap.sub[0].processStatusId = Constants.STATUS_REVOCATION;
                 dataToSap.sub[0].comment = message;
+                if (dataToSap.requestTypeId == Constants.TAX_FINALIZATION) {
+                    dataToSap.sub[0].id = dataToSap.id;
+                }
                 this.cancel(dataToSap);
                 break;
             case Constants.STATUS_EVICTION: // thu hồi

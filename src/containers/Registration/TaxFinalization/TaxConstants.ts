@@ -11,6 +11,14 @@ export const getTaxAuthrizationOptions = (t: any) => {
     ]
 };
 
+export const getTaxIncomeOptions = (t: any) => {
+    return [
+        {value: '1', label: t('tax_authorization_1')},
+        {value: '2', label: t('tax_authorization_2')},
+        {value: '3', label: t('tax_authorization_3')} 
+    ]
+}
+
 export const TAX_TYPE_CONSTANT = {
     CREATE: "create",
 };

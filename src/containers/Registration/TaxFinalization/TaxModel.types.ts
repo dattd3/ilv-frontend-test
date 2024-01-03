@@ -12,6 +12,7 @@ export interface ITaxInfoModel {
     PitNo?: string;
     dependentNumber?: string;
     typeRequest?: IDropdownValue; // ủy quyền or xuất chứng từ thuế
+    incomeType?: IDropdownValue;
     email?: string;
     address?: string;
     idNumber?: string;

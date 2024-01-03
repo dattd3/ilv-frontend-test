@@ -89,7 +89,7 @@ const SocialContributeInfo = (props: any) => {
         : ""
     ) as string;
     _data.placeIssue = convertDataExtract(profile?.place_of_issue) as string;
-    _data.typeRequest = getTaxAuthrizationOptions(t)[0];
+    //_data.typeRequest = getTaxAuthrizationOptions(t)[0];
 
     setOldData({
       ..._data,
@@ -354,6 +354,10 @@ const SocialContributeInfo = (props: any) => {
       type: {
         id: data.typeRequest?.value,
         name: data.typeRequest?.label
+      },
+      incomeType: {
+        id: data.incomeType?.value,
+        name: data.incomeType?.label
       },
       taxCode: {
         displayType: dataChange.PitNo || STATUS.OLD,

@@ -1,4 +1,4 @@
-import { TaxAuthorizationOptions, getTaxAuthrizationOptions } from "containers/Registration/TaxFinalization/TaxConstants";
+import { TaxAuthorizationOptions, getTaxAuthrizationOptions, getTaxIncomeOptions } from "containers/Registration/TaxFinalization/TaxConstants";
 import React from "react";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -55,8 +55,56 @@ const TaxAuthrizationComponent = ({
           ))
         }
       </div>
+      {errors["typeRequest"] ? (
+          <p className="text-danger">{errors["typeRequest"]}</p>
+        ) : null}
 
-      {data.typeRequest?.value == TaxAuthorizationOptions.EXPOSE_TAX ? (
+      {
+      data.typeRequest?.value == TaxAuthorizationOptions.AUTHORIZE_TAX ? (
+        <>
+        <div
+            className="w-100 "
+            style={{
+              height: "1px",
+              width: "100%",
+              backgroundColor: "#DEE2E6",
+              margin: "12px 0",
+            }}
+          ></div>
+          <div >
+            {
+              getTaxIncomeOptions(t).map((option, index) => (
+                <div key={index} className="row mv-10 mx-4">
+                  <span className="d-flex flex-col align-items-center">
+                  <input
+                    type="radio"
+                    id={"action_income_accept" + option.value}
+                    name={"action_income" + option.value}
+                    checked={data.incomeType?.value == option.value}
+                    onChange={(e) => {
+                      setData({
+                        ...data,
+                        incomeType: option
+                      });
+                    }}
+                  />
+                  <label
+                    htmlFor={"action_income_accept" + option.value}
+                    className="ml-1"
+                  >
+                    {option.label}
+                  </label>
+                </span>
+                </div>
+              ))
+            }
+            {errors["incomeType"] ? (
+              <p className="text-danger">{errors["incomeType"]}</p>
+            ) : null}
+          </div>
+        </>
+      ) : 
+      data.typeRequest?.value == TaxAuthorizationOptions.EXPOSE_TAX ? (
         <>
           <div
             className="w-100 "
