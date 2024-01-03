@@ -220,7 +220,7 @@ function LeaveTimeSummary(props) {
                                     title={t("RemainingLeavesFromLastYear")}
                                     data={
                                         {
-                                            total:  (usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0),
+                                            total: ((usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0)).toFixed(2),
                                             item1: {label: t("Used"), total: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0, color: '#B9B8B8'},
                                             item2: {label: t("Available"), total: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0, color: '#FF7F00'},
                                             item3: {label: t("ExpireDate"), expiredDate: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.expire_date : '', color: '#05BD29'},
@@ -234,7 +234,7 @@ function LeaveTimeSummary(props) {
                                     title={t("LeavesThisYear")}
                                     data={
                                         {
-                                            total: (usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0),
+                                            total: ((usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0)).toFixed(2),
                                             item1: {
                                                 label: t("Used"),
                                                 total: usedAnnualLeaveOfThisYear ? usedAnnualLeaveOfThisYear.days : 0,
@@ -256,7 +256,7 @@ function LeaveTimeSummary(props) {
                         <div className="d-block text-center">
                             <div>
                                 <span>* {t("TotalAvaiableLeaves")}: </span>
-                                <span className='font-weight-bold' style={{ color: '#FF7F00' }}>{displayMeric((unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0))}</span>
+                                <span className='font-weight-bold' style={{ color: '#FF7F00' }}>{displayMeric(((unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0)).toFixed(2))}</span>
                             </div>
                             <div style={{ marginTop: 6 }}>
                                 <span>* {t("TotalLeavesPendingRequestWaitingForApproval")}: </span>
@@ -274,7 +274,7 @@ function LeaveTimeSummary(props) {
                                         title={t("RemaingToilHoursLastYear")}
                                         data={
                                             {
-                                                total: (usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0),
+                                                total: ((usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0)).toFixed(2),
                                                 item1: {
                                                     label: t("Used"),
                                                     total: usedCompensatoryLeaveOfLastYear ? usedCompensatoryLeaveOfLastYear.days : 0,
@@ -295,7 +295,7 @@ function LeaveTimeSummary(props) {
                                         title={t("ToilHoursThisYear")}
                                         data={
                                             {
-                                                total: (usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0),
+                                                total: ((usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0)).toFixed(2),
                                                 item1: {
                                                     label: t("Used"),
                                                     total: usedCompensatoryLeaveOfThisYear ? usedCompensatoryLeaveOfThisYear.days : 0,
@@ -316,7 +316,7 @@ function LeaveTimeSummary(props) {
                         <div className="d-block text-center">
                             <div>
                                 <span>* {t("TotalAvailableToilHours")}: </span>
-                                <span className='font-weight-bold' style={{ color: '#FF7F00' }}>{displayMeric((unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0))}</span>
+                                <span className='font-weight-bold' style={{ color: '#FF7F00' }}>{displayMeric(((unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0)).toFixed(2))}</span>
                             </div>
                             <div style={{ marginTop: 6 }}>
                                 <span>* {t("TotalTOILHoursPendingRequestWaitingForApproval")}: </span>
