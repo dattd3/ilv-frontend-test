@@ -10,7 +10,7 @@ import {
 import { debounce } from "lodash"
 import axios from "axios"
 import Constants from "commons/Constants"
-import { getRequestConfigurations } from "commons/Utils"
+import { formatStringByMuleValue, getRequestConfigurations } from "commons/Utils"
 import StatusModal from "./StatusModal"
 import IconClose from "assets/img/icon/icon_x.svg"
 import IconCloseSmall from "assets/img/icon/icon_x.svg"
@@ -105,6 +105,9 @@ export default class SearchMultiUsers extends Component {
             axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search/empid`, payload, getRequestConfigurations())
             .then(response => {
                 const data = (response?.data?.data || []).map(item => {
+                    let departmentStr = [item?.division, item?.department, item?.unit]
+                    .filter(item => formatStringByMuleValue(item))
+                    .join(' / ')
                     return {
                         employeeCode: item?.uid || '',
                         ad: item?.username || '',
@@ -112,7 +115,7 @@ export default class SearchMultiUsers extends Component {
                         phoneNumber: '',
                         pnlEmail: item?.company_email || '',
                         jobTitle: item?.title || '',
-                        department: item?.department || '',
+                        department: departmentStr || '',
                         shortenedOrgLevel2Name: '',
                         shortenedOrgLevel3Name: '',
                         shortenedOrgLevel4Name: '',

@@ -4,7 +4,7 @@ import Select from 'react-select'
 import ReactTooltip from 'react-tooltip'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
-import { omit, uniqWith, isEqual } from 'lodash'
+import { omit, uniqWith, isEqual, size } from 'lodash'
 import moment from 'moment'
 import { saveAs } from 'file-saver'
 import purify from "dompurify"
@@ -27,6 +27,7 @@ import IconDeadlineOverdueActive from 'assets/img/icon/ic_deadline-overdue_activ
 import IconDeadlineOverdue from 'assets/img/icon/ic_deadline-overdue_grey.svg'
 import { tabConfig } from "../Constant"
 import SearchMultiUsers from "components/Common/SearchMultiUsers"
+import SearchSingleUser from "components/Common/SearchSingleUser"
 
 const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
@@ -360,6 +361,17 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
         })
     }
 
+    const handleSelectSingleEmployee = (employee) => {
+        const handlerId = !employee ? null : `${employee?.ad?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`
+        const handlerInfo = !employee ? null : JSON.stringify(omit(employee, ['value', 'label']))
+
+        setRequestDetail({
+            ...requestDetail,
+            handlerId: handlerId,
+            handlerInfo: handlerInfo,
+        })
+    }
+
     const classIndexMapping = {
         0: 'new',
         1: 'processing',
@@ -529,9 +541,7 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
     })()
 
     const viewByTechnician = tab === tabConfig.processing
-
-    console.log('TING TING => ', masterData)
-    console.log('requestDetail => ', requestDetail)
+    const handlerInfo = JSON.parse(requestDetail?.handlerInfo || '{}')
 
     return (
         <>
@@ -785,13 +795,9 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
                                         {
                                             viewByTechnician
                                             ? (
-                                                <Select
-                                                    value={(groups || []).find(item => item?.value == requestDetail?.groupId) || null}
-                                                    isClearable={true}
-                                                    onChange={e => handleInputChange('groupId', e)}
-                                                    placeholder={t('Chọn')} 
-                                                    options={groups}
-                                                    classNamePrefix="filter-select"
+                                                <SearchSingleUser
+                                                    user={handlerInfo && size(handlerInfo) > 0 ? {...handlerInfo, value: handlerInfo?.employeeCode, label: handlerInfo?.fullName } : null}
+                                                    handleSelectEmployee={handleSelectSingleEmployee}
                                                 />
                                             )
                                             : (

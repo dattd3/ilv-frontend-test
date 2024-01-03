@@ -34,7 +34,16 @@ const Processing = ({ masterData, needLoadData, tab }) => {
         pageIndex: 1,
         pageSize: listPageSizes[0],
     })
-    const [isShowUpdateRequestModal, setIsShowUpdateRequestModal] = useState(false)
+    const [updateRequestModal, setUpdateRequestModal] = useState({
+        isShow: false,
+        ids: '',
+        groupId: null,
+        handlerId: null,
+        handlerInfo: null,
+        slaId: null,
+        statusId: null,
+        message: '',
+    })
     const [quickFilter, setQuickFilter] = useState(null)
     const [refresh, SetRefresh] = useState(false)
     const [statusModal, setStatusModal] = useState({
@@ -133,8 +142,33 @@ const Processing = ({ masterData, needLoadData, tab }) => {
         fetchListRequest(null, e?.value || null)
     }
 
+    const handleUpdateRequestModal = () => {
+        const itemChecked = (requestData?.listRequest || []).filter(item => item?.isChecked)
+        const hasOnlyOneItemChecked = itemChecked?.length === 1
+
+        setUpdateRequestModal({
+            isShow: true,
+            ids: (itemChecked || []).map(item => item?.id)?.join(','),
+            groupId: hasOnlyOneItemChecked ? itemChecked?.[0]?.supportGroups?.id : null,
+            handlerId: hasOnlyOneItemChecked ? itemChecked?.[0]?.handlerId : null,
+            handlerInfo: hasOnlyOneItemChecked ? itemChecked?.[0]?.handlerInfo : null,
+            slaId: hasOnlyOneItemChecked ? itemChecked?.[0]?.supportSla?.id : null,
+            statusId: hasOnlyOneItemChecked ? itemChecked?.[0]?.supportStatus?.id : null,
+            message: '',
+        })
+    }
+
     const onHideCreatedRequestModal = () => {
-        setIsShowUpdateRequestModal(false)
+        setUpdateRequestModal({
+            isShow: false,
+            ids: '',
+            groupId: null,
+            handlerId: null,
+            handlerInfo: null,
+            slaId: null,
+            statusId: null,
+            message: '',
+        })
     }
 
     const handleNormalFilter = (filter) => {
@@ -165,24 +199,36 @@ const Processing = ({ masterData, needLoadData, tab }) => {
             case 'isChecked':
                 listRequestToSave = id === null 
                 ? (requestData?.listRequest || []).map(item => {
+                    let itemClone = omit(item, ['groupId_temp', 'statusId_temp', 'handlerId_temp', 'handlerInfo_temp'])
                     return {
-                        ...item,
+                        ...itemClone,
                         isChecked: val,
                     }
                 })
                 : (requestData?.listRequest || []).map(item => {
+                    let itemClone = omit(item, ['groupId_temp', 'statusId_temp', 'handlerId_temp', 'handlerInfo_temp'])
                     return {
-                        ...item,
+                        ...itemClone,
                         isChecked: item?.id === id ? val : (item?.isChecked || false),
                     }
                 })
                 break
             case 'evaluate_temp':
             case 'comments_temp':
+            case 'groupId_temp':
+            case 'statusId_temp':
                 listRequestToSave = (requestData?.listRequest || []).map(item => {
                     return {
                         ...item,
                         ...(item?.id === id && { [key]: val }),
+                    }
+                })
+                break
+            case 'handlerInfo_temp':
+                listRequestToSave = (requestData?.listRequest || []).map(item => {
+                    return {
+                        ...item,
+                        ...(item?.id === id && { [key]: !val ? null : JSON.stringify(val), handlerId_temp: val?.ad ? `${val?.ad?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}` : null }),
                     }
                 })
                 break
@@ -295,7 +341,7 @@ const Processing = ({ masterData, needLoadData, tab }) => {
         <>
             <LoadingModal show={isLoading} />
             <UpdateRequest 
-                isShow={isShowUpdateRequestModal}
+                updateRequestModal={updateRequestModal}
                 masterData={masterData}
                 onHide={onHideCreatedRequestModal}
             />
@@ -311,7 +357,7 @@ const Processing = ({ masterData, needLoadData, tab }) => {
                     <h1 className="header-title">Quản lý yêu cầu</h1>
                     <div className="d-flex justify-content-between align-items-center content">
                         <div className="d-inline-flex left">
-                            <button className="btn btn-update-request" disabled={isDisableUpdateBtn} onClick={() => setIsShowUpdateRequestModal(true)}>Cập nhật<img src={IconArrowWhite} alt="Create" /> </button>
+                            <button className="btn btn-update-request" disabled={isDisableUpdateBtn} onClick={handleUpdateRequestModal}>Cập nhật<img src={IconArrowWhite} alt="Create" /> </button>
                             <div className="filter position-relative">
                                 <img src={IconFilter} alt="Filter" className="icon-prefix-select" />
                                 <Select

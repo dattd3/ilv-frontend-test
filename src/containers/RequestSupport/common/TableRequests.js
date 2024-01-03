@@ -27,6 +27,8 @@ import vi from 'date-fns/locale/vi'
 import Constants from "commons/Constants"
 import { getRequestConfigurations, hasValue } from "commons/Utils"
 import RequestDetail from "../popup/RequestDetail"
+import SearchSingleUser from "components/Common/SearchSingleUser"
+import { size } from "lodash"
 registerLocale("vi", vi)
 
 const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode }) => {
@@ -188,8 +190,6 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         }
     })
 
-    console.log('listRequests => ', listRequests)
-
     return (
         <>
         
@@ -346,6 +346,8 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                     ? (
                         listRequests.map((child, index) => {
                             let statusId = child?.supportStatus?.id
+                            let handlerInfo = JSON.parse(child?.handlerInfo_temp !== undefined ? (child?.handlerInfo_temp || '{}') : (child?.handlerInfo || '{}'))
+
                             return (
                                 <tr key={index}>
                                     {
@@ -443,9 +445,9 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                     <Select 
                                                         placeholder={t("Select")} 
                                                         isClearable={true} 
-                                                        value={null} 
+                                                        value={(groups || []).find(item => item?.value === (child?.groupId_temp !== undefined ? child?.groupId_temp : child?.supportGroups?.id)) || null} 
                                                         options={groups} 
-                                                        onChange={handleInputChange} 
+                                                        onChange={e => handleInputChange(child?.id, 'groupId_temp', e?.value || null)} 
                                                         styles={customStyles}
                                                         isDisabled={child?.isChecked || false}
                                                     />
@@ -459,14 +461,10 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                 tab === tabConfig.createdReceiving
                                                 ? (<>{JSON.parse(child?.handlerInfo)?.ad}</>)
                                                 : (
-                                                    <Select 
-                                                        placeholder={t("Select")} 
-                                                        isClearable={true} 
-                                                        value={null} 
-                                                        options={[]} 
-                                                        onChange={handleInputChange} 
-                                                        styles={customStyles}
-                                                        isDisabled={child?.isChecked || false}
+                                                    <SearchSingleUser 
+                                                        user={handlerInfo && size(handlerInfo) > 0 ? {...handlerInfo, value: handlerInfo?.employeeCode, label: handlerInfo?.fullName } : null}
+                                                        handleSelectEmployee={(e) => handleInputChange(child?.id, 'handlerInfo_temp', e)}
+                                                        isDisable={child?.isChecked || false}
                                                     />
                                                 )
                                             }
@@ -483,9 +481,9 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                     <Select 
                                                         placeholder={t("Select")} 
                                                         isClearable={true} 
-                                                        value={null} 
+                                                        value={(statuses || []).find(item => item?.value === (child?.statusId_temp !== undefined ? child?.statusId_temp : child?.supportStatus?.id)) || null} 
                                                         options={statuses} 
-                                                        onChange={handleInputChange} 
+                                                        onChange={e => handleInputChange(child?.id, 'statusId_temp', e?.value || null)} 
                                                         styles={customStyles}
                                                         isDisabled={child?.isChecked || false}
                                                     />
