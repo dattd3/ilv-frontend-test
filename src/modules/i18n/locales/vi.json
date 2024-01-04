@@ -2121,5 +2121,6 @@
   "email_nhan_chung_tu": "Email",
   "yeu_cau_do_dai": "Yêu cầu độ dài {{value1}} hoặc {{value2}} ký tự",
   "cbnv_dang_ky_muc_tieu": "CBNV đăng ký mục tiêu",
-  "mo_ta_muc_tieu": "Goal description"
+  "mo_ta_muc_tieu": "Goal description",
+  "ho_tro_yeu_cau": "Hỗ trợ yêu cầu"
 }

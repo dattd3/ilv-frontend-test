@@ -523,7 +523,14 @@ export const Navigation = [
   //   to: map.VaccineList,
   //   role: 'U'
   // },
-
+  {
+    id: 15,
+    parentId: 0,
+    icon: 'request-support',
+    label: "ho_tro_yeu_cau",
+    to: map.RequestSupport,
+    role: 'U'
+  },
   {
     id: 109999,
     parentId: 0,
