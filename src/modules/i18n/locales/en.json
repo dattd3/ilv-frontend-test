@@ -2105,6 +2105,6 @@
   "email_nhan_chung_tu": "Email to receive Certificate",
   "yeu_cau_do_dai": "Required length of {{value1}} or {{value2}} characters",
   "cbnv_dang_ky_muc_tieu": "Requestor",
-  "mo_ta_muc_tieu": "Mô tả mục tiêu",
-  "ho_tro_yeu_cau": "Request support"
+  "ho_tro_yeu_cau": "Request support",
+  "mo_ta_muc_tieu": "Goal description"
 }
