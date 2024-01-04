@@ -2137,5 +2137,7 @@
   "total_tax_reduce_before_transfer": "Trong đó: số thuế đã khấu trừ tại P&L trước khi điều chuyển",
   "total_tax_pay": "Tổng số thuế phải nộp",
   "total_tax_overpaid": "Số thuế đã nộp thừa",
-  "total_tax_addition": "Số thuế còn phải nộp bổ sung"
+  "total_tax_addition": "Số thuế còn phải nộp bổ sung",
+  "cbnv_dang_ky_muc_tieu": "CBNV đăng ký mục tiêu",
+  "mo_ta_muc_tieu": "Goal description"
 }
