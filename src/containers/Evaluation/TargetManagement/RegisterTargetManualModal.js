@@ -704,7 +704,7 @@ export default function TargetRegistrationManualModal(props) {
         {((data?.reviewComment && !isEditing) || (isApprover && isEditing)) && (
           <div className="mb-15">
             <div className="mb-15">
-              Ý kiến của CBQL phê duyệt <span className="red-color">(*)</span>
+              {t("y_kien_cua_cbql_phe_duyet")} <span className="red-color">(*)</span>
             </div>
             {isEditing ? (
               <Form.Control
