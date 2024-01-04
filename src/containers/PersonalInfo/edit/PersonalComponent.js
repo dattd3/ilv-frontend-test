@@ -133,20 +133,10 @@ class PersonalComponent extends React.Component {
             // Edit profile
         } else {
             if (this.state.countryId) {
-                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${this.state.countryId}`, config)
-                    .then(res => {
-                        if (res && res.data && res.data.data) {
-                            const data = res.data.data;
-                            this.setState({
-                                birthProvinces: data
-                            })
-                        }
-                    }).catch(error => {
-
-                    })
+                this.getBirthProvinces(this.state.countryId, this.state.countryId === 'VN');
             } else if (!this.state.countryId) {
                 const birthCountryId = this.props.userDetail.birth_country_id;
-                this.getBirthProvinces(birthCountryId);
+                this.getBirthProvinces(birthCountryId, birthCountryId === 'VN');
                 this.setState({ birthCountryNotUpdate: birthCountryId });
             }
         }
@@ -198,7 +188,7 @@ class PersonalComponent extends React.Component {
         const label = e != null ? e.label : ''
 
         if (name == "BirthCountry") {
-            this.getBirthProvinces(val);
+            this.getBirthProvinces(val, val === 'VN');
         }
 
         const userDetail = {...this.state.userDetail}
@@ -225,7 +215,12 @@ class PersonalComponent extends React.Component {
         this.setState({ userDetail })
     }
 
-    getBirthProvinces = (country_id) => {
+    getBirthProvinces = (country_id, isVietNam = false) => {
+        if (!isVietNam) {
+            this.setState({ birthProvinces: [] })
+            return
+        }
+
         const config = getMuleSoftHeaderConfigurations()
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${country_id}`, config)
@@ -425,7 +420,8 @@ class PersonalComponent extends React.Component {
                         <div className="col-6">
                             <Select name="BirthCountry" placeholder={t("SelectCountryOfBirth")} key="birthCountry"
                                 isClearable={true}
-                                options={countries} value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : userDetailState?.birth_country_id))}
+                                options={countries} 
+                                value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : userDetailState?.birth_country_id))}
                                 onChange={e => this.handleSelectInputs(e, 'BirthCountry', userDetail.birth_country_name || "")} />
                         </div>
                     </div>
@@ -438,8 +434,15 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.birth_province || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="BirthProvince" placeholder={t("SelectPlaceOfBirth")} key="birthProvince" options={birthProvinces} isClearable={true}
-                                value={birthProvinces.filter(p => p.value == userDetailState?.birth_province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
+                            <Select 
+                                name="BirthProvince" 
+                                placeholder={t("SelectPlaceOfBirth")} 
+                                key="birthProvince" 
+                                options={birthProvinces} 
+                                isClearable={true}
+                                value={birthProvinces.filter(p => p.value == userDetailState?.birth_province_id)} 
+                                onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)}
+                                isDisabled={userDetailState?.birth_country_id && userDetailState?.birth_country_id !== 'VN'} />
                             {
                                 validationMessagesFromParent?.birthProvince && <p className="text-danger error-message">{validationMessagesFromParent?.birthProvince}</p>
                             }

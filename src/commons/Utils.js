@@ -34,7 +34,7 @@ const removeAccents = value => {
 }
 
 const formatStringByMuleValue = value => {
-    return (value === null || value === undefined || value === "" || value === "#" || value === "null") ? "" : value?.toString().trim()
+    return (value === null || value === undefined || value === "" || value === "#" || value === "null") ? "" : value?.toString()?.trim()
 }
 
 const formatStringDateTimeByMuleValue = value => {
@@ -231,8 +231,23 @@ const getRequestConfigurations = () => {
     }
 }
 
+const getRequestConfigurationsWithCulture = () => {
+    return {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        params: {
+            culture: getCulture()
+        }
+    }
+}
+
 const getMuleSoftHeaderConfigurations = () => {
-    const requestConfigurations = getRequestConfigurations()
+    const requestConfigurations = {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+    };
     requestConfigurations.headers['client_id'] = process.env.REACT_APP_MULE_CLIENT_ID
     requestConfigurations.headers['client_secret'] = process.env.REACT_APP_MULE_CLIENT_SECRET
     
@@ -694,5 +709,6 @@ export {
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem, hasValue
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem, 
+    getRequestConfigurationsWithCulture, hasValue
 }

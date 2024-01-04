@@ -40,11 +40,16 @@ function EmployeePrivilegeDetailElement({ match, location }) {
         }
     }
 
-    const detail = result?.data
-    const timePublished = getTimeByRawTime(detail?.publishedDate)
-    const title = isJsonString(detail?.title) ? (JSON.parse(detail?.title)?.[lang] || JSON.parse(detail?.title)?.['vi']) : detail?.title
-    const description = isJsonString(detail?.description) ? (JSON.parse(detail?.description)?.[lang] || JSON.parse(detail?.description)?.['vi']) : detail?.description
-    const content = isJsonString(detail?.content) ? (JSON.parse(detail?.content)?.[lang] || JSON.parse(detail?.content)?.['vi']) : detail?.content
+    const detail = result?.data,
+        timePublished = getTimeByRawTime(detail?.publishedDate),
+        title = isJsonString(detail?.title) ? JSON.parse(detail?.title)?.[lang] : detail?.title,
+        description = isJsonString(detail?.description) ? JSON.parse(detail?.description)?.[lang] : detail?.description,
+        content = isJsonString(detail?.content) ? JSON.parse(detail?.content)?.[lang] : detail?.content;
+
+    if ((!title || !content) && !!detail) {
+        window.location.href = mapConfig.EmployeePrivileges;
+        return;
+    }
 
     return (
         <>
@@ -71,7 +76,7 @@ function EmployeePrivilegeDetail(props) {
     return (
         <div>
             <Router>
-                <Route path="/employee-privileges/:Slug/:Id" component={EmployeePrivilegeDetailElement} />
+                <Route path="/employee-privileges/detail/:Id" component={EmployeePrivilegeDetailElement} />
             </Router>
         </div>
     );

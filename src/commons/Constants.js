@@ -19,6 +19,8 @@ const Constants = {
     NOTIFICATION_LEAD_EVALUATION: 22,
     NOTIFICATION_MY_KPI_REGISTRATION_REQUEST: 23,
     NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST: 24,
+    REGISTERED_VOUCHER_SUCCESSFULLY: 25,
+    VOUCHER_NEW_PROGRAM: 26,
   },
 
   //Tasks
@@ -63,6 +65,7 @@ const Constants = {
   INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
   INSURANCE_SOCIAL_INFO: 21, // thông tin đóng BHXH
   SOCIAL_SUPPORT: 22, // yêu cầu hỗ trợ liên quan BH
+  TAX_FINALIZATION: 23, // yeeu cầu quyết toán thuế
 
   //Status request
   STATUS_PENDING: 0,
@@ -241,7 +244,8 @@ const Constants = {
     DIEUCHUYEN: 6,
     BONHIEM: 7,
     THANHTOAN_NOIBO: 8,
-    BAOHIEM: 9
+    BAOHIEM: 9,
+    DANHGIA_TUYENDUNG: 10,
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
@@ -253,7 +257,8 @@ const Constants = {
     6: ["V077", "V070"], //DIEUCHUYEN
     7: ["V077", "V070"], //BONHIEM,
     8: [], //THANHTOAN_NOIBO
-    9: ["V061"],//BAOHIEM
+    9: ["V061", "V070", "V071", "V079", "V040"],//BAOHIEM
+    10:["V040", "V079", "V041", "V077", "V070", "V099"],//DANHGIA_TUYENDUNG
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
@@ -264,7 +269,8 @@ const Constants = {
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
     7: ["V040", "V070", "V077"], //BONHIEM
     8: ["V040", "V070", "V077", "V030"], //THANH TOAN NOI BO
-    9: ["V077", "V070", "V061", "V079"],//BAOHIEM
+    9: ["V077", "V070", "V061", "V079", "V040"],//BAOHIEM
+    10:["V040", "V079", "V041", "V077", "V070", "V099"],//DANHGIA_TUYENDUNG
   },
   CURRENCY: {
     VND: 'VNĐ',
@@ -328,6 +334,7 @@ Constants.REQUEST_CATEGORY_2_LIST = {
   [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest",
   [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest",
   [Constants.SOCIAL_SUPPORT]: "social_support_info",
+  [Constants.TAX_FINALIZATION]: "quyet_toan_thue"
 
 }
 

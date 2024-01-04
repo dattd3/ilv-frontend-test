@@ -32,7 +32,8 @@ import { isJsonString } from "../../utils/string";
 function NewsOnHome() {
   const { t } = useTranslation();
   const myRef = useRef(null);
-  const privilegesRef = useRef(null);
+  // const privilegesRef = useRef(null);
+  const topOneRef = useRef(null);
   const listInternalNewsRef = useRef(null);
   const [isVisibleGoToTop, setIsVisibleGoToTop] = useState(false);
   const [isShowNoticeGuideModal, setIsShowNoticeGuideModal] = useState(false);
@@ -45,18 +46,30 @@ function NewsOnHome() {
   const [privilegeBanner, setPrivilegeBanner] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [privilegesRefHeight, setPrivilegesRefHeight] = useState(0);
+  const [topOneRefHeight, setTopOneRefHeight] = useState(0);
   const lang = getCurrentLanguage();
 
-  useEffect(() => {
-    const privileges = privilegesRef.current;
-    if (!privileges) return;
-    const resizeObserver = new ResizeObserver(() => {
-      if (privilegesRefHeight !== privileges?.clientHeight && privileges?.clientHeight > 0) setPrivilegesRefHeight(privileges?.clientHeight)
-    });
-    resizeObserver.observe(privileges);
+  // useEffect(() => {
+  //   const privileges = privilegesRef.current;
+  //   if (!privileges) return;
+  //   const resizeObserver = new ResizeObserver(() => {
+  //     if (privilegesRefHeight !== privileges?.clientHeight && privileges?.clientHeight > 0) setPrivilegesRefHeight(privileges?.clientHeight)
+  //   });
+  //   resizeObserver.observe(privileges);
 
-    return () => resizeObserver.disconnect();
-  }, [privilegesRef.current, privilegesRefHeight]);
+  //   return () => resizeObserver.disconnect();
+  // }, [privilegesRef.current, privilegesRefHeight]);
+
+    useEffect(() => {
+      const topOneElm = topOneRef.current;
+      if (!topOneElm) return;
+      const resizeObserver = new ResizeObserver(() => {
+        if (topOneRefHeight !== topOneElm?.clientHeight && topOneElm?.clientHeight > 0) setTopOneRefHeight(topOneElm?.clientHeight)
+      });
+      resizeObserver.observe(topOneElm);
+
+      return () => resizeObserver.disconnect();
+    }, [topOneRef.current, topOneRefHeight]);
 
   useEffect(() => {
     if (
@@ -111,15 +124,15 @@ function NewsOnHome() {
               },
             }
           ),
-          requestGetEmployeePrivilegeBanner = axios.get(
-            `${process.env.REACT_APP_REQUEST_URL}article/detail`,
-            {
-              ...config,
-              params: {
-                type: "BANNER",
-              },
-            }
-          ),
+          // requestGetEmployeePrivilegeBanner = axios.get(
+          //   `${process.env.REACT_APP_REQUEST_URL}article/detail`,
+          //   {
+          //     ...config,
+          //     params: {
+          //       type: "BANNER",
+          //     },
+          //   }
+          // ),
           getPrivilegeBanners = axios.get(
             `${process.env.REACT_APP_REQUEST_URL}api/vanhoavin/list`,
             {
@@ -136,13 +149,13 @@ function NewsOnHome() {
           _listInternalNews,
           _listInternalNewsPodcasts,
           _listInternalNewsVideos,
-          employeePrivilegeBanner,
+          // employeePrivilegeBanner,
           privilegeBanners,
         ] = await Promise.allSettled([
           requestGetListInternalNews,
           requestGetListInternalNewsPodcasts,
           requestGetListInternalNewsVideos,
-          requestGetEmployeePrivilegeBanner,
+          // requestGetEmployeePrivilegeBanner,
           getPrivilegeBanners,
         ]);
         setListInternalNews(
@@ -160,22 +173,22 @@ function NewsOnHome() {
             lang
           )
         );
-        const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
-        setPrivilegeBanner({
-          ...privilegeBanner,
-          description: isJsonString(_privilegeBanner?.description)
-            ? JSON.parse(_privilegeBanner?.description)?.[lang] ||
-              JSON.parse(_privilegeBanner?.description)?.["vi"]
-            : _privilegeBanner?.description,
-          thumbnail: isJsonString(_privilegeBanner?.thumbnail)
-            ? JSON.parse(_privilegeBanner?.thumbnail)?.[lang] ||
-              JSON.parse(_privilegeBanner?.thumbnail)?.["vi"]
-            : _privilegeBanner?.thumbnail,
-          title: isJsonString(_privilegeBanner?.title)
-            ? JSON.parse(_privilegeBanner?.title)?.[lang] ||
-              JSON.parse(_privilegeBanner?.title)?.["vi"]
-            : _privilegeBanner?.title,
-        });
+        // const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
+        // setPrivilegeBanner({
+        //   ...privilegeBanner,
+        //   description: isJsonString(_privilegeBanner?.description)
+        //     ? JSON.parse(_privilegeBanner?.description)?.[lang] ||
+        //       JSON.parse(_privilegeBanner?.description)?.["vi"]
+        //     : _privilegeBanner?.description,
+        //   thumbnail: isJsonString(_privilegeBanner?.thumbnail)
+        //     ? JSON.parse(_privilegeBanner?.thumbnail)?.[lang] ||
+        //       JSON.parse(_privilegeBanner?.thumbnail)?.["vi"]
+        //     : _privilegeBanner?.thumbnail,
+        //   title: isJsonString(_privilegeBanner?.title)
+        //     ? JSON.parse(_privilegeBanner?.title)?.[lang] ||
+        //       JSON.parse(_privilegeBanner?.title)?.["vi"]
+        //     : _privilegeBanner?.title,
+        // });
         setBanners(privilegeBanners?.value?.data?.data || []);
       } finally {
         setIsLoading(false);
@@ -214,10 +227,10 @@ function NewsOnHome() {
     const timePublished = getPublishedTimeByRawTime(itemNews?.publishedDate);
 
     return (
-      <div className="item" key={itemNews.id}>
+      <div className="item" key={itemNews?.id}>
         <a href={`/internal-news/detail/${itemNews.id}`} className="link-image-detail">
           <Image
-            src={itemNews.thumbnail}
+            src={itemNews?.thumbnail}
             className="thumbnail"
             onError={(e) => {
               e.target.src = "/logo-small.svg";
@@ -226,13 +239,13 @@ function NewsOnHome() {
           />
         </a>
         <div className="title-source-time-info">
-          <a href={`/internal-news/detail/${itemNews.id}`} className="title">
-            {itemNews.title}
+          <a href={`/internal-news/detail/${itemNews?.id}`} className="title">
+            {itemNews?.title?.trim()}
           </a>
           <div className="source-time-info">
             <span className="time">
               <Image src={IconTime} alt="Time" className="icon" />
-              <span className="hour">{timePublished.date || "N/A"}</span>
+              <span className="hour">{timePublished?.date || "N/A"}</span>
             </span>
           </div>
         </div>
@@ -263,7 +276,7 @@ function NewsOnHome() {
               </Carousel>
             </div>
             <div className="row">
-              <div className="col-md-4 privilege">
+              {/* <div className="col-md-4 privilege">
                 <div className="block-page-title">
                   <h1
                     className="page-title" style={{ color: "#D13238" }}
@@ -313,8 +326,8 @@ function NewsOnHome() {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-8 special">
+              </div> */}
+              <div className="col-md-12 special">
                 <div className="block-page-title">
                   <h2 className="page-title">
                     <Image
@@ -332,62 +345,66 @@ function NewsOnHome() {
                     </div>
                   </a>
                 </div>
-                <div className="d-flex shadow-customize wrap-news">
-                  {topOne && (
-                    <div className="top-one">
-                      <a
-                        href={`/internal-news/detail/${topOne.id}`}
-                        className="link-detail"
-                      >
-                        <Image
-                          src={topOne?.thumbnail}
-                          alt="News"
-                          className="thumbnail"
-                          onError={(e) => {
-                            e.target.src = "/logo-large.svg";
-                          }}
-                        />
-                        <p className="title">{topOne?.title || ""}</p>
-                      </a>
-                      <div className="other-info">
-                        <div className="source-time-info">
-                          <span className="time">
-                            <Image src={IconTime} alt="Time" className="icon" />
-                            <span className="hour">
-                              {timePublishedTopOne?.date || "N/A"}
-                            </span>
-                          </span>
-                        </div>
-                        {privilegeBanner?.description && (
-                          <p className="description">
-                            {subStringDescription(topOne?.description)}
-                          </p>
-                        )}
-                        <div className="btn-detail">
+                <div className="d-flex wrap-news">
+                  <div className="row">
+                    {topOne && (
+                      <div className="col-md-6 top-one" ref={topOneRef} style={{ background: 'transparent' }}>
+                        <div className="shadow-customize" style={{ borderRadius: 10, background: '#FFFFFF' }}>
                           <a
-                            href={`/internal-news/detail/${topOne?.id}`}
-                            className="detail"
+                            href={`/internal-news/detail/${topOne.id}`}
+                            className="link-detail"
                           >
-                            <span>{t("Details")}</span>
                             <Image
-                              src={IconViewDetail}
-                              alt="Detail"
-                              className="icon-view-detail"
+                              src={topOne?.thumbnail}
+                              alt="News"
+                              className="thumbnail"
+                              onError={(e) => {
+                                e.target.src = "/logo-large.svg";
+                              }}
                             />
+                            <p className="title">{topOne?.title || ""}</p>
                           </a>
+                          <div className="other-info">
+                            <div className="source-time-info">
+                              <span className="time">
+                                <Image src={IconTime} alt="Time" className="icon" />
+                                <span className="hour">
+                                  {timePublishedTopOne?.date || "N/A"}
+                                </span>
+                              </span>
+                            </div>
+                            {privilegeBanner?.description && (
+                              <p className="description">
+                                {subStringDescription(topOne?.description)}
+                              </p>
+                            )}
+                            <div className="btn-detail">
+                              <a
+                                href={`/internal-news/detail/${topOne?.id}`}
+                                className="detail"
+                              >
+                                <span>{t("Details")}</span>
+                                <Image
+                                  src={IconViewDetail}
+                                  alt="Detail"
+                                  className="icon-view-detail"
+                                />
+                              </a>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                  <div className="other" style={{ maxHeight: privilegesRefHeight > 0 ? privilegesRefHeight - 40 : 0 }}>
-                    <div className="top-four">
-                      {listInternalNews.length > 1 && (
-                        <ReactList
-                          itemRenderer={renderItemInternalNews}
-                          length={listInternalNewsOther.length}
-                          ref={listInternalNewsRef}
-                        />
-                      )}
+                    )}
+                    <div className="col-md-6 other" style={{ maxHeight: topOneRefHeight > 0 ? topOneRefHeight : 0 }}>
+                      <div className="top-four shadow-customize">
+                        {listInternalNews.length > 1 && (
+                          <ReactList
+                            itemRenderer={renderItemInternalNews}
+                            length={listInternalNewsOther?.length}
+                            ref={listInternalNewsRef}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

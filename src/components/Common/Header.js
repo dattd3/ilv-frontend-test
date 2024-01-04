@@ -165,6 +165,8 @@ function Header(props) {
             url = `benefit-claim-request`;
         } else if (requestTypeId == Constants.INSURANCE_SOCIAL) {
             url = `insurance-manager/detail/${requestId}/request`;
+        } else if (requestTypeId == Constants.TAX_FINALIZATION) {
+            url = `tax-finalization/${requestId}/request`;
         } else if (parentRequestHistoryId) {
           //xu ly mot nguoi
           url = `salarypropse/${parentRequestHistoryId}/${requestId}/request`;
@@ -193,7 +195,9 @@ function Header(props) {
             url = `salarypropse/${parentRequestHistoryId}/${requestId}/${typeRequest}`
         } else if (requestTypeId == Constants.INSURANCE_SOCIAL) {
             url = `insurance-manager/detail/${requestId}/${typeRequest}`;
-        }else {
+        } else if (requestTypeId == Constants.TAX_FINALIZATION) {
+            url = `tax-finalization/${requestId}/${typeRequest}`;
+        } else {
             //xu ly nhieu nguoi
             url = `${[14, 15].includes(requestTypeId) ? transferAppoints[`${requestTypeId}-${formType}`] : 'salaryadjustment'}/${requestId}/${typeRequest}`
         }
@@ -252,7 +256,8 @@ function Header(props) {
                                 Constants.WELFARE_REFUND, 
                                 Constants.INSURANCE_SOCIAL, 
                                 Constants.INSURANCE_SOCIAL_INFO,
-                                Constants.SOCIAL_SUPPORT].includes(requestTypeId)) {
+                                Constants.SOCIAL_SUPPORT,
+                                Constants.TAX_FINALIZATION].includes(requestTypeId)) {
                                 return getSalaryProposeLinkRequest(requestTypeId, requestId, item.formType, item.parentRequestHistoryId)
                             }
                             if(item?.detailType != 'REQUEST' && [Constants.SALARY_PROPOSE, 
@@ -260,7 +265,8 @@ function Header(props) {
                                 Constants.PROPOSAL_APPOINTMENT, 
                                 Constants.INSURANCE_SOCIAL, 
                                 Constants.INSURANCE_SOCIAL_INFO,
-                                Constants.SOCIAL_SUPPORT].includes(requestTypeId)) {
+                                Constants.SOCIAL_SUPPORT,
+                                Constants.TAX_FINALIZATION].includes(requestTypeId)) {
                                     return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
                             }
 
@@ -290,7 +296,8 @@ function Header(props) {
                                 Constants.WELFARE_REFUND, 
                                 Constants.INSURANCE_SOCIAL, 
                                 Constants.INSURANCE_SOCIAL_INFO,
-                                Constants.SOCIAL_SUPPORT].includes(requestTypeId)) {
+                                Constants.SOCIAL_SUPPORT,
+                                Constants.TAX_FINALIZATION].includes(requestTypeId)) {
                                 return getSalaryProposeLinkRequest(requestTypeId, requestId, item.formType, item.parentRequestHistoryId)
                             }
                             if(item?.detailType != 'REQUEST' && [Constants.SALARY_PROPOSE, 
@@ -298,7 +305,8 @@ function Header(props) {
                                 Constants.PROPOSAL_APPOINTMENT, 
                                 Constants.INSURANCE_SOCIAL, 
                                 Constants.INSURANCE_SOCIAL_INFO,
-                                Constants.SOCIAL_SUPPORT].includes(requestTypeId)) {
+                                Constants.SOCIAL_SUPPORT,
+                                Constants.TAX_FINALIZATION].includes(requestTypeId)) {
                                     return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
                             }
                             return `/registration/${requestId}/${subRequestId}/request`
@@ -321,19 +329,20 @@ function Header(props) {
                             return `/target-management?tab=OWNER&id=${item?.subRequestId || 0}`
                         case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
                             return `/target-management?tab=REQUEST&id=${item?.subRequestId || 0}`
+                        case Constants.notificationType.REGISTERED_VOUCHER_SUCCESSFULLY:
+                            return `/my-voucher`
+                        case Constants.notificationType.VOUCHER_NEW_PROGRAM:
+                            return `/my-voucher/notices/${item?.subRequestId}`
                         default:
                             return `${item.url}`
                     }
                 }
-                let titleNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
-                ? currentLocale == Constants.LANGUAGE_VI ? item?.title : item?.en_Title || ''
-                : item?.title || ''
-                let descriptionNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
-                ? currentLocale == Constants.LANGUAGE_VI ? item?.description : item?.en_Description || ''
-                : item?.description || ''
+                let titleNotice = currentLocale === Constants.LANGUAGE_VI ? (item?.title || item?.en_Title) : (item?.en_Title || item?.title)
+                let descriptionNotice = currentLocale === Constants.LANGUAGE_VI ? (item?.description || item?.en_Description) : (item?.en_Description || item?.description)
                 const isEvaluation = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(Number(item?.type))
                 const evaluationData = {
                     isEvaluation: isEvaluation,
+                    isRecruitmentEvaluation: item.detailType == 'EVALUATE' && item.requestTypeId == 30,
                     isFromManager: item?.type == Constants.notificationType.NOTIFICATION_LEAD_EVALUATION,
                     ...(isEvaluation && { data: JSON.parse(item?.formType) }),
                 }

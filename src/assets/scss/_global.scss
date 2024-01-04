@@ -227,6 +227,9 @@ a {
     width: 70px;
     height: 70px;
   }
+  &.modal-dim {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
   &.position-apply-modal {
     .modal-body {
       border-bottom-left-radius: 4px;

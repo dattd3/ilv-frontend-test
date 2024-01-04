@@ -90,6 +90,9 @@ const Storage = {
     localStorage.setItem('orgshort_lv2', currentAuthUser.orgshort_lv2);
     localStorage.setItem('orgshort_lv3', currentAuthUser.orgshort_lv3);
     localStorage.setItem('orgshort_lv4', currentAuthUser.orgshort_lv4);
+    localStorage.setItem('streetName', currentAuthUser.streetName);
+    localStorage.setItem('essAvaible', currentAuthUser.essAvaible);
+    localStorage.setItem('taxEnable', currentAuthUser.taxEnable);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -144,6 +147,9 @@ const Storage = {
       orgshort_lv2: localStorage.getItem('orgshort_lv2'),
       orgshort_lv3: localStorage.getItem('orgshort_lv3'),
       orgshort_lv4: localStorage.getItem('orgshort_lv4'),
+      streetName: localStorage.getItem('streetName'),
+      essAvaible: localStorage.getItem('essAvaible'),
+      taxEnable: localStorage.getItem('taxEnable')
     }
   },
   reset() {
@@ -199,6 +205,9 @@ const Storage = {
     localStorage.removeItem('orgshort_lv2');
     localStorage.removeItem('orgshort_lv3');
     localStorage.removeItem('orgshort_lv4');
+    localStorage.removeItem('streetName');
+    localStorage.removeItem('essAvaible');
+    localStorage.removeItem('taxEnable');
   }
 }
 
@@ -252,4 +261,7 @@ const deserialize = (currentAuthUser) => ({
   orgshort_lv2: currentAuthUser.orgshort_lv2,
   orgshort_lv3: currentAuthUser.orgshort_lv3,
   orgshort_lv4: currentAuthUser.orgshort_lv4,
+  streetName: currentAuthUser.streetName,
+  essAvaible: currentAuthUser.essAvaible,
+  taxEnable: currentAuthUser.taxEnable
 })

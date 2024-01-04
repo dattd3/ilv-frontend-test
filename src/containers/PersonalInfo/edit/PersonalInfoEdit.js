@@ -347,7 +347,7 @@ class PersonalInfoEdit extends React.Component {
           errors.urgentContactNo = t("IncorrectMobileNoLength")
         }
         delete errors?.birthProvince
-        if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
+        if (newMainInfo.BirthCountry && newMainInfo.BirthCountry === 'VN' && !newMainInfo.BirthProvince) {
           errors.birthProvince = t("PlaceOfBirthRequired")
         }
         delete errors?.maritalDate
@@ -648,8 +648,8 @@ class PersonalInfoEdit extends React.Component {
     return newMainInfo.Birthday ? moment(newMainInfo.Birthday, 'DD-MM-YYYY').format('YYYYMMDD') : moment(this.resetValueInValid(userDetail.birthday), 'DD-MM-YYYY').format('YYYYMMDD')
   }
 
-  prepareBirthProvince = (newMainInfo, userDetail) => {
-    return newMainInfo.BirthProvince ? newMainInfo.BirthProvince : this.resetValueInValid(userDetail.province_id);
+  prepareBirthProvince = (newMainInfo) => {
+    return newMainInfo?.BirthProvince || ''
   }
 
   getMaritalDateForStatus = (status, newMaritalDate, oldMaritalDate) => {
@@ -692,7 +692,8 @@ class PersonalInfoEdit extends React.Component {
       const update = data.update;
       if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
         const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-        if (newMainInfo.Religion || newMainInfo.Birthday || newMainInfo.Nationality || newMainInfo.BirthProvince || newMainInfo.MaritalStatus || newMainInfo.Religion || newMainInfo.Gender) {
+        if (newMainInfo.Religion || newMainInfo.Birthday || newMainInfo.Nationality || (newMainInfo?.BirthCountry === 'VN' && newMainInfo.BirthProvince) 
+        || (newMainInfo?.BirthCountry && newMainInfo?.BirthCountry !== 'VN') || newMainInfo.MaritalStatus || newMainInfo.Religion || newMainInfo.Gender) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
           obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
@@ -700,7 +701,7 @@ class PersonalInfoEdit extends React.Component {
           const nationalityAndBirthCountry = this.prepareNationalityAndBirthCountry(newMainInfo, userDetail);
           obj.natio = nationalityAndBirthCountry[1];
           obj.gblnd = nationalityAndBirthCountry[0];
-          obj.gbdep = this.prepareBirthProvince(newMainInfo, userDetail)
+          obj.gbdep = this.prepareBirthProvince(newMainInfo)
           const maritalInfo = this.prepareMaritalInfo(newMainInfo, userDetail);
           obj.famst = maritalInfo[0];
           obj.famdt = maritalInfo[1];
@@ -1287,10 +1288,10 @@ class PersonalInfoEdit extends React.Component {
   }
 
   handleSendRequest = () => {
-    let dataClone = this.removeItemForValueNull({ ...this.state.data })
+    const dataClone = this.removeItemForValueNull({ ...this.state.data })
     const errors = this.verifyInput(dataClone)
 
-    if (!this.isEmptyCustomize(errors)) {
+    if (!this.isEmptyCustomize(errors) || Object.values(errors || {}).some(item => item)) {
       return
     }
 

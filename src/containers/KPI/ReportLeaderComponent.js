@@ -41,19 +41,19 @@ class ReportLeaderComponent extends React.Component {
                                         </tr>
                                         <tr>
                                             <td className="item-row">03</td>   
-                                            <td className="item-row" className="text-left">Năng lực chuyên môn</td>
+                                            <td className="item-row text-left">Năng lực chuyên môn</td>
                                             <td className="item-row">{this.props.kpiInfo.NLCMself}</td>
                                             <td className="item-row">{this.props.kpiInfo.NLCMmanager}</td>
                                         </tr> 
                                         <tr>
                                             <td className="item-row">04</td>   
-                                            <td className="item-row" className="text-left">{t("JobPerformance")}</td>
+                                            <td className="item-row text-left">{t("JobPerformance")}</td>
                                             <td className="item-row">{this.props.kpiInfo.NDCVself}</td>
                                             <td className="item-row">{this.props.kpiInfo.NDCVmanager}</td>
                                         </tr>
                                         <tr>                
                                             <td className="item-row"><strong>05</strong></td>
-                                            <td className="item-row" className="text-left"><strong>{t("OverallScore")}</strong></td>
+                                            <td className="item-row text-left"><strong>{t("OverallScore")}</strong></td>
                                             <td className="item-row"><strong>{this.props.kpiInfo.SelfOverAll}</strong></td>
                                             <td className="item-row"><strong>{this.props.kpiInfo.Score}</strong></td>
                                         </tr>

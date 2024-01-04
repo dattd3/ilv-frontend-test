@@ -30,9 +30,9 @@ const MapConfig = {
 
   NewsDetailApp: "/news-app/:id",
   News: "/news",
-  NewsDetail: "/news/:slug/:id",
+  NewsDetail: "/news/detail/:id",
   EmployeePrivileges: "/employee-privileges",
-  EmployeePrivilegeDetail: "/employee-privileges/:slug/:id",
+  EmployeePrivilegeDetail: "/employee-privileges/detail/:id",
 
   //about us
   Vingroup: "/about-vingroup",
@@ -69,7 +69,6 @@ const MapConfig = {
   Registration: "/registration",
   RegistrationEdit: "/registration/:id/edit",
   RequestTaskEdit: "/tasks-request/:id/:childId/edit",
-  ApprovalTaskDetail: "/tasks-approval/:id",
   RegistrationDetailRequest: "/registration/:id/:childId/request",
   RegistrationDetailApproval: "/registration/:id/:childId/approval",
   RegistrationDetailConsent: "/registration/:id/:childId/consent",
@@ -154,7 +153,14 @@ const MapConfig = {
   //thông tin liên quan BH
   SocialSupportDetail: "/social-support/:id/:type",
 
-  RequestSupport: "/request-support"
+  RequestSupport: "/request-support",
+  VingroupEmployeePrivileges: "/vingroup-employee-privileges",
+  MyVoucher: "/my-voucher",
+  MyVoucherNoticeDetail: "/my-voucher/notices/:id",
+  Recruitment: "/recruitment",
+  //thông tin quyết toán thuế
+  CreateTaxFinalization: "/register-tax-finalization",
+  TaxFinalizationDetail: "/tax-finalization/:id/:type"
 };
 
 export default MapConfig;

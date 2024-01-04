@@ -113,6 +113,34 @@ function Authorize(props) {
         }
     }
 
+    const checkEssAvaible = async (token, companyCode) => {
+        let essAvaible = false, taxFinalizationAvaible = false;
+        const listCompanyAvaible = [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.THANHTOAN_NOIBO]];
+        if(listCompanyAvaible.includes(companyCode)) {
+            essAvaible = true;
+        }
+        try {
+            const config = {
+                headers: {
+                  'Authorization': token
+                },
+                params: {
+                    companyCode: companyCode
+                }
+            }
+            const response = await axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}common/taxsettlement-status`, config)
+            if (response && response.data) {
+                taxFinalizationAvaible = response.data.data?.status == '1' ? true : false;
+                //sample for dev
+                //taxFinalizationAvaible = true;
+            }
+        } catch(e) {
+            console.log(e);
+        }
+        essAvaible = essAvaible || taxFinalizationAvaible;
+        return {essAvaible, taxFinalizationAvaible};
+    }
+
     const formatMuleSoftValue = val => {
         if (val == '#' || val == null || val == undefined) {
             return ""
@@ -145,6 +173,9 @@ function Authorize(props) {
             .join(' / ')
             //check permission show prepare tab 
             const shouldShowPrepareOnboard = await hasPermissonShowPrepareTab(jwtToken, user.company_code);
+
+            //check quyền mở quyết toán thuế
+            const {essAvaible, taxFinalizationAvaible} = await checkEssAvaible(jwtToken, user.company_code);
             // Get company config
             var companyConfig = null
             axios.get(`${process.env.REACT_APP_REQUEST_URL}company/detail/${user.company_code}/${user.pnl}`, {
@@ -205,6 +236,9 @@ function Authorize(props) {
                             orgshort_lv2: formatStringByMuleValue(user?.orgshort_lv2),
                             orgshort_lv3: formatStringByMuleValue(user?.orgshort_lv3),
                             orgshort_lv4: formatStringByMuleValue(user?.orgshort_lv4),
+                            streetName: (user?.street_name === null || user?.street_name === '#') ? "" : user?.street_name,
+                            essAvaible: essAvaible,
+                            taxEnable: taxFinalizationAvaible
                         });
                         FirebaseUpdateToken();
                     }
@@ -258,6 +292,7 @@ function Authorize(props) {
                         orgshort_lv2: formatStringByMuleValue(user?.orgshort_lv2),
                         orgshort_lv3: formatStringByMuleValue(user?.orgshort_lv3),
                         orgshort_lv4: formatStringByMuleValue(user?.orgshort_lv4),
+                        streetName: (user?.street_name === null || user?.street_name === '#') ? "" : user?.street_name,
                     });
                 })
                 .finally(result => {
