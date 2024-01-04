@@ -284,6 +284,10 @@
                                 background: #F2F2F2;
                                 border: none;
                             }
+                            &.reopen {
+                                background: #347EF9;
+                                color: #FFFFFF;
+                            }
                         }
                     }
                     .created-date {
@@ -598,6 +602,17 @@
                                 padding: 0 10px;
                                 background: #F2F2F2;
                                 border-radius: 4px;
+                            }
+                        }
+                        .error-message {
+                            color: red;
+                            font-size: 13px;
+                            margin-top: 5px;
+                        }
+                        .inline {
+                            .error-message {
+                                margin-top: 0;
+                                margin-left: 10px;
                             }
                         }
                     }
@@ -989,6 +1004,17 @@
                                     color: #FFFFFF;
                                     font-size: 12px;
                                 }
+                            }
+                        }
+                        .error-message {
+                            color: red;
+                            font-size: 13px;
+                            margin-top: 5px;
+                        }
+                        .inline {
+                            .error-message {
+                                margin-top: 0;
+                                margin-left: 10px;
                             }
                         }
                     }

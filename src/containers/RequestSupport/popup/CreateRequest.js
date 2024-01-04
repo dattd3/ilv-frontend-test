@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react"
 import { Modal } from "react-bootstrap"
-import Select from 'react-select'
-import DatePicker, { registerLocale } from 'react-datepicker'
+import Select, { components } from 'react-select'
 import { useTranslation } from "react-i18next"
-import { Rating } from 'react-simple-star-rating'
 import axios from 'axios'
-import moment from 'moment'
-import _, { omit } from 'lodash'
+import { omit, isEqual, uniqWith } from 'lodash'
 import { useGuardStore } from 'modules'
 import Constants from 'commons/Constants'
+import { typeColorMapping } from "../Constant"
 import { getRequestConfigurations } from 'commons/Utils'
+import { hasNotValue } from "containers/Evaluation/Utils"
 import { validateFileMimeType, validateTotalFileSize } from "utils/file"
+import SearchMultiUsers from "components/Common/SearchMultiUsers"
 import Editor from "components/Forms/Editor"
 import UserInfo from "../common/UserInfo"
 import StatusModal from 'components/Common/StatusModal'
@@ -18,10 +18,24 @@ import LoadingModal from 'components/Common/LoadingModal'
 import IconClose from 'assets/img/icon/icon_x.svg'
 import IconSend from 'assets/img/icon/Icon_send.svg'
 import IconAttachment from 'assets/img/icon/ic_upload_attachment.svg'
-import 'react-datepicker/dist/react-datepicker.css'
-import vi from 'date-fns/locale/vi'
-import SearchMultiUsers from "components/Common/SearchMultiUsers"
-registerLocale("vi", vi)
+
+const CustomizeValueContainer = ({ children, ...props }) => {
+    const type = props?.selectProps?.value?.type
+
+    return (
+        <components.ValueContainer {...props}>
+            <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap'
+            }}>
+                { type && (<div style={{ marginRight: '4px', width: 16, height: 16, borderRadius: 2, backgroundColor: typeColorMapping[type] }}></div>) }
+                <div>{children}</div>
+            </div>
+        </components.ValueContainer>
+    )
+}
 
 const CreatedRequest = ({ isShow, masterData, onHide }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
@@ -29,6 +43,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
     const user = guard.getCurentUser()
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
+    const [errors, setErrors] = useState({})
     const [data, setData] = useState({
         title: '',
         content: '',
@@ -71,7 +86,25 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         }
     }
 
+    const isDataInValid = () => {
+        const error = {}
+        if (hasNotValue(data?.title)) {
+            error.title = "(*) Tiêu đề là bắt buộc"
+        }
+        if (hasNotValue(data?.content)) {
+            error.content = "(*) Nội dung là bắt buộc"
+        }
+        if (hasNotValue(data?.groupId)) {
+            error.groupId = "(*) Bắt buộc"
+        }
+        setErrors(error)
+        return Object.values(error).some(item => item)
+    }
+
     const sendRequest = async () => {
+        const isInValid = isDataInValid()
+        if (isInValid) return
+
         const statusModalTemp = { ...statusModal }
         setIsLoading(true)
         try {
@@ -225,20 +258,17 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
     
         let _listEmployees = [...data?.receives]
         _listEmployees = [..._listEmployees, ...employee]
-        _listEmployees = _.uniqWith(_listEmployees, _.isEqual)
+        _listEmployees = uniqWith(_listEmployees, isEqual)
         setData({
             ...data,
             receives: _listEmployees,
         })
     }
 
-    const classIndexMapping = {
-        0: 'new',
-        1: 'processing',
-        2: 'paused',
-        3: 'cancelled',
-        4: 'processed',
-        5: 'closed',
+    const renderError = key => {
+        return errors[key] && (
+            <div className="error-message">{errors[key]}</div>
+        )
     }
 
     const customStyles = {
@@ -329,6 +359,13 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
             value: item?.id,
             label: locale === Constants.LANGUAGE_VI ? item?.prioritizeVn : item?.prioritizeEn,
             groupId: item?.groupId,
+            type: item?.order == 1
+            ? 'urgent'
+            : item?.order == 2
+            ? 'high'
+            : item?.order == 3
+            ? 'medium'
+            : 'low'
         }
     })
 
@@ -343,6 +380,16 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         { value: false, label: 'Không' },
         { value: true, label: 'Có' },
     ]
+
+    const { Option } = components
+    const CustomizeOption = props => (
+        <Option {...props}>
+            <div className="d-flex align-items-center cursor-pointer">
+                <span style={{ display: 'inline-block', marginRight: '6px', width: 16, height: 16, borderRadius: 2, backgroundColor: typeColorMapping[props?.data?.type] }}></span>
+                {props?.data?.label}
+            </div>
+        </Option>
+    )
 
     return (
         <>
@@ -371,6 +418,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                 <div className="title-block">
                                     <label>Tiêu đề</label>
                                     <input type="text" placeholder="Nhập" onChange={e => handleInputChange('title', e)} value={data?.title || ''} />
+                                    { renderError('title') }
                                 </div>
                                 <div className="content-block">
                                     <label>Nội dung</label>
@@ -381,6 +429,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                         }}
                                         // disabled={isReadOnly || false}
                                     />
+                                    { renderError('content') }
                                 </div>
                                 <div className="row-customize">
                                     <div className="col">
@@ -416,7 +465,10 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                         />
                                     </div>
                                     <div className="col">
-                                        <label>Nhóm</label>
+                                        <div className="d-flex inline">
+                                            <label>Nhóm</label>
+                                            { renderError('groupId') }
+                                        </div>
                                         <Select
                                             value={(groups || []).find(item => item?.value == data?.groupId) || null}
                                             isClearable={true}
@@ -450,6 +502,7 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                             placeholder={t('Chọn')} 
                                             options={priorities}
                                             classNamePrefix="filter-select"
+                                            components={{ ValueContainer: CustomizeValueContainer, Option: CustomizeOption }}
                                         />
                                     </div>
                                     <div className="col">

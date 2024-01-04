@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { Modal, Tabs, Tab } from "react-bootstrap"
-import Select from 'react-select'
+import Select, { components } from 'react-select'
 import ReactTooltip from 'react-tooltip'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
@@ -10,10 +10,14 @@ import { saveAs } from 'file-saver'
 import purify from "dompurify"
 import { useGuardStore } from 'modules'
 import Constants from 'commons/Constants'
+import { tabConfig, typeColorMapping } from "../Constant"
 import { getRequestConfigurations } from 'commons/Utils'
+import { hasNotValue } from "containers/Evaluation/Utils"
 import { validateFileMimeType, validateTotalFileSize } from "utils/file"
 import Editor from "components/Forms/Editor"
 import UserInfo from "../common/UserInfo"
+import SearchMultiUsers from "components/Common/SearchMultiUsers"
+import SearchSingleUser from "components/Common/SearchSingleUser"
 import FeedbackHistory from "../common/FeedbackHistory"
 import StatusModal from 'components/Common/StatusModal'
 import LoadingModal from 'components/Common/LoadingModal'
@@ -25,9 +29,24 @@ import IconFeedbackOverdueActive from 'assets/img/icon/ic_feedback-overdue_activ
 import IconFeedbackOverdue from 'assets/img/icon/ic_feedback-overdue_grey.svg'
 import IconDeadlineOverdueActive from 'assets/img/icon/ic_deadline-overdue_active.svg'
 import IconDeadlineOverdue from 'assets/img/icon/ic_deadline-overdue_grey.svg'
-import { tabConfig } from "../Constant"
-import SearchMultiUsers from "components/Common/SearchMultiUsers"
-import SearchSingleUser from "components/Common/SearchSingleUser"
+
+const CustomizeValueContainer = ({ children, ...props }) => {
+    const type = props?.selectProps?.value?.type
+
+    return (
+        <components.ValueContainer {...props}>
+            <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap'
+            }}>
+                { type && (<div style={{ marginRight: '4px', width: 16, height: 16, borderRadius: 2, backgroundColor: typeColorMapping[type] }}></div>) }
+                <div>{children}</div>
+            </div>
+        </components.ValueContainer>
+    )
+}
 
 const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
@@ -54,6 +73,7 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
         needReload: true
     })
     const [activeTab, setActiveTab] = useState(modalTabConfig.feedBack)
+    const [errors, setErrors] = useState({})
 
     useEffect(() => {
         const fetchAllDataModal = async () => {
@@ -162,7 +182,19 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
         }
     }
 
+    const isDataInValid = () => {
+        const error = {}
+        if (hasNotValue(requestDetail?.groupId)) {
+            error.groupId = "(*) Bắt buộc"
+        }
+        setErrors(error)
+        return Object.values(error).some(item => item)
+    }
+
     const updateRequest = async () => {
+        const isInValid = isDataInValid()
+        if (isInValid) return
+
         const statusModalTemp = { ...statusModal }
         setIsLoading(true)
         try {
@@ -372,13 +404,10 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
         })
     }
 
-    const classIndexMapping = {
-        0: 'new',
-        1: 'processing',
-        2: 'paused',
-        3: 'cancelled',
-        4: 'processed',
-        5: 'closed',
+    const renderError = key => {
+        return errors[key] && (
+            <div className="error-message">{errors[key]}</div>
+        )
     }
 
     const customStyles = {
@@ -459,6 +488,13 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
             value: item?.id,
             label: locale === Constants.LANGUAGE_VI ? item?.prioritizeVn : item?.prioritizeEn,
             groupId: item?.groupId,
+            type: item?.order == 1
+            ? 'urgent'
+            : item?.order == 2
+            ? 'high'
+            : item?.order == 3
+            ? 'medium'
+            : 'low'
         }
     })
 
@@ -542,6 +578,16 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
 
     const viewByTechnician = tab === tabConfig.processing
     const handlerInfo = JSON.parse(requestDetail?.handlerInfo || '{}')
+
+    const { Option } = components
+    const CustomizeOption = props => (
+        <Option {...props}>
+            <div className="d-flex align-items-center cursor-pointer">
+                <span style={{ display: 'inline-block', marginRight: '6px', width: 16, height: 16, borderRadius: 2, backgroundColor: typeColorMapping[props?.data?.type] }}></span>
+                {props?.data?.label}
+            </div>
+        </Option>
+    )
 
     return (
         <>
@@ -663,7 +709,7 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
                                                             multiple
                                                         />
                                                     </label>
-                                                    <button className="btn btn-send" onClick={sendFeedback}><img src={IconSendBlue} alt="Send" />{t("Send")}</button>
+                                                    <button className="btn btn-send" disabled={feedBackContent === null || feedBackContent === undefined || feedBackContent === ''} onClick={sendFeedback}><img src={IconSendBlue} alt="Send" />{t("Send")}</button>
                                                 </div>
                                             </div>
                                             <FeedbackHistory
@@ -726,7 +772,6 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
                                             ? (
                                                 <Select
                                                     value={(serviceTypes || []).find(item => item?.value == requestDetail?.serviceTypeId) || null}
-                                                    isClearable={true}
                                                     onChange={e => handleInputChange('serviceTypeId', e)}
                                                     placeholder={t('Chọn')} 
                                                     options={serviceTypes}
@@ -768,7 +813,10 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
                                         }
                                     </div>
                                     <div className="col">
-                                        <label>Nhóm</label>
+                                        <div className="d-flex inline">
+                                            <label>Nhóm</label>
+                                            { renderError('groupId') }
+                                        </div>
                                         {
                                             viewByTechnician
                                             ? (
@@ -852,6 +900,7 @@ const RequestDetail = ({ isShow , id, masterData, tab, onHide }) => {
                                                     placeholder={t('Chọn')} 
                                                     options={priorities}
                                                     classNamePrefix="filter-select"
+                                                    components={{ ValueContainer: CustomizeValueContainer, Option: CustomizeOption }}
                                                 />
                                             )
                                             : (
