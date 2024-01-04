@@ -443,6 +443,11 @@ a {
       box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
     }
   }
+  &.common-status-modal {
+    .modal-content {
+      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+  }
   &.register-target-from-library-status-modal {
     z-index: 11001;
     .modal-content {

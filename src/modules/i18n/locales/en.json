@@ -2123,5 +2123,6 @@
   "total_tax_overpaid": "The overpaid personal income tax",
   "total_tax_addition": "The outstanding personal income tax",
   "cbnv_dang_ky_muc_tieu": "Requestor",
-  "mo_ta_muc_tieu": "Mô tả mục tiêu"
+  "mo_ta_muc_tieu": "Mô tả mục tiêu",
+  "ho_tro_yeu_cau": "Request support"
 }

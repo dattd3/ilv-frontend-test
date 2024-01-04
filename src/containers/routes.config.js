@@ -330,38 +330,6 @@ const ROUTES = [
           component: lazy(() => import("./Corporation/News/NewsDetail")),
         },
         {
-          key: "about-vingroup",
-          routeProps: {
-            exact: true,
-            path: map.Vingroup,
-          },
-          component: lazy(() => import("./Corporation/Vingroup")),
-        },
-        {
-          key: "about-vinpearl",
-          routeProps: {
-            exact: true,
-            path: map.Vinpearl,
-          },
-          component: lazy(() => import("./Corporation/Vinpearl")),
-        },
-        {
-          key: "about-vinfast",
-          routeProps: {
-            exact: true,
-            path: map.Vinfast,
-          },
-          component: lazy(() => import("./Corporation/Vinfast")),
-        },
-        {
-          key: "about-vinmec",
-          routeProps: {
-            exact: true,
-            path: map.Vinmec,
-          },
-          component: lazy(() => import("./Corporation/Vinmec")),
-        },
-        {
           key: "notifications",
           routeProps: {
             exact: true,
@@ -883,6 +851,14 @@ const ROUTES = [
             path: map.SocialSupportDetail,
           },
           component: lazy(() => import("./Welfare/WelfareComponents/SocialSupportInfoDetail")),
+        },
+        {
+          key: "request-support",
+          routeProps: {
+            exact: true,
+            path: map.RequestSupport,
+          },
+          component: lazy(() => import("./RequestSupport/")),
         },
         {
           key: "my-voucher",

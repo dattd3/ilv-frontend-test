@@ -19,6 +19,7 @@
 @import "./assets//scss//welfare.scss";
 @import "./assets/scss/target-management.scss";
 @import "./assets/scss/vingroup-cultural.scss";
+@import "./assets/scss/request_support.scss";
 @import "./assets/scss/my_voucher.scss";
 @import "./assets/scss/recruitment.scss";
 
@@ -6557,3 +6558,22 @@ span.badge-notification[data-badge]::after {
 iframe#webpack-dev-server-client-overlay {
   display: none !important
 }
+
+.ck-editor__editable, .ck-source-editing-area {
+  min-height: 200px !important;
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+  &.ck-column-resize_disabled {
+    background-color: #ececec !important;
+  }
+}
+.ck-toolbar {
+  border-top-left-radius: 4px !important;
+  border-top-right-radius: 4px !important;
+}
+.ck-voice-label {
+  display: none !important;
+}
+// .ck.ck-powered-by {
+//   display: none !important;
+// }

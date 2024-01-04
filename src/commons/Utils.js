@@ -45,6 +45,10 @@ const formatStringDateByMuleValue = value => {
     return (value === null || value === undefined || value === "" || value === "#" || value === "00000000") ? "" : value.trim()
 }
 
+const hasValue = (value) => {
+    return value !== null && value !== undefined && value?.toString()?.trim() !== ''
+}
+
 const formatNumberInteger = value => {
     if (isNaN(value)) {
         return 0
@@ -705,5 +709,6 @@ export {
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem, getRequestConfigurationsWithCulture
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem, 
+    getRequestConfigurationsWithCulture, hasValue
 }

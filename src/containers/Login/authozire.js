@@ -6,6 +6,7 @@ import axios from 'axios';
 import { formatStringByMuleValue, getCurrentLanguage, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
+import { omit } from 'lodash'
 import { FirebaseUpdateToken } from '../../commons/Firebase';
 
 const ERROR_TYPE = {
@@ -167,6 +168,9 @@ function Authorize(props) {
             } else {
                 benefitTitle = user.employee_level;
             }
+            const departmentStr = [user?.division, user?.department, user?.unit]
+            .filter(item => formatStringByMuleValue(item))
+            .join(' / ')
             //check permission show prepare tab 
             const shouldShowPrepareOnboard = await hasPermissonShowPrepareTab(jwtToken, user.company_code);
 
@@ -200,7 +204,7 @@ function Authorize(props) {
                             sabaId: `saba-${user.uid}`,
                             employeeNo: user.uid,
                             jobType: user.rank_name,
-                            department: `${user.division} / ${user.department} / ${user.unit}`,
+                            department: departmentStr,
                             actualDepartment: user?.department,
                             organizationLvId: user.organization_id,
                             organizationLv1: user.organization_lv1,
@@ -228,6 +232,10 @@ function Authorize(props) {
                             master_code: user.master_code || '',
                             cost_center: user?.cost_center,
                             insurance_number: user?.insurance_number,
+                            cell_phone_no: user?.cell_phone_no,
+                            orgshort_lv2: formatStringByMuleValue(user?.orgshort_lv2),
+                            orgshort_lv3: formatStringByMuleValue(user?.orgshort_lv3),
+                            orgshort_lv4: formatStringByMuleValue(user?.orgshort_lv4),
                             streetName: (user?.street_name === null || user?.street_name === '#') ? "" : user?.street_name,
                             essAvaible: essAvaible,
                             taxEnable: taxFinalizationAvaible
@@ -255,7 +263,7 @@ function Authorize(props) {
                         sabaId: `saba-${user.uid}`,
                         employeeNo: user.uid,
                         jobType: user.rank_name,
-                        department: `${user.division} / ${user.department} / ${user.unit}`,
+                        department: departmentStr,
                         actualDepartment: user?.department,
                         organizationLv1: user.organization_lv1,
                         organizationLv2: user.organization_lv2,
@@ -280,6 +288,10 @@ function Authorize(props) {
                         master_code: '',
                         cost_center: user?.cost_center,
                         insurance_number: user?.insurance_number || '',
+                        cell_phone_no: user?.cell_phone_no,
+                        orgshort_lv2: formatStringByMuleValue(user?.orgshort_lv2),
+                        orgshort_lv3: formatStringByMuleValue(user?.orgshort_lv3),
+                        orgshort_lv4: formatStringByMuleValue(user?.orgshort_lv4),
                         streetName: (user?.street_name === null || user?.street_name === '#') ? "" : user?.street_name,
                     });
                 })
@@ -328,7 +340,7 @@ function Authorize(props) {
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}user/update`,
-            data: userData,
+            data: omit(userData, ['avatar']),
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwtToken}`}
         })
         .then(res => {
