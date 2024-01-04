@@ -334,7 +334,9 @@ function Authorize(props) {
             orgLv5Id: userProfile.organization_lv5,
             divisionName: userProfile.division,
             unitName: userProfile.unit,
-            costCenter: userProfile?.cost_center
+            costCenter: userProfile?.cost_center,
+            birthday: userProfile.date_of_birth ? moment(userProfile.date_of_birth, 'DD-MM-YYYY').format('YYYY-MM-DD') : '',
+            sex: userProfile.gender_code || ''        
         }
 
         axios({
