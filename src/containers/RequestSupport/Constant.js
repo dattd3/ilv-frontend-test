@@ -29,4 +29,11 @@ const groupUsersConfig = {
     requester: { label: 'Người yêu cầu', icon: IconMailCyan },
 }
 
-export { status, feedBackLine, tabConfig, groupUsersConfig }
+const typeColorMapping = {
+    urgent: "#FF0014",
+    high: "#FF5370",
+    medium: "#FF7F00",
+    low: "#C2C2C2",
+}
+
+export { status, feedBackLine, tabConfig, groupUsersConfig, typeColorMapping }
