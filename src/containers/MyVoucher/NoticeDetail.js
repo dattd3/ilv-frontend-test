@@ -5,6 +5,7 @@ import purify from "dompurify"
 import Constants from 'commons/Constants'
 import { getRequestConfigurations } from '../../commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
+import '../../assets/css/ck-editor5.css'
 
 const NoticeDetail = (props) => {
     const locale = localStorage.getItem("locale")
@@ -36,7 +37,7 @@ const NoticeDetail = (props) => {
                     <div className="voucher-notice-detail">
                         <h1 className="content-page-header">{locale === Constants.LANGUAGE_VI ? notice?.titleVi : notice?.titleEn}</h1>
                         <div className="shadow-customize wrap-content">
-                            <div dangerouslySetInnerHTML={{
+                            <div className="ck ck-content" dangerouslySetInnerHTML={{
                                 __html: purify.sanitize(locale === Constants.LANGUAGE_VI ? notice?.contentVi?.trim() : notice?.contentEn?.trim()),
                             }} />
                         </div>
