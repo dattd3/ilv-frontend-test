@@ -1,13 +1,16 @@
-import { Fragment, useEffect, useState } from "react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import Select from 'react-select'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import ReactTooltip from 'react-tooltip'
 import { Rating } from 'react-simple-star-rating'
 import moment from 'moment'
-import purify from "dompurify"
-import { groupUsersConfig } from ".."
+import { size } from "lodash"
 import { status, feedBackLine, tabConfig } from "../Constant"
+import Constants from "commons/Constants"
+import { hasValue } from "commons/Utils"
+import RequestDetail from "../popup/RequestDetail"
+import SearchSingleUser from "components/Common/SearchSingleUser"
 import IconEmailGreen from 'assets/img/icon/ic_mail-green.svg'
 import IconEmailBlue from 'assets/img/icon/ic_mail-blue.svg'
 import IconEmailCyan from 'assets/img/icon/ic_mail-cyan.svg'
@@ -20,42 +23,9 @@ import IconFeedbackOverdueActive from 'assets/img/icon/ic_feedback-overdue_activ
 import IconFeedbackOverdue from 'assets/img/icon/ic_feedback-overdue_grey.svg'
 import IconDeadlineOverdueActive from 'assets/img/icon/ic_deadline-overdue_active.svg'
 import IconDeadlineOverdue from 'assets/img/icon/ic_deadline-overdue_grey.svg'
-
-
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
-import Constants from "commons/Constants"
-import { getRequestConfigurations, hasValue } from "commons/Utils"
-import RequestDetail from "../popup/RequestDetail"
-import SearchSingleUser from "components/Common/SearchSingleUser"
-import { size } from "lodash"
 registerLocale("vi", vi)
-
-const FeedbackHistoryItem = ({ fullName, ad, company, time, message, statusCode }) => {
-    // const statusIconMapping = {
-    //     0: IconEmailGreen,
-    //     1: IconEmailBlue,
-    //     2: IconEmailCyan,
-    // }
-
-    // const [expanded, setExpanded] = useState(false)
-
-    // return (
-    //     <div className="d-flex justify-content-between item">
-    //         <div className="d-inline-flex align-items-baseline left">
-    //             <span className="icon"><img src={statusIconMapping[statusCode]} alt="Mail" /></span>
-    //             <div className="d-flex flex-column content">
-    //                 <div className="author"><span className="font-weight-bold">{fullName}</span> ({ad}-{company}) - {time}</div>
-    //                 { expanded && (<div className="comment">{message}</div>) }
-    //                 <span className="cursor-pointer action" onClick={() => setExpanded(!expanded)}><img src={expanded ? IconCollapse : IconExpand} alt="Action" />{expanded ? 'Rút gọn' : 'Xem chi tiết'}</span>
-    //             </div>
-    //         </div>
-    //         <div className="right">
-    //             <button className="btn-download"><img src={IconDownload} alt="Download" />Tải về tệp tin</button>
-    //         </div>
-    //     </div>
-    // )
-}
 
 const TableRequests = ({ masterData, tab, listRequests, total, updateListRequests, cancelRequest, cancelUpdate, evaluateRequest, handleFilterOnParent }) => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
@@ -75,10 +45,6 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         isShow: false,
         id: null,
     })
-
-    // useEffect(() => {
-    //     tab && setIsShowFilter(false)
-    // }, [tab])
 
     const handleInputChange = (id, key, value) => {
         updateListRequests(id, key, value)
@@ -118,7 +84,8 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         control: base => ({
             ...base,
             height: 30,
-            minHeight: 30
+            minHeight: 30,
+            fontSize: 13,
         }),
         valueContainer: (provided, state) => ({
             ...provided,
@@ -144,7 +111,12 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         control: base => ({
             ...base,
             height: 35,
-            minHeight: 35
+            minHeight: 35,
+            fontSize: 13,
+        }),
+        menu: base => ({
+            ...base,
+            fontSize: 13,
         }),
         valueContainer: (provided, state) => ({
             ...provided,
@@ -161,6 +133,14 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
         indicatorsContainer: (provided, state) => ({
             ...provided,
             height: 35,
+        }),
+        clearIndicator: (provided, state) => ({
+            ...provided,
+            padding: "8px 0",
+        }),
+        dropdownIndicator: (provided, state) => ({
+            ...provided,
+            padding: "8px 3px",
         }),
     }
 
@@ -219,7 +199,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                         <th className="title"><div className="val">{t("Tiêu đề")}</div></th>
                         <th className="created-by"><div className="val">{t("Người tạo")}</div></th>
                         <th className="group"><div className="val">{t("Nhóm")}</div></th>
-                        <th className="pic"><div className="val">{t("Người xử lý")}</div></th>
+                        <th className="pic" style={{ width: tab === tabConfig.processing ? 140 : 100 }}><div className="val">{t("Người xử lý")}</div></th>
                         <th className="status-col text-center"><div className="val">{t("Status")}</div></th>
                         <th className="created-date text-center"><div className="val">{t("Ngày tạo")}</div></th>
                         {
@@ -261,7 +241,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                 </th>
                                 <th className="code text-center">
                                     <div className="val">
-                                        <input type="text" value={filter?.requestCode || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('requestCode', e?.target?.value || '')} />
+                                        <input type="number" value={filter?.requestCode || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('requestCode', e?.target?.value || '')} />
                                     </div>
                                 </th>
                                 <th className="title">
@@ -287,7 +267,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                         />
                                     </div>
                                 </th>
-                                <th className="pic">
+                                <th className="pic" style={{ width: tab === tabConfig.processing ? 140 : 100 }}>
                                     <div className="val">
                                         <input type="text" value={filter?.handler || ''} placeholder="Nhập" onChange={e => handleFilterInputChange('handler', e?.target?.value || '')} />
                                     </div>
@@ -450,12 +430,13 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                         onChange={e => handleInputChange(child?.id, 'groupId_temp', e?.value || null)} 
                                                         styles={customStyles}
                                                         isDisabled={child?.isChecked || false}
+                                                        menuPortalTarget={document.body}
                                                     />
                                                 )
                                             }
                                         </div>
                                     </td>
-                                    <td className="pic">
+                                    <td className="pic" style={{ width: tab === tabConfig.processing ? 140 : 100 }}>
                                         <div className="val">
                                             {
                                                 tab === tabConfig.createdReceiving
@@ -465,6 +446,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                         user={handlerInfo && size(handlerInfo) > 0 ? {...handlerInfo, value: handlerInfo?.employeeCode, label: handlerInfo?.fullName } : null}
                                                         handleSelectEmployee={(e) => handleInputChange(child?.id, 'handlerInfo_temp', e)}
                                                         isDisable={child?.isChecked || false}
+                                                        isShowIndicator={false}
                                                     />
                                                 )
                                             }
@@ -486,6 +468,7 @@ const TableRequests = ({ masterData, tab, listRequests, total, updateListRequest
                                                         onChange={e => handleInputChange(child?.id, 'statusId_temp', e?.value || null)} 
                                                         styles={customStyles}
                                                         isDisabled={child?.isChecked || false}
+                                                        menuPortalTarget={document.body}
                                                     />
                                                 )
                                             }

@@ -5,14 +5,12 @@ import axios from 'axios'
 import _ from 'lodash'
 import { omit } from "lodash"
 import Constants from 'commons/Constants'
-import { status, tabConfig } from "../Constant" 
 import { getRequestConfigurations, hasValue } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
 import Note from "../common/Note"
 import UpdateRequest from "../popup/UpdateRequest"
 import TableRequests from "../common/TableRequests"
 import CustomPaging from "components/Common/CustomPaging"
-import CancelModal from "components/Common/CancelModal"
 import StatusModal from "components/Common/StatusModal"
 import IconArrowWhite from 'assets/img/icon/Icon-Arrow-Right-White.svg'
 import IconFilter from "assets/img/icon/icon-filter.svg"
