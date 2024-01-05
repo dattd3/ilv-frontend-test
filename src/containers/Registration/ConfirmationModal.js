@@ -159,6 +159,9 @@ class ConfirmationModal extends React.Component {
             method: 'POST',
             url: `${host}request/cancel`,
             data: dataToSap,
+            params: {
+                culture: getCulture()
+            },
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
             .then(res => {
