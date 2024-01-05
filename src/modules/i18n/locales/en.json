@@ -2124,5 +2124,8 @@
   "total_tax_addition": "The outstanding personal income tax",
   "cbnv_dang_ky_muc_tieu": "Requestor",
   "ho_tro_yeu_cau": "Request support",
-  "mo_ta_muc_tieu": "Goal description"
+  "mo_ta_muc_tieu": "Goal description",
+  "tax_authorization_1": "(1) I only have the taxable income at one Company and I am working at this Company at the time of PIT finalization.",
+  "tax_authorization_2" : "(2) I am transferred from the former company to the current company due to merger/ consolidate/ split up/ transform of business and these 2 companies are in the same System/Group.",
+  "tax_authorization_3": "(3) I only have the taxable income at the current company AND having another source of income with average monthly income of no more than VND 10 million which PIT has been withheld at source and do not want to do PIT finalization on this."
 }

@@ -107,6 +107,10 @@ const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
     if(data.typeRequest?.value == TaxAuthorizationOptions.EXPOSE_TAX) {
         requiredFields.push('email', 'address', 'idNumber', 'dateIssue', 'placeIssue');
     }
+    if(data.typeRequest?.value == TaxAuthorizationOptions.AUTHORIZE_TAX) {
+      requiredFields.push('incomeType');
+      optionFields.push('incomeType');
+    }
     //check người thẩm định
     // if (supervisors?.length == 0 || !supervisors.every((sup) => sup != null)) {
     //   _errors["supervisors"] = t("PleaseEnterInfo");

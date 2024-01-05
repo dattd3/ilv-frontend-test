@@ -19,7 +19,7 @@ const RegistrationManagement = (props) => {
       ...(checkVersionPnLSameAsVinhome(Constants.MODULE.THANHTOAN_NOIBO)
         ? [{ value: 4, label: t('RequestInternalPayment') }]
         : []),
-      ...(localStorage.getItem('taxEnable') == 'true' 
+      ...(localStorage.getItem('taxEnable') != 'false' 
         ? [{value: 5, label: t('quyet_toan_thue')}]
         : [])
     ];

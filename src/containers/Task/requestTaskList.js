@@ -455,6 +455,9 @@ class RequestTaskList extends React.Component {
                 if (((status == Constants.STATUS_WAITING_CONSENTED && actionType !== 'DEL') || (status == Constants.STATUS_WAITING && appraiser && _.size(appraiser) > 0 && actionType !== 'DEL')) && requestTypeId == Constants.RESIGN_SELF && updateField == 1) {
                   return true
                 }
+                if(requestTypeId == Constants.TAX_FINALIZATION) {
+                    return true;
+                }
                 return false
             }
             return false

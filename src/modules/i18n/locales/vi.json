@@ -2140,5 +2140,8 @@
   "total_tax_addition": "Số thuế còn phải nộp bổ sung",
   "cbnv_dang_ky_muc_tieu": "CBNV đăng ký mục tiêu",
   "ho_tro_yeu_cau": "Hỗ trợ yêu cầu",
-  "mo_ta_muc_tieu": "Mô tả mục tiêu"
+  "mo_ta_muc_tieu": "Mô tả mục tiêu",
+  "tax_authorization_1": "(1) Tôi chỉ có thu nhập chịu thuế tại 1 Công ty/Đơn vị và thực tế tại thời điểm quyết toán thuế thu nhập cá nhân tôi đang làm việc tại Công ty/đơn vị đó.",
+  "tax_authorization_2" : "(2) Tôi thuộc diện được điều chuyển giữa các Công ty do sáp nhập/ hợp nhất/chia/tách/chuyển đổi loại hình doanh nghiệp và các Công ty/đơn vị này trong cùng một hệ thống.",
+  "tax_authorization_3": "(3) Tôi có thu nhập chịu thuế tại Công ty/đơn vị và có thu nhập vãng lai ở các nơi khác bình quân tháng trong năm không quá 10 triệu đồng/tháng đã được đơn vị trả thu nhập khấu trừ tại nguồn và không có nhu cầu quyết toán thuế đối với phần thu nhập vãng lai."
 }
