@@ -355,10 +355,6 @@ const SocialContributeInfo = (props: any) => {
         id: data.typeRequest?.value,
         name: data.typeRequest?.label
       },
-      incomeType: {
-        id: data.incomeType?.value,
-        name: data.incomeType?.label
-      },
       taxCode: {
         displayType: dataChange.PitNo || STATUS.OLD,
         new: convertData(data.PitNo),
@@ -413,6 +409,7 @@ const SocialContributeInfo = (props: any) => {
   const onSubmit = () => {
     const change = checkDataChange();
     const userProfileInfo = prepareSubmitData(change.data, change.member);
+    const authorizationTypeInfo = convertData(data.incomeType);
     const employeeInfo = {
       employeeNo: localStorage.getItem("employeeNo"),
       username: localStorage.getItem("ad")?.toLowerCase(),
@@ -470,6 +467,7 @@ const SocialContributeInfo = (props: any) => {
     const formData = new FormData();
     formData.append("culture", getCulture());
     formData.append("requestInfo", JSON.stringify(userProfileInfo));
+    formData.append("authorizationTypeInfo", JSON.stringify(authorizationTypeInfo));
     formData.append("orgLv2Id", localStorage.getItem("organizationLv2") || "");
     formData.append("orgLv3Id", localStorage.getItem("divisionId") || "");
     formData.append("orgLv3Text", localStorage.getItem("division") || "");

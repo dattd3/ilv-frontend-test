@@ -24,6 +24,7 @@ const TaxAuthrizationComponent = ({
   templates = {}
 }: ITaxAuthrizationComponent) => {
   const linkTemplate = templates[data.typeRequest?.value];
+  const taskAvaible = localStorage.getItem('taxEnable')?.startsWith('true') == true ? localStorage.getItem('taxEnable')!.split('_') : [0,0,0];
   return (
     <>
       <div className="d-flex flex-row">
@@ -35,6 +36,7 @@ const TaxAuthrizationComponent = ({
                 type="radio"
                 id={"action_accept" + option.value}
                 name={"action" + option.value}
+                disabled={taskAvaible[index + 1] != '1'}
                 checked={data.typeRequest?.value == option.value}
                 onChange={(e) => {
                   setData({

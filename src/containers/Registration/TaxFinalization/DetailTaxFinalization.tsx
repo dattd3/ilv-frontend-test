@@ -143,7 +143,9 @@ const DetailTaxFinalization = (props: any) => {
       extractRequestInfo.type
     ) as IDropdownValue;
     //income type
-    _oldData.incomeType = convertData(extractRequestInfo.incomeType) as IDropdownValue;
+    if (requestInfo?.taxSettlement?.authorizationTypeInfo) {
+      _oldData.incomeType = convertData(JSON.parse(requestInfo?.taxSettlement.authorizationTypeInfo)) as IDropdownValue;
+    }
     _oldData.PitNo = convertData(extractRequestInfo.taxCode.old) as string;
     _data.PitNo = convertData(extractRequestInfo.taxCode.new) as string;
     _dataChange.PitNo = extractRequestInfo.taxCode.displayType;
